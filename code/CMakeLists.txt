@@ -26,10 +26,23 @@ add_library(
 )
 target_include_directories(Object PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-
+add_library(
+    Vertices STATIC
+    sources/Vertices.cpp
+    headers/Vertices.hpp
+)
+target_include_directories(Vertices PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
-    stb_image
+    Container
+    sources/Container.cpp
+    headers/Container.hpp
+)
+target_link_libraries(Container Vertices)
+target_include_directories(Container PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_library(
+    stb_image STATIC
     sources/stb_image.cpp
     ../libs/stb/stb_image.h
 )

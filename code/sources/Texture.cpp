@@ -1,5 +1,6 @@
 #include "../headers/Texture.hpp"
 
+Texture::Texture(){}
 
 Texture::Texture(std::string path)
 {

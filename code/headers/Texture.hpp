@@ -12,6 +12,7 @@ private:
 public:
     GLuint getId();
     Texture(std::string path);
+    Texture();
     ~Texture();
 };
 
