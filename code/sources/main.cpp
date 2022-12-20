@@ -2,9 +2,9 @@
 #include <GLFW/glfw3.h>
 // #include <stb_image.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <headers/Game.hpp>
 #include <headers/Container.hpp>
@@ -58,7 +58,7 @@ int main()
         glfwPollEvents();
     }
 
-
+    box.terminate();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     game.terminate();
     return 0;

@@ -37,6 +37,7 @@ public:
     void setVertices(std::vector<float>vertices);
     void setTexture(Texture texture);
     void setTexture(std::string path);
+    void terminate();
     void set_vertex_attributes_pointers(int layoutLocation, int vectSize, int stride, int offset);
     ~Object();
 };

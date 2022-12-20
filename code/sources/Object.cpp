@@ -68,8 +68,12 @@ void Object::set_vertex_attributes_pointers(int layoutLocation, int vectSize, in
     glEnableVertexAttribArray(layoutLocation);
 }
 
-Object::~Object()
-{
+void Object::terminate(){
     glDeleteVertexArrays(1, &(this->VAO));
     glDeleteBuffers(1, &(this->VBO));
+}
+
+Object::~Object()
+{
+   
 }
