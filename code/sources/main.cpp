@@ -36,7 +36,7 @@ int main()
     }
     Shader shader = Shader("code/shaders/vertSrc.vs","code/shaders/fragSrc.fs");
     std::cout <<"1" << '\n';
-    Model model = Model("assets/meshes/car/source/TESLA_last_withoutinside_3.fbx");
+    Model model = Model("assets/meshes/bag/backpack.obj");
     std::cout << "2" << '\n';
     Object bag = Object(model,shader);
     std::cout << "3"<< '\n';
