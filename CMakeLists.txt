@@ -19,6 +19,9 @@ option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(libs/glfw)
 
+# ASSIMP
+add_subdirectory(libs/assimp) 
+
 
 include_directories(libs/glad/include/
                     libs/glfw/include/
