@@ -34,12 +34,19 @@ add_library(
 target_include_directories(Vertices PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
-    Container
-    sources/Container.cpp
-    headers/Container.hpp
+    Mesh
+    sources/Mesh.cpp
+    headers/Mesh.hpp
 )
-target_link_libraries(Container Vertices)
-target_include_directories(Container PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(Mesh PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_library(
+    Model
+    sources/Model.cpp
+    headers/Model.hpp
+)
+target_link_libraries(Model Mesh)
+target_include_directories(Model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
     stb_image STATIC
