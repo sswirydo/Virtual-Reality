@@ -23,7 +23,7 @@ const unsigned int SCR_WIDTH = 800*2; // 800x600 ? are you executing this on you
 const unsigned int SCR_HEIGHT = 600*2;
 
 // camera
-Camera camera(glm::vec3(0.0f, 440.0f, -1000.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, -10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -56,7 +56,7 @@ int main()
 
     Shader shader = Shader("code/shaders/vertSrc.vs","code/shaders/fragSrc.fs");
     std::cout <<"1" << '\n';
-    Model model = Model("assets/meshes/little-car/Pony_cartoon.obj");
+    Model model = Model("assets/meshes/alpha/AS5QG9E1JE65KQEOKSS4QB8ON.obj");
     std::cout << "2" << '\n';
     Object bag = Object(model,shader);
     std::cout << "3"<< '\n';

@@ -33,8 +33,9 @@ void Model::loadModel(std::string path){
 void Model::processNode(aiNode *node, const aiScene *scene)
 {
     // process all the node's meshes (if any)
+    std::cout << "node name : " << node->mName.C_Str() << std::endl;
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
-    {
+    {    
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
         meshes.push_back(processMesh(mesh, scene));			
     }
@@ -127,7 +128,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // 4. height maps
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-    std::cout << "textures size" << textures.size() <<std::endl;
+    std::cout << "textures size " << textures.size() <<std::endl;
 
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures);
@@ -142,6 +143,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     {
         aiString str;
         mat->GetTexture(type, i, &str);
+        std::cout << "textures name " << str.C_Str() <<std::endl;
+
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;
         for(unsigned int j = 0; j < textures_loaded.size(); j++)
