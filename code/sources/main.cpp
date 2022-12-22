@@ -19,8 +19,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 800*2; // 800x600 ? are you executing this on your phone or what ? :p
+const unsigned int SCR_HEIGHT = 600*2;
 
 // camera
 Camera camera(glm::vec3(0.0f, 440.0f, -1000.0f));
