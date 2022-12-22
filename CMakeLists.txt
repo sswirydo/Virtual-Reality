@@ -27,7 +27,7 @@ include_directories(libs/glad/include/
                     libs/glfw/include/
                     libs/glm/
                     libs/stb/
-                    libs/assimp/)
+                    libs/assimp/include/)
 
 ## GLM
 add_subdirectory(libs/glm) 
