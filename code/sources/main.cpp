@@ -113,8 +113,9 @@ int main()
         shader.setMat4("view", view);
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model,  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// it's a bit too big for our scene, so scale it down
+        model = glm::rotate(model,  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // On retourne la voiture de 90° suivant l'axe Y
+                                                                                        // vu que de base elle regardait vers la droite
+        model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
         shader.setMat4("model", model);
         car.render();
 
