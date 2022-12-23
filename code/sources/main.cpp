@@ -57,7 +57,7 @@ int main()
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    Shader shader = Shader("code/shaders/vertSrc.vs","code/shaders/fragSrc.fs");
+    Shader shader = Shader("code/shaders/vertSrc.vert","code/shaders/fragSrc.frag");
     std::cout <<"1" << '\n';
     Model model = Model("assets/meshes/alpha/AS5QG9E1JE65KQEOKSS4QB8ON.obj");
     std::cout << "2" << '\n';
