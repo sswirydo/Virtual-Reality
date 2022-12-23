@@ -1,8 +1,10 @@
 #include "../headers/Model.hpp"
 
+Model::Model(){}
 
-Model::Model(){
-    
+Model::Model(std::vector<Mesh> mesh_vector)
+{
+    this->meshes = mesh_vector;
 }
 
 Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma)
