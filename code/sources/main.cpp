@@ -18,6 +18,8 @@ void processInput(GLFWwindow *window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 // settings
 const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
 const unsigned int SCR_HEIGHT = 600*1.5;
@@ -27,6 +29,7 @@ Camera camera(glm::vec3(0.0f, 2.7f, 4.9f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+bool processMouseInput = true;
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -61,6 +64,24 @@ int main()
     Object bag = Object(model,shader);
     std::cout << "3"<< '\n';
     std::cout << "4"<< '\n';
+
+
+    glfwSetKeyCallback(game.getWindow(), key_callback);
+
+    double prev = 0;
+    int deltaFrame = 0;
+    //fps function
+    auto fps = [&](double now) {
+        double deltaTime = now - prev;
+        deltaFrame++;
+        if (deltaTime > 0.5) {
+            prev = now;
+            const double fpsCount = (double)deltaFrame / deltaTime;
+            deltaFrame = 0;
+            std::cout << "\r FPS: " << fpsCount;
+        }
+    };
+
 
     // render loop
     while (!glfwWindowShouldClose(game.getWindow()))
@@ -97,6 +118,8 @@ int main()
         shader.setMat4("model", model);
         bag.render();
 
+        fps(glfwGetTime());
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -124,6 +147,26 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
+// because processInput() is called every frame and we want the key to be processed only once
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{   
+    if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+    {
+        if (processMouseInput) 
+        {
+            processMouseInput = false;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            std::cout << "\nMOUSE DETACHED\n";
+        }
+        else 
+        {
+            processMouseInput = true;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            std::cout << "\nMOUSE ATTACHED\n";
+        }
+    }
+}
+
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -138,22 +181,26 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-    if (firstMouse)
+    if (processMouseInput)
     {
+        float xpos = static_cast<float>(xposIn);
+        float ypos = static_cast<float>(yposIn);
+
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
+
+        camera.ProcessMouseMovement(xoffset, yoffset);
     }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
