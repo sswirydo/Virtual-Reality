@@ -55,18 +55,53 @@ int main()
 
     // tell GLFW to capture our mouse
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwSetKeyCallback(game.getWindow(), key_callback);
+
 
     Shader shader = Shader("code/shaders/vertSrc.vs","code/shaders/fragSrc.fs");
     std::cout <<"1" << '\n';
-    Model model = Model("assets/meshes/alpha/AS5QG9E1JE65KQEOKSS4QB8ON.obj");
+    Model model = Model("assets/meshes/lambo/Lamborghini\ Countach\ LP-5000\ QV.obj");
     std::cout << "2" << '\n';
     Object car = Object(model,shader);
     std::cout << "3"<< '\n';
-    std::cout << "4"<< '\n';
 
 
-    glfwSetKeyCallback(game.getWindow(), key_callback);
+
+    
+    //char pathCube[] = PATH_TO_OBJECTS "/cube.obj";
+    //Object cubeMap(pathCube);
+    //cubeMap.makeObject(cubeMapShader);
+
+    //GLuint cubeMapTexture;
+    //glGenTextures(1, &cubeMapTexture);
+    //glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
+
+    //// texture parameters
+    //glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    ////stbi_set_flip_vertically_on_load(true);
+
+    //std::string pathToCubeMap = PATH_TO_TEXTURE "/cubemaps/yokohama3/";
+
+    //std::map<std::string, GLenum> facesToLoad = {
+    //    {pathToCubeMap + "posx.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_X},
+    //    {pathToCubeMap + "posy.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_Y},
+    //    {pathToCubeMap + "posz.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_Z},
+    //    {pathToCubeMap + "negx.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_X},
+    //    {pathToCubeMap + "negy.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_Y},
+    //    {pathToCubeMap + "negz.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_Z},
+    //};
+    ////load the six faces
+    //for (std::pair<std::string, GLenum> pair : facesToLoad) {
+    //    loadCubemapFace(pair.first.c_str(), pair.second);
+    //}
+    
 
     double prev = 0;
     int deltaFrame = 0;
@@ -117,6 +152,18 @@ int main()
                                                                                         // vu que de base elle regardait vers la droite
         model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
         shader.setMat4("model", model);
+
+        ////Show the object even if it's depth is equal to the depht of the object already present (TEMP)
+        //glDepthFunc(GL_LEQUAL);
+        //cubeMapShader.use();
+        //cubeMapShader.setMatrix4("V", view);
+        //cubeMapShader.setMatrix4("P", perspective);
+        //cubeMapShader.setInteger("cubemapTexture", 0);
+        //glActiveTexture(GL_TEXTURE0);
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
+        //cubeMap.draw();
+        //glDepthFunc(GL_LESS);
+
         car.render();
 
         fps(glfwGetTime());
