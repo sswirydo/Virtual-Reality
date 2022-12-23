@@ -116,7 +116,7 @@ int main()
         model = glm::rotate(model,  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// it's a bit too big for our scene, so scale it down
         shader.setMat4("model", model);
-        bag.render();
+        car.render();
 
         fps(glfwGetTime());
 
