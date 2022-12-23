@@ -19,11 +19,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 // settings
-const unsigned int SCR_WIDTH = 800*2; // 800x600 ? are you executing this on your phone or what ? :p
-const unsigned int SCR_HEIGHT = 600*2;
+const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
+const unsigned int SCR_HEIGHT = 600*1.5;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, -10.0f));
+Camera camera(glm::vec3(0.0f, 2.7f, 4.9f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -92,8 +92,8 @@ int main()
         shader.setMat4("view", view);
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        model = glm::rotate(model,  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// it's a bit too big for our scene, so scale it down
         shader.setMat4("model", model);
         bag.render();
 
