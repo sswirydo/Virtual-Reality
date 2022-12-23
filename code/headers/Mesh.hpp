@@ -48,4 +48,4 @@ class Mesh {
         void setupMesh();
 };
 
-#endif MESH_H
+#endif
