@@ -2,6 +2,10 @@
 #include <GLFW/glfw3.h>
 // #include <stb_image.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -9,10 +13,9 @@
 #include <headers/Game.hpp>
 #include <headers/camera.hpp>
 #include <headers/Object.hpp>
+#include <headers/terrain.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
+
 
 void processInput(GLFWwindow *window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -57,68 +60,11 @@ int main()
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    Shader shader = Shader("code/shaders/vertSrc.vert","code/shaders/fragSrc.frag");
-    std::cout <<"1" << '\n';
+    Shader shader = Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model model = Model("assets/meshes/alpha/AS5QG9E1JE65KQEOKSS4QB8ON.obj");
-    std::cout << "2" << '\n';
     Object car = Object(model,shader);
-    std::cout << "3"<< '\n';
-    std::cout << "4"<< '\n';
 
-    // TEST
-    // ----------------------------------------
-    // Adapted from:
-    // https://www.dropbox.com/s/47qk4yrz5v9lb61/Terrain%20Generation%20Code.txt?dl=0
-    std::vector<Vertex> terrainVertices;
-    std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
-
-    int vertex_count = 20;
-    int size = 40;
-    int count = vertex_count * vertex_count;
-
-    Vertex terrain_vertex;
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec3 texCoords;
-
-    for (int i = 0; i < vertex_count; i++) {
-        for (int j = 0; j < vertex_count; j++) {
-            position.x = (float)j / ((float)vertex_count - 1) * size;
-            position.y = 0;
-            position.z = (float)i / ((float)vertex_count - 1) * size;
-            position.x -= (float)size / 2; // translate for center (temp)
-            position.z -= (float)size / 2;
-            normal.x = 0;
-            normal.y = 1;
-            normal.z = 0;
-            texCoords.x = (float)j / ((float)vertex_count - 1);
-            texCoords.y = (float)i / ((float)vertex_count - 1);
-            terrain_vertex.Position = position;
-            terrain_vertex.Normal = normal;
-            terrain_vertex.TexCoords = texCoords;
-            terrainVertices.push_back(terrain_vertex);
-        }
-    }
-    for (int gz = 0; gz < vertex_count - 1; gz++) {
-        for (int gx = 0; gx < vertex_count - 1; gx++) {
-            int topLeft = (gz * vertex_count) + gx;
-            int topRight = topLeft + 1;
-            int bottomLeft = ((gz + 1) * vertex_count) + gx;
-            int bottomRight = bottomLeft + 1;
-
-            indices.push_back(topLeft);
-            indices.push_back(bottomLeft);
-            indices.push_back(topRight);
-            indices.push_back(topRight);
-            indices.push_back(bottomLeft);
-            indices.push_back(bottomRight);
-        }
-    }
-
-    Mesh terrainMesh = Mesh(terrainVertices, indices, textures);
-    // TEST END
-    // ----------------------------------------
+    Object terrain = generateTerrain();
 
 
     glfwSetKeyCallback(game.getWindow(), key_callback);
@@ -175,8 +121,7 @@ int main()
         shader.setMat4("model", model);
 
         car.render();
-
-        terrainMesh.Draw(shader);
+        terrain.render();
 
         fps(glfwGetTime());
 
