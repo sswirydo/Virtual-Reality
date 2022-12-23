@@ -65,6 +65,61 @@ int main()
     std::cout << "3"<< '\n';
     std::cout << "4"<< '\n';
 
+    // TEST
+    // ----------------------------------------
+    // Adapted from:
+    // https://www.dropbox.com/s/47qk4yrz5v9lb61/Terrain%20Generation%20Code.txt?dl=0
+    std::vector<Vertex> terrainVertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture> textures;
+
+    int vertex_count = 20;
+    int size = 40;
+    int count = vertex_count * vertex_count;
+
+    Vertex terrain_vertex;
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec3 texCoords;
+
+    for (int i = 0; i < vertex_count; i++) {
+        for (int j = 0; j < vertex_count; j++) {
+            position.x = (float)j / ((float)vertex_count - 1) * size;
+            position.y = 0;
+            position.z = (float)i / ((float)vertex_count - 1) * size;
+            position.x -= (float)size / 2; // translate for center (temp)
+            position.z -= (float)size / 2;
+            normal.x = 0;
+            normal.y = 1;
+            normal.z = 0;
+            texCoords.x = (float)j / ((float)vertex_count - 1);
+            texCoords.y = (float)i / ((float)vertex_count - 1);
+            terrain_vertex.Position = position;
+            terrain_vertex.Normal = normal;
+            terrain_vertex.TexCoords = texCoords;
+            terrainVertices.push_back(terrain_vertex);
+        }
+    }
+    for (int gz = 0; gz < vertex_count - 1; gz++) {
+        for (int gx = 0; gx < vertex_count - 1; gx++) {
+            int topLeft = (gz * vertex_count) + gx;
+            int topRight = topLeft + 1;
+            int bottomLeft = ((gz + 1) * vertex_count) + gx;
+            int bottomRight = bottomLeft + 1;
+
+            indices.push_back(topLeft);
+            indices.push_back(bottomLeft);
+            indices.push_back(topRight);
+            indices.push_back(topRight);
+            indices.push_back(bottomLeft);
+            indices.push_back(bottomRight);
+        }
+    }
+
+    Mesh terrainMesh = Mesh(terrainVertices, indices, textures);
+    // TEST END
+    // ----------------------------------------
+
 
     glfwSetKeyCallback(game.getWindow(), key_callback);
 
@@ -111,13 +166,17 @@ int main()
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("view", view);
-        // render the loaded model
+
+        // render the loaded model 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model,  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // On retourne la voiture de 90° suivant l'axe Y
-                                                                                        // vu que de base elle regardait vers la droite
+        // On retourne la voiture de 90° suivant l'axe Y, vu que de base elle regardait vers la droite
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));                                                                           
         model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
         shader.setMat4("model", model);
+
         car.render();
+
+        terrainMesh.Draw(shader);
 
         fps(glfwGetTime());
 
