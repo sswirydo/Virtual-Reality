@@ -1,3 +1,7 @@
+
+#ifndef MESH_H
+#define MESH_H
+
 #include<vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -43,3 +47,5 @@ class Mesh {
         
         void setupMesh();
 };
+
+#endif MESH_H
