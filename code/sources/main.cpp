@@ -58,7 +58,7 @@ int main()
     std::cout <<"1" << '\n';
     Model model = Model("assets/meshes/alpha/AS5QG9E1JE65KQEOKSS4QB8ON.obj");
     std::cout << "2" << '\n';
-    Object bag = Object(model,shader);
+    Object car = Object(model,shader);
     std::cout << "3"<< '\n';
     std::cout << "4"<< '\n';
 
@@ -95,8 +95,7 @@ int main()
         model = glm::rotate(model,  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// it's a bit too big for our scene, so scale it down
         shader.setMat4("model", model);
-        bag.render();
-
+        car.render();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
