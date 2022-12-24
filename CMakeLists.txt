@@ -8,6 +8,8 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 find_package(OpenGL REQUIRED)
 
+add_compile_definitions(PATH_TO_PROJECT="${CMAKE_CURRENT_SOURCE_DIR}")
+
 #for glad library
 add_library( glad STATIC libs/glad/src/glad.c)
 set(GLAD_INCLUDE "libs/glad/include")

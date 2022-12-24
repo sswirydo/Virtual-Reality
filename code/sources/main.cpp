@@ -1,10 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-// #include <stb_image.h>
+#include <stb_image.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #include <iostream>
+#include <vector>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -15,13 +17,63 @@
 #include <headers/Object.hpp>
 #include <headers/terrain.hpp>
 
-
-
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow* window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+void loadCubemapFace(const char* path, const GLenum& targetFace);
+
+#ifndef NDEBUG
+void APIENTRY glDebugOutput(GLenum source,
+    GLenum type,
+    unsigned int id,
+    GLenum severity,
+    GLsizei length,
+    const char* message,
+    const void* userParam)
+{
+    // ignore non-significant error/warning codes
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
+
+    std::cout << "---------------" << std::endl;
+    std::cout << "Debug message (" << id << "): " << message << std::endl;
+
+    switch (source)
+    {
+    case GL_DEBUG_SOURCE_API:             std::cout << "Source: API"; break;
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System"; break;
+    case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler"; break;
+    case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party"; break;
+    case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application"; break;
+    case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other"; break;
+    } std::cout << std::endl;
+
+    switch (type)
+    {
+    case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error"; break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour"; break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour"; break;
+    case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability"; break;
+    case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance"; break;
+    case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker"; break;
+    case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group"; break;
+    case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group"; break;
+    case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other"; break;
+    } std::cout << std::endl;
+
+    switch (severity)
+    {
+    case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium"; break;
+    case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low"; break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification"; break;
+    } std::cout << std::endl;
+    std::cout << std::endl;
+}
+#endif
+
 
 // settings
 const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
@@ -94,6 +146,19 @@ int main()
         game.terminate();
         exit(EXIT_FAILURE);
     }
+
+#ifndef NDEBUG
+    int flags;
+    glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(glDebugOutput, nullptr);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+    }
+#endif
+
     glfwSetFramebufferSizeCallback(game.getWindow(), framebuffer_size_callback);
     glfwSetCursorPosCallback(game.getWindow(), mouse_callback);
     glfwSetScrollCallback(game.getWindow(), scroll_callback);
@@ -123,6 +188,34 @@ int main()
     Object car = Object(model,carShader);
     // Object terrain = generateTerrain();
 
+    // SKYBOX TEST _ START
+    Model cubeMapModel("assets/objects/cube.obj");
+    Shader cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
+    Object cubeMap = Object(cubeMapModel, cubeMapShader);
+    GLuint cubeMapTexture;
+    glGenTextures(1, &cubeMapTexture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    std::string pathToCubeMap = PATH_TO_PROJECT "/assets/skybox/";
+    std::cout << pathToCubeMap << std::endl;
+    std::map<std::string, GLenum> facesToLoad = {
+        {pathToCubeMap + "right.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_X},
+        {pathToCubeMap + "top.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_Y},
+        {pathToCubeMap + "front.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_Z},
+        {pathToCubeMap + "left.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_X},
+        {pathToCubeMap + "bottom.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_Y},
+        {pathToCubeMap + "back.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_Z},
+    };
+    //load the six faces
+    for (std::pair<std::string, GLenum> pair : facesToLoad) {
+        loadCubemapFace(pair.first.c_str(), pair.second);
+    }
+    // SKYBOX TEST _ END
 
 
     double prev = 0;
@@ -138,6 +231,8 @@ int main()
             std::cout << "\r FPS: " << fpsCount;
         }
     };
+
+    glm::mat4 perspective = camera.GetProjectionMatrix();
 
 
     // render loop
@@ -178,6 +273,7 @@ int main()
         // model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
         carShader.setMat4("model", model);
 
+        glDepthFunc(GL_LEQUAL);
         car.render();
         // terrain.render();
 
@@ -191,6 +287,19 @@ int main()
         lightShader.setMat4("model", model);
         glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // cubemap -- test
+        cubeMapShader.use();
+        cubeMapShader.setMat4("V", view);
+        cubeMapShader.setMat4("P", perspective);
+        cubeMapShader.setInt("cubemapTexture", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
+        cubeMap.render();
+        glDepthFunc(GL_LESS);
+        // cubemap -- test
+
+
 
         fps(glfwGetTime());
 
@@ -282,4 +391,23 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+
+void loadCubemapFace(const char* path, const GLenum& targetFace)
+{
+    int imWidth, imHeight, imNrChannels;
+    unsigned char* data = stbi_load(path, &imWidth, &imHeight, &imNrChannels, 0);
+    if (data)
+    {
+
+        glTexImage2D(targetFace, 0, GL_RGB, imWidth, imHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        //glGenerateMipmap(targetFace);
+    }
+    else {
+        std::cout << "Failed to Load texture" << std::endl;
+        const char* reason = stbi_failure_reason();
+        std::cout << reason << std::endl;
+    }
+    stbi_image_free(data);
 }
