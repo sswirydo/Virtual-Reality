@@ -19,6 +19,13 @@ Object generateTerrain()
     std::vector<Vertex> terrainVertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
+    
+    // aled
+    //Texture terrainTexture;
+    //terrainTexture.id = 9991;
+    //terrainTexture.path = "assets/textures/container.jpg";
+    //terrainTexture.type = "texture_diffuse";
+    //textures.push_back(terrainTexture);
 
     int vertex_count = 20;
     int size = 40;
