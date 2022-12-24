@@ -103,7 +103,7 @@ int main()
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glm::vec3 lightPos(1.0f, 5.5f, 0.0f);
+    glm::vec3 lightPos(1.0f, 55.f, 0.0f);
     glm::vec4 lightColor(1.0f, 1.0f, 1.0f,1.0f);
     // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
     unsigned int lightCubeVAO, VBO;
@@ -119,7 +119,7 @@ int main()
     Shader lightShader = Shader("code/shaders/lightShader.vert","code/shaders/lightShader.frag");
 
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
-    Model model = Model("assets/meshes/plane/p2002.obj");
+    Model model = Model("assets/meshes/free-car/free_car_001.obj");
     Object car = Object(model,carShader);
     // Object terrain = generateTerrain();
 
