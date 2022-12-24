@@ -37,7 +37,49 @@ bool processMouseInput = true;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
+float vertices[] = {
+    -0.5f, -0.5f, -0.5f, 
+     0.5f, -0.5f, -0.5f,  
+     0.5f,  0.5f, -0.5f,  
+     0.5f,  0.5f, -0.5f,  
+    -0.5f,  0.5f, -0.5f, 
+    -0.5f, -0.5f, -0.5f, 
 
+    -0.5f, -0.5f,  0.5f, 
+     0.5f, -0.5f,  0.5f,  
+     0.5f,  0.5f,  0.5f,  
+     0.5f,  0.5f,  0.5f,  
+    -0.5f,  0.5f,  0.5f, 
+    -0.5f, -0.5f,  0.5f, 
+
+    -0.5f,  0.5f,  0.5f, 
+    -0.5f,  0.5f, -0.5f, 
+    -0.5f, -0.5f, -0.5f, 
+    -0.5f, -0.5f, -0.5f, 
+    -0.5f, -0.5f,  0.5f, 
+    -0.5f,  0.5f,  0.5f, 
+
+     0.5f,  0.5f,  0.5f,  
+     0.5f,  0.5f, -0.5f,  
+     0.5f, -0.5f, -0.5f,  
+     0.5f, -0.5f, -0.5f,  
+     0.5f, -0.5f,  0.5f,  
+     0.5f,  0.5f,  0.5f,  
+
+    -0.5f, -0.5f, -0.5f, 
+     0.5f, -0.5f, -0.5f,  
+     0.5f, -0.5f,  0.5f,  
+     0.5f, -0.5f,  0.5f,  
+    -0.5f, -0.5f,  0.5f, 
+    -0.5f, -0.5f, -0.5f, 
+
+    -0.5f,  0.5f, -0.5f, 
+     0.5f,  0.5f, -0.5f,  
+     0.5f,  0.5f,  0.5f,  
+     0.5f,  0.5f,  0.5f,  
+    -0.5f,  0.5f,  0.5f, 
+    -0.5f,  0.5f, -0.5f, 
+};
 int main()
 {
     // openGl initialisation
@@ -55,19 +97,33 @@ int main()
     glfwSetFramebufferSizeCallback(game.getWindow(), framebuffer_size_callback);
     glfwSetCursorPosCallback(game.getWindow(), mouse_callback);
     glfwSetScrollCallback(game.getWindow(), scroll_callback);
+    glfwSetKeyCallback(game.getWindow(), key_callback);
 
     // tell GLFW to capture our mouse
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    Shader shader = Shader("code/shaders/car.vert","code/shaders/car.frag");
-    Model model = Model("assets/meshes/alpha/AS5QG9E1JE65KQEOKSS4QB8ON.obj");
-    Object car = Object(model,shader);
+    glm::vec3 lightPos(1.0f, 5.5f, 0.0f);
+    glm::vec4 lightColor(1.0f, 1.0f, 1.0f,1.0f);
+    // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+    unsigned int lightCubeVAO, VBO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+    glGenBuffers(1, &VBO);
 
-    Object terrain = generateTerrain();
+    // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    Shader lightShader = Shader("code/shaders/lightShader.vert","code/shaders/lightShader.frag");
+
+    Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
+    Model model = Model("assets/meshes/plane/p2002.obj");
+    Object car = Object(model,carShader);
+    // Object terrain = generateTerrain();
 
 
-    glfwSetKeyCallback(game.getWindow(), key_callback);
 
     double prev = 0;
     int deltaFrame = 0;
@@ -103,25 +159,38 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // don't forget to enable shader before setting uniforms
-        shader.use();
-
+        carShader.use();
+        carShader.setVec3("lightPos",lightPos);
+        carShader.setVec4("lightColor",lightColor);
+        carShader.setVec3("viewPos", camera.Position); 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 8000.0f);
-        shader.setMat4("projection", projection);
+        carShader.setMat4("projection", projection);
 
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
-        shader.setMat4("view", view);
+        carShader.setMat4("view", view);
 
         // render the loaded model 
         glm::mat4 model = glm::mat4(1.0f);
         // On retourne la voiture de 90° suivant l'axe Y, vu que de base elle regardait vers la droite
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));                                                                           
-        model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
-        shader.setMat4("model", model);
+        // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));                                                                           
+        // model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
+        carShader.setMat4("model", model);
 
         car.render();
-        terrain.render();
+        // terrain.render();
+
+        // also draw the lamp object
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(1.f)); // a smaller cube
+        lightShader.setMat4("model", model);
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         fps(glfwGetTime());
 
