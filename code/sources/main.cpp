@@ -16,6 +16,7 @@
 #include <headers/camera.hpp>
 #include <headers/Object.hpp>
 #include <headers/terrain.hpp>
+#include <headers/LightSource.hpp>
 
 void processInput(GLFWwindow* window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -80,7 +81,7 @@ const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on y
 const unsigned int SCR_HEIGHT = 600*1.5;
 
 // camera
-Camera camera(glm::vec3(0.0f, 2.7f, 4.9f));
+Camera camera(glm::vec3(0.0f, 3.0f, 7.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -89,49 +90,6 @@ bool processMouseInput = true;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
-float vertices[] = {
-    -0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f, -0.5f,  
-     0.5f,  0.5f, -0.5f,  
-     0.5f,  0.5f, -0.5f,  
-    -0.5f,  0.5f, -0.5f, 
-    -0.5f, -0.5f, -0.5f, 
-
-    -0.5f, -0.5f,  0.5f, 
-     0.5f, -0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-    -0.5f,  0.5f,  0.5f, 
-    -0.5f, -0.5f,  0.5f, 
-
-    -0.5f,  0.5f,  0.5f, 
-    -0.5f,  0.5f, -0.5f, 
-    -0.5f, -0.5f, -0.5f, 
-    -0.5f, -0.5f, -0.5f, 
-    -0.5f, -0.5f,  0.5f, 
-    -0.5f,  0.5f,  0.5f, 
-
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f, -0.5f,  
-     0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-
-    -0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f,  0.5f,  
-     0.5f, -0.5f,  0.5f,  
-    -0.5f, -0.5f,  0.5f, 
-    -0.5f, -0.5f, -0.5f, 
-
-    -0.5f,  0.5f, -0.5f, 
-     0.5f,  0.5f, -0.5f,  
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-    -0.5f,  0.5f,  0.5f, 
-    -0.5f,  0.5f, -0.5f, 
-};
 int main()
 {
     // openGl initialisation
@@ -168,25 +126,14 @@ int main()
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glm::vec3 lightPos(1.0f, 55.f, 0.0f);
-    glm::vec4 lightColor(1.0f, 1.0f, 1.0f,1.0f);
-    // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
-    unsigned int lightCubeVAO, VBO;
-    glGenVertexArrays(1, &lightCubeVAO);
-    glBindVertexArray(lightCubeVAO);
-    glGenBuffers(1, &VBO);
-
-    // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    Shader lightShader = Shader("code/shaders/lightShader.vert","code/shaders/lightShader.frag");
+    
+    
+    LightSource light(glm::vec3(0.0f, 5.f, 5.0f),glm::vec3(1.0f, 1.0f, 1.0f));
 
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model model = Model("assets/meshes/free-car/free_car_001.obj");
     Object car = Object(model,carShader);
-    // Object terrain = generateTerrain();
+    Object terrain = generateTerrain();
 
     // SKYBOX TEST _ START
     Model cubeMapModel("assets/objects/cube.obj");
@@ -201,7 +148,7 @@ int main()
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    std::string pathToCubeMap = PATH_TO_PROJECT "/assets/skybox/";
+    std::string pathToCubeMap = "assets/skybox/";
     std::cout << pathToCubeMap << std::endl;
     std::map<std::string, GLenum> facesToLoad = {
         {pathToCubeMap + "right.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_X},
@@ -255,8 +202,8 @@ int main()
 
         // don't forget to enable shader before setting uniforms
         carShader.use();
-        carShader.setVec3("lightPos",lightPos);
-        carShader.setVec4("lightColor",lightColor);
+        carShader.setVec3("lightPos",light.getPosition());
+        carShader.setVec4("lightColor",light.getColor());
         carShader.setVec3("viewPos", camera.Position); 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 8000.0f);
@@ -268,25 +215,14 @@ int main()
 
         // render the loaded model 
         glm::mat4 model = glm::mat4(1.0f);
-        // On retourne la voiture de 90° suivant l'axe Y, vu que de base elle regardait vers la droite
-        // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));                                                                           
-        // model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));	// On l'a ramene un peu vers le haut vu qu'elle etait trop basse
+        // On retourne la voiture de 180° suivant l'axe Y, vu que de base elle regardait vers la droite
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));                                                                           
         carShader.setMat4("model", model);
 
         glDepthFunc(GL_LEQUAL);
         car.render();
-        // terrain.render();
-
-        // also draw the lamp object
-        lightShader.use();
-        lightShader.setMat4("projection", projection);
-        lightShader.setMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(1.f)); // a smaller cube
-        lightShader.setMat4("model", model);
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //light.show(projection,view);
+        terrain.render();
 
         // cubemap -- test
         cubeMapShader.use();

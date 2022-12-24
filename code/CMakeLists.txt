@@ -41,6 +41,13 @@ add_library(
 target_include_directories(Mesh PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
+    LightSource
+    sources/LightSource.cpp
+    headers/LightSource.hpp
+)
+target_include_directories(LightSource PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_library(
     Model
     sources/Model.cpp
     headers/Model.hpp
