@@ -44,7 +44,7 @@ void LightSource::show(glm::mat4 projection, glm::mat4 view)
     this->lightShader.setMat4("view", view);
     model = glm::mat4(1.0f);
     model = glm::translate(model, this->position);
-    model = glm::scale(model, glm::vec3(2.f)); // a smaller cube
+    model = glm::scale(model, glm::vec3(.1f)); // a smaller cube
     this->lightShader.setMat4("model", model);
     glBindVertexArray(this->lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);

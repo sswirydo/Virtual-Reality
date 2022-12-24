@@ -13,9 +13,10 @@
 #include <assimp/postprocess.h>
 
 #include <headers/Game.hpp>
-#include <headers/camera.hpp>
+#include <headers/Camera.hpp>
 #include <headers/Object.hpp>
-#include <headers/terrain.hpp>
+#include <headers/Car.hpp>
+// #include <headers/terrain.hpp>
 #include <headers/LightSource.hpp>
 
 void processInput(GLFWwindow* window);
@@ -76,9 +77,9 @@ void APIENTRY glDebugOutput(GLenum source,
 #endif
 
 
-// settings
-const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
-const unsigned int SCR_HEIGHT = 600*1.5;
+// // settings
+// const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
+// const unsigned int SCR_HEIGHT = 600*1.5;
 
 // camera
 Camera camera(glm::vec3(0.0f, 3.0f, 7.0f));
@@ -124,21 +125,18 @@ int main()
 
     // tell GLFW to capture our mouse
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     
-    
-    LightSource light(glm::vec3(0.0f, 5.f, 5.0f),glm::vec3(1.0f, 1.0f, 1.0f));
+    LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
 
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model model = Model("assets/meshes/free-car/free_car_001.obj");
-    Object car = Object(model,carShader);
-    Object terrain = generateTerrain();
+    Car car = Car(model,carShader,&camera);
+    // Object terrain = generateTerrain();
 
     // SKYBOX TEST _ START
     Model cubeMapModel("assets/objects/cube.obj");
     Shader cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    Object cubeMap = Object(cubeMapModel, cubeMapShader);
+    Object cubeMap = Object(cubeMapModel, cubeMapShader,&camera);
     GLuint cubeMapTexture;
     glGenTextures(1, &cubeMapTexture);
     glActiveTexture(GL_TEXTURE0);
@@ -200,33 +198,18 @@ int main()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // don't forget to enable shader before setting uniforms
-        carShader.use();
-        carShader.setVec3("lightPos",light.getPosition());
-        carShader.setVec4("lightColor",light.getColor());
-        carShader.setVec3("viewPos", camera.Position); 
-        // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 8000.0f);
-        carShader.setMat4("projection", projection);
-
-        // camera/view transformation
-        glm::mat4 view = camera.GetViewMatrix();
-        carShader.setMat4("view", view);
-
-        // render the loaded model 
-        glm::mat4 model = glm::mat4(1.0f);
-        // On retourne la voiture de 180° suivant l'axe Y, vu que de base elle regardait vers la droite
-        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));                                                                           
-        carShader.setMat4("model", model);
-
+        glm::mat4 model(1.0f);
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        car.setM(model);
+                                                                                 
         glDepthFunc(GL_LEQUAL);
-        car.render();
-        //light.show(projection,view);
-        terrain.render();
+        car.render(light);
+        light.show(car.getP(),car.getV());
+        // terrain.render();
 
         // cubemap -- test
         cubeMapShader.use();
-        cubeMapShader.setMat4("V", view);
+        cubeMapShader.setMat4("V", car.getV());
         cubeMapShader.setMat4("P", perspective);
         cubeMapShader.setInt("cubemapTexture", 0);
         glActiveTexture(GL_TEXTURE0);

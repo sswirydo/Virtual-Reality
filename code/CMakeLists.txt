@@ -46,7 +46,12 @@ add_library(
     headers/LightSource.hpp
 )
 target_include_directories(LightSource PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
+add_library(
+    Car
+    sources/Car.cpp
+    headers/Car.hpp
+)
+target_link_libraries(Car Mesh)
 add_library(
     Model
     sources/Model.cpp
