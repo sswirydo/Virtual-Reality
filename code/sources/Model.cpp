@@ -56,6 +56,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     std::vector<Texture> textures;
 
     // walk through each of the mesh's vertices
+    // std::cout  << "Has normals ?: " << mesh->HasNormals() << std::endl;
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
@@ -67,10 +68,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         vertex.Position = vector;
         // normals
         if (mesh->HasNormals())
-        {
+        {  
             vector.x = mesh->mNormals[i].x;
             vector.y = mesh->mNormals[i].y;
             vector.z = mesh->mNormals[i].z;
+            // std::cout << "("<< vector.x << "," << vector.y << ","  << vector.z << ")"  << std::endl;
             vertex.Normal = vector;
         }
         // texture coordinates
@@ -145,7 +147,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        std::cout << "textures name " << str.C_Str() <<std::endl;
+        std::cout << "textures name " << str.C_Str() << ", type: " << typeName.c_str() <<std::endl;
 
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;
