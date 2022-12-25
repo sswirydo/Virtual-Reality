@@ -24,12 +24,19 @@ add_subdirectory(libs/glfw)
 # ASSIMP
 add_subdirectory(libs/assimp) 
 
+# Bullet physics
+add_subdirectory(libs/bullet3)
+
 
 include_directories(libs/glad/include/
                     libs/glfw/include/
                     libs/glm/
                     libs/stb/
-                    libs/assimp/include/)
+                    libs/assimp/include/
+                    libs/bullet3/src)
+
+# Additional preprocessor def for bullets
+add_definitions(-DBT_USE_DOUBLE_PRECISION)
 
 ## GLM
 add_subdirectory(libs/glm) 
