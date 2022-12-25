@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <btBulletDynamicsCommon.h>
+
+#include <stdio.h>
 #include <iostream>
 #include <vector>
 
@@ -161,6 +164,26 @@ int main()
         loadCubemapFace(pair.first.c_str(), pair.second);
     }
     // SKYBOX TEST _ END
+       
+
+    //-------------------------------------------------------
+    // BULLETS TEST _START
+
+    // Create a collision configuration
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+    // Create a collision dispatcher
+    btCollisionDispatcher * dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    // Create a broadphase interface
+    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+    // Create a constraint solver
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+    // Create a physics world
+    btDiscreteDynamicsWorld* world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    // Set the gravity of the world
+    world->setGravity(btVector3(0, -9.81, 0));
+ 
+    // BULLETS TEST _END
+    //______________________________________________________________
 
 
     double prev = 0;
