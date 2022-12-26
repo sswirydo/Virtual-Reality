@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <btBulletDynamicsCommon.h>
 
 #include <stdio.h>
 #include <iostream>
@@ -21,6 +20,7 @@
 #include <headers/Car.hpp>
 // #include <headers/terrain.hpp>
 #include <headers/LightSource.hpp>
+#include <headers/Physics.hpp>
 
 void processInput(GLFWwindow* window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -168,20 +168,7 @@ int main()
 
     //-------------------------------------------------------
     // BULLETS TEST _START
-
-    // Create a collision configuration
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    // Create a collision dispatcher
-    btCollisionDispatcher * dispatcher = new btCollisionDispatcher(collisionConfiguration);
-    // Create a broadphase interface
-    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
-    // Create a constraint solver
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-    // Create a physics world
-    btDiscreteDynamicsWorld* world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-    // Set the gravity of the world
-    world->setGravity(btVector3(0, -9.81, 0));
- 
+    Physics* physics = new Physics();
     // BULLETS TEST _END
     //______________________________________________________________
 
