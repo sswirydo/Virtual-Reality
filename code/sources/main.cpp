@@ -14,13 +14,13 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <headers/Game.hpp>
-#include <headers/Camera.hpp>
-#include <headers/Object.hpp>
-#include <headers/Car.hpp>
-#include <headers/LightSource.hpp>
-#include <headers/Physics.hpp>
-#include <headers/Debug.hpp>
+#include "../headers/Game.hpp"
+#include "../headers/Camera.hpp"
+#include "../headers/Object.hpp"
+#include "../headers/Car.hpp"
+#include "../headers/LightSource.hpp"
+#include "../headers/Physics.hpp"
+#include "../headers/Debug.hpp"
 
 #include "../headers/Skybox.hpp"
 

@@ -1,7 +1,8 @@
-add_executable(racing_game main.cpp "Skybox.cpp" "Camera.cpp")
 
-target_link_libraries(racing_game PUBLIC	
-									${PROJECT_LIBS}
+LIST(APPEND PATATES Skybox.cpp Camera.cpp Shader.cpp Physics.cpp Game.cpp Object.cpp Vertices.cpp Mesh.cpp LightSource.cpp Car.cpp Model.cpp Mesh.cpp)
+add_executable(racing_game main.cpp ${PATATES})
+
+target_link_libraries(racing_game PUBLIC
 									stb_image 
 									OpenGL::GL
 									glfw 
