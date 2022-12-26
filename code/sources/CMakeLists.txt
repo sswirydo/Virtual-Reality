@@ -1,4 +1,4 @@
-add_executable(racing_game main.cpp "Skybox.cpp")
+add_executable(racing_game main.cpp "Skybox.cpp" "Camera.cpp")
 
 target_link_libraries(racing_game PUBLIC	
 									${PROJECT_LIBS}

@@ -7,12 +7,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include "Shader.hpp"
 #include "Model.hpp"
 #include "Camera.hpp"
+
 #include <string>
 #include <iostream>
 #include <vector>
+
+class Camera;
 
 // settings
 const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
