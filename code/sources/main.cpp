@@ -23,6 +23,8 @@
 #include <headers/Physics.hpp>
 #include <headers/Debug.hpp>
 
+#include "../headers/Skybox.hpp"
+
 
 void processInput(GLFWwindow* window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -54,7 +56,7 @@ int main()
     Game game;
     try
     {
-        game.initOpenGL("test",SCR_WIDTH,SCR_HEIGHT);
+        game.initOpenGL("Racing Game", SCR_WIDTH, SCR_HEIGHT);
     }
     catch(const std::exception& e)
     {
@@ -67,56 +69,21 @@ int main()
     glDebug();
     #endif // !NDEBUG
     
+    // GLFW CALLBACKS
     glfwSetFramebufferSizeCallback(game.getWindow(), framebuffer_size_callback);
     glfwSetCursorPosCallback(game.getWindow(), mouse_callback);
     glfwSetScrollCallback(game.getWindow(), scroll_callback);
     glfwSetKeyCallback(game.getWindow(), key_callback);
-
-    // tell GLFW to capture our mouse
-    glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // tell GLFW to capture our mouse
     
     LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
-
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model model = Model("assets/meshes/free-car/free_car_001.obj");
     Car car = Car(model,carShader,&camera);
-    // Object terrain = generateTerrain();
 
-    // SKYBOX TEST _ START
-    Model cubeMapModel("assets/objects/cube.obj");
-    Shader cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    Object cubeMap = Object(cubeMapModel, cubeMapShader,&camera);
-    GLuint cubeMapTexture;
-    glGenTextures(1, &cubeMapTexture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    std::string pathToCubeMap = "assets/skybox/";
-    std::cout << pathToCubeMap << std::endl;
-    std::map<std::string, GLenum> facesToLoad = {
-        {pathToCubeMap + "right.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_X},
-        {pathToCubeMap + "top.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_Y},
-        {pathToCubeMap + "front.jpg",GL_TEXTURE_CUBE_MAP_POSITIVE_Z},
-        {pathToCubeMap + "left.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_X},
-        {pathToCubeMap + "bottom.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_Y},
-        {pathToCubeMap + "back.jpg",GL_TEXTURE_CUBE_MAP_NEGATIVE_Z},
-    };
-    //load the six faces
-    for (std::pair<std::string, GLenum> pair : facesToLoad) {
-        loadCubemapFace(pair.first.c_str(), pair.second);
-    }
-    // SKYBOX TEST _ END
-       
+    Skybox skybox = Skybox(&camera);
 
-    //-------------------------------------------------------
-    // BULLETS TEST _START
     Physics* physics = new Physics();
-    // BULLETS TEST _END
-    //______________________________________________________________
 
 
     double prev = 0;
@@ -135,52 +102,27 @@ int main()
 
     glm::mat4 perspective = camera.GetProjectionMatrix();
 
-
-    // render loop
     while (!glfwWindowShouldClose(game.getWindow()))
     {
-        // per-frame time logic
-        // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        // input
-        // -----
         processInput(game.getWindow());
 
-        // render
-        // ------
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 model(1.0f);
         model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        car.setM(model);
-                                                                                 
+        car.setM(model);                                                         
         glDepthFunc(GL_LEQUAL);
         car.render(light);
         light.show(car.getP(),car.getV());
-        // terrain.render();
-
-        // cubemap -- test
-        cubeMapShader.use();
-        cubeMapShader.setMat4("V", car.getV());
-        cubeMapShader.setMat4("P", perspective);
-        cubeMapShader.setInt("cubemapTexture", 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-        cubeMap.render();
+        skybox.render(car.getV(), perspective);
         glDepthFunc(GL_LESS);
-        // cubemap -- test
-
-
 
         fps(glfwGetTime());
-
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(game.getWindow());
         glfwPollEvents();
     }
@@ -269,20 +211,3 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 
-void loadCubemapFace(const char* path, const GLenum& targetFace)
-{
-    int imWidth, imHeight, imNrChannels;
-    unsigned char* data = stbi_load(path, &imWidth, &imHeight, &imNrChannels, 0);
-    if (data)
-    {
-
-        glTexImage2D(targetFace, 0, GL_RGB, imWidth, imHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        //glGenerateMipmap(targetFace);
-    }
-    else {
-        std::cout << "Failed to Load texture" << std::endl;
-        const char* reason = stbi_failure_reason();
-        std::cout << reason << std::endl;
-    }
-    stbi_image_free(data);
-}
