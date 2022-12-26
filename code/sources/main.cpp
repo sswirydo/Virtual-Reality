@@ -18,7 +18,6 @@
 #include <headers/Camera.hpp>
 #include <headers/Object.hpp>
 #include <headers/Car.hpp>
-// #include <headers/terrain.hpp>
 #include <headers/LightSource.hpp>
 #include <headers/Physics.hpp>
 #include <headers/Debug.hpp>
@@ -32,7 +31,6 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-void loadCubemapFace(const char* path, const GLenum& targetFace);
 
 // // settings
 // const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
@@ -52,18 +50,7 @@ float lastFrame = 0.0f;
 
 int main()
 {
-    // openGl initialisation
-    Game game;
-    try
-    {
-        game.initOpenGL("Racing Game", SCR_WIDTH, SCR_HEIGHT);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-        game.terminate();
-        exit(EXIT_FAILURE);
-    }
+    Game game = Game("Racing Game", SCR_WIDTH, SCR_HEIGHT);
 
     #ifndef NDEBUG
     glDebug();

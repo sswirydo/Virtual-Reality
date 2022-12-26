@@ -9,21 +9,19 @@
 
 class Game
 {
+public:
+    Game(std::string win_title, unsigned int width, unsigned int height);
+    GLFWwindow* getWindow();
+    unsigned int getWidth();
+    unsigned int getHeight();
+    void terminate();
+protected:
+    void setCallbacks();
 private:
-// settings
     unsigned int win_width;
     unsigned int win_height;
     GLFWwindow* window;
     void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-public:
-    GLFWwindow* getWindow();
-    unsigned int getWidth();
-    unsigned int getHeight();
-    
-    void terminate();
-    Game();
-    void initOpenGL(std::string win_title, unsigned int width, unsigned int height);
-    ~Game();
 };
 
 #endif

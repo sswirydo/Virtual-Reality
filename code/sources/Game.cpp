@@ -1,37 +1,36 @@
 #include "../headers/Game.hpp"
 
-Game::Game(){};
-
-void Game::initOpenGL(std::string win_title, unsigned int width,unsigned int height)
+Game::Game(std::string win_title, unsigned int width, unsigned int height)
 {
-
-    this->win_width = width;
-    this->win_height = height;
-    // glfw: initialize and configure
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // glfw window creation
-    this->window = glfwCreateWindow(width, height,win_title.c_str(), NULL, NULL);
-    if (this->window == NULL)
+    try 
     {
-        std::runtime_error error("Failed to create GLFW window"); 
-        throw error;
+        this->win_width = width;
+        this->win_height = height;
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        this->window = glfwCreateWindow(width, height, win_title.c_str(), NULL, NULL);
+        if (this->window == NULL)
+        {
+            std::runtime_error error("Failed to create GLFW window");
+            throw error;
+        }
+        glfwMakeContextCurrent(this->window);
+        // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::runtime_error error("Failed to initialize GLAD");
+            throw error;
+        }
+        glEnable(GL_DEPTH_TEST);
     }
-    glfwMakeContextCurrent(this->window);
-    // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-    // glad: load all OpenGL function pointers
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    catch (const std::exception& e)
     {
-        std::runtime_error error("Failed to initialize GLAD"); 
-        throw error;
+        std::cerr << e.what() << '\n';
+        glfwTerminate();
+        exit(EXIT_FAILURE);
     }
-
-    // configure global opengl state
-    glEnable(GL_DEPTH_TEST);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -40,22 +39,22 @@ void Game::framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-unsigned int Game::getWidth(){
+unsigned int Game::getWidth()
+{
     return this->win_width;
 }
 
-unsigned int Game::getHeight(){
+unsigned int Game::getHeight()
+{
     return this->win_height;
 }
 
-GLFWwindow* Game::getWindow(){
+GLFWwindow* Game::getWindow()
+{
     return this->window;
 }
 
-void Game::terminate(){
-    glfwTerminate();
-}
-
-Game::~Game()
+void Game::terminate()
 {
+    glfwTerminate();
 }
