@@ -104,6 +104,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glDepthFunc(GL_LEQUAL);
+        skybox.render();
+
         car.renderShapeBox(lightShader);
 
         car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
@@ -112,11 +114,6 @@ int main()
         car.render(light);
         light.show(&camera);
 
-        
-
-        
-
-        skybox.render();
         glDepthFunc(GL_LESS);
 
         //fps(glfwGetTime());
