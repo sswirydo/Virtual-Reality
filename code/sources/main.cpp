@@ -34,6 +34,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // game settings
 bool processMouseInput = true;
 bool pauseGame = false;
+unsigned movementDirection = 0;
 
 // window settings
 const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
@@ -109,7 +110,7 @@ int main()
 
         if (!pauseGame) 
         {
-            car.move(deltaTime);
+            car.move(deltaTime, movementDirection);
         }
             
         
@@ -123,7 +124,7 @@ int main()
 
         if (!pauseGame) 
         {
-            //car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
+            car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
             car.setModelMatrix(glm::rotate(car.getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         }
        
@@ -156,14 +157,25 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
         camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
         camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        movementDirection = 1; // forward
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        movementDirection = 2; // backward
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        movementDirection = 3; // left
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        movementDirection = 4; // right
+    else
+        movementDirection = 0;
 }
 
 // because processInput() is called every frame and we want the key to be processed only once

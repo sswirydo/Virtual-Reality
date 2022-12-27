@@ -19,6 +19,8 @@
 #include <iostream>
 #include <vector>
 
+
+class Car;
 class Camera;
 
 class Object
@@ -31,12 +33,22 @@ public:
     void setShader(Shader &shader);
     void setModelMatrix(glm::mat4 model);
     glm::mat4 getModelMatrix();
+
+    btRigidBody* getRigidBody();
+    btCollisionShape* getCollisionShape();
+    glm::vec3 getWorldCoordinates();
+    glm::vec3 getRotation();
+
 protected:
     Model model;
     glm::mat4 modelMatrix;
     Shader shader;
     Camera* camera;
     Physics* physics;
+
+    btRigidBody* rigidBody = NULL;
+    btCollisionShape* collisionShape = NULL;
+    
 };
 
 

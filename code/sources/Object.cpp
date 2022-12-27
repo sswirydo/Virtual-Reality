@@ -39,3 +39,29 @@ void Object::render()
     this->shader.setMat4("model", this->modelMatrix);
     this->model.Draw(this->shader);
 }
+
+glm::vec3 Object::getWorldCoordinates()
+{
+    btTransform carTransform = this->getRigidBody()->getWorldTransform();
+    btVector3 position = carTransform.getOrigin();
+    glm::vec3 glmPosition(position.x(), position.y(), position.z());
+    return glmPosition;
+}
+
+glm::vec3 Object::getRotation() 
+{
+    btQuaternion rotation = this->getRigidBody()->getOrientation();
+    glm::quat quat(rotation.w(), rotation.x(), rotation.y(), rotation.z());
+    glm::vec3 eulerAngles = glm::eulerAngles(quat);
+    return eulerAngles; // pitch, yaw, roll
+}
+
+btRigidBody* Object::getRigidBody()
+{
+    return this->rigidBody;
+}
+
+btCollisionShape* Object::getCollisionShape()
+{
+    return this->collisionShape;
+}
