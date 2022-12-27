@@ -18,15 +18,8 @@ Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma)
 
 void Model::Draw(Shader &shader)
 {
-    std::cout << this->meshes.size() << std::endl;
-    // for(unsigned int i = 0; i < this->meshes.size(); i++)
-    //     this->meshes[i].Draw(shader);
-    // this->meshes[1].Draw(shader);
-    // this->meshes[6].Draw(shader);
-    this->meshes[5].Draw(shader);
-    this->meshes[4].Draw(shader);
-
-
+    for(unsigned int i = 0; i < this->meshes.size(); i++)
+        this->meshes[i].Draw(shader);
 }  
 
 void Model::loadModel(std::string path){
@@ -143,7 +136,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // 4. height maps
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-    std::cout << "textures size " << textures.size() <<std::endl;
+    // std::cout << "textures size " << textures.size() <<std::endl;
 
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures);
@@ -158,7 +151,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        std::cout << "textures name " << str.C_Str() << ", type: " << typeName.c_str() <<std::endl;
+        // std::cout << "textures name " << str.C_Str() << ", type: " << typeName.c_str() <<std::endl;
 
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;

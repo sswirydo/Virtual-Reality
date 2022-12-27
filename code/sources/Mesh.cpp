@@ -40,9 +40,10 @@ void Mesh::Draw(Shader &shader)
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
-    // std::cout << textures.size() << std::endl;
+    // std::cout << "size of textures vector " << textures.size() << std::endl;
     for(unsigned int i = 0; i < textures.size(); i++)
     {
+
         glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;

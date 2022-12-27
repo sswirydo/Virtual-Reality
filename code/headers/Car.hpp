@@ -7,9 +7,13 @@
 class Car : public Object
 {
 public:
-    Car(Model model,Shader &shader, Camera * camera, Physics* physics);
+    Car(Model &model,Shader &shader, Camera * camera, Physics* physics);
     void move();
     void render(LightSource &light);
+    void Draw();
+    std::vector<Mesh> getWheelsMesh();
+    std::vector<Mesh> getWindowsMesh();
+    std::vector<Mesh> getCarosserieMesh();
     btRigidBody* getCarBody();
     btCollisionShape* getCarShape();
     void renderShapeBox(Shader &shader);

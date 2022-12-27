@@ -25,10 +25,10 @@ class Object
 {
 public:
     Object();
-    Object(Model model, Shader &shader, Camera* Camera, Physics* physics);
+    Object(Model &model, Shader &shader, Camera* Camera, Physics* physics);
     void render();
-    void setModel(Model model);
-    void setShader(Shader shader);
+    void setModel(Model &model);
+    void setShader(Shader &shader);
     void setModelMatrix(glm::mat4 model);
     glm::mat4 getModelMatrix();
 protected:

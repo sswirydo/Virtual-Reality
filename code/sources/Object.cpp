@@ -2,7 +2,7 @@
 
 Object::Object() {}
 
-Object::Object(Model model,Shader &shader, Camera* camera, Physics* physics)
+Object::Object(Model &model,Shader &shader, Camera* camera, Physics* physics)
 {
     this->physics = physics;
     this->camera = camera;
@@ -11,11 +11,11 @@ Object::Object(Model model,Shader &shader, Camera* camera, Physics* physics)
     this->modelMatrix = glm::mat4(1.0f);
 }
 
-void Object::setModel(Model model){
+void Object::setModel(Model &model){
     this->model = model;
 }
 
-void Object::setShader(Shader shader){
+void Object::setShader(Shader &shader){
     this->shader = shader;
 }
 

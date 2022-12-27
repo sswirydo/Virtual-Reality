@@ -33,7 +33,7 @@ void LightSource::setPosition(glm::vec3 newPosition)
 
 void LightSource::setColor(glm::vec3 newColor)
 {
-    this->color = glm::vec4(newColor,0.6f);
+    this->color = glm::vec4(newColor,0.4f);
 }
 
 void LightSource::show(Camera * camera)

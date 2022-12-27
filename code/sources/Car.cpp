@@ -1,6 +1,6 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model model, Shader &shader, Camera * camera, Physics* physics) : Object(model, shader, camera, physics) 
+Car::Car(Model &model, Shader &shader, Camera * camera, Physics* physics) : Object(model, shader, camera, physics) 
 {
     // TODO: below is provisory (testing)
     carShape = new btBoxShape(btVector3(1, 1, 2));
@@ -47,6 +47,60 @@ btCollisionShape* Car::getCarShape()
     return carShape;
 }
 
+
+
+void Car::Draw()
+{
+    /** Draw la carosserie*/
+    std::vector<Mesh> carosserie = this->getCarosserieMesh();
+    for(unsigned int i = 0; i < carosserie.size(); i++)
+        carosserie[i].Draw(this->shader);
+
+    /** Draw wheels*/
+    std::vector<Mesh> wheels = this->getWheelsMesh();
+    for(unsigned int i = 0; i < wheels.size(); i++)
+        wheels[i].Draw(this->shader);
+
+    /** Draw The windows*/
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    std::vector<Mesh> windows = this->getWindowsMesh();
+    for(unsigned int i = 0; i < windows.size(); i++)
+        windows[i].Draw(this->shader);
+    glDisable(GL_BLEND);
+
+}
+
+std::vector<Mesh> Car::getWheelsMesh()
+{
+    std::vector<Mesh> wheels;
+    wheels.push_back(this->model.getMeshes()[7]);
+    wheels.push_back(this->model.getMeshes()[6]);
+    wheels.push_back(this->model.getMeshes()[5]);
+    wheels.push_back(this->model.getMeshes()[4]);
+    return wheels;
+}
+
+std::vector<Mesh> Car::getWindowsMesh()
+{
+    std::vector<Mesh> windows;
+    windows.push_back(this->model.getMeshes()[10]);
+    windows.push_back(this->model.getMeshes()[9]);
+    windows.push_back(this->model.getMeshes()[8]);
+    return windows;
+}
+
+std::vector<Mesh> Car::getCarosserieMesh()
+{
+    std::vector<Mesh> carosserie;
+    carosserie.push_back(this->model.getMeshes()[0]);
+    carosserie.push_back(this->model.getMeshes()[1]);
+    carosserie.push_back(this->model.getMeshes()[2]);
+    carosserie.push_back(this->model.getMeshes()[3]);
+    carosserie.push_back(this->model.getMeshes()[11]);
+    return carosserie;
+}
+
 void Car::render(LightSource &light)
 {
     glm::mat4 projection = camera->GetProjectionMatrix();
@@ -59,7 +113,8 @@ void Car::render(LightSource &light)
     this->shader.setMat4("projection", projection);
     this->shader.setMat4("view", view);
     this->shader.setMat4("model", this->modelMatrix);
-    this->model.Draw(this->shader);
+
+    this->Draw();
 }
 
 void Car::renderShapeBox(Shader &shader)
