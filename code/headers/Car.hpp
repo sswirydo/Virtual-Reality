@@ -8,7 +8,7 @@ class Car : public Object
 {
 public:
     Car(Model &model,Shader &shader, Camera * camera, Physics* physics);
-    void move();
+    void move(float deltaTime);
     void render(LightSource &light);
     void Draw();
     std::vector<Mesh> getWheelsMesh();

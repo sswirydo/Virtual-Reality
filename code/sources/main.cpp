@@ -31,8 +31,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+// game settings
+bool processMouseInput = true;
+bool pauseGame = false;
 
-// settings
+// window settings
 const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
 const unsigned int SCR_HEIGHT = 600*1.5;
 float screenRatio = (float) SCR_WIDTH / (float) SCR_HEIGHT;
@@ -42,7 +45,9 @@ Camera camera(screenRatio, glm::vec3(0.0f, 3.0f, 7.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
-bool processMouseInput = true;
+
+
+
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -98,7 +103,11 @@ int main()
 
         processInput(game.getWindow());
 
-        car.move();
+        if (!pauseGame) 
+        {
+            car.move(deltaTime);
+        }
+            
         
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -108,8 +117,12 @@ int main()
 
         car.renderShapeBox(lightShader);
 
-        car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
-        car.setModelMatrix(glm::rotate(car.getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+        if (!pauseGame) 
+        {
+            //car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
+            car.setModelMatrix(glm::rotate(car.getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+        }
+       
 
         car.render(light);
         light.show(&camera);
@@ -120,7 +133,10 @@ int main()
         glfwSwapBuffers(game.getWindow());
         glfwPollEvents();
 
-        //physics->getWorld()->stepSimulation(deltaTime); // <-- enable this for physics simulation
+        if (!pauseGame) 
+        {
+            physics->getWorld()->stepSimulation(deltaTime); // <-- enable this for physics simulation
+        }
     }
     game.terminate();
     return 0;
@@ -160,6 +176,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             processMouseInput = true;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             std::cout << "\nMOUSE ATTACHED\n";
+        }
+    }
+
+    if (key == GLFW_KEY_P && action == GLFW_PRESS) 
+    {
+        if (pauseGame) 
+        {
+            pauseGame = false;
+            std::cout << ">> Game resumed" << std::endl;
+        }
+        else 
+        {
+            pauseGame = true;
+            std::cout << ">> Game paused" << std::endl;
         }
     }
 }

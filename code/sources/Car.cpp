@@ -14,23 +14,27 @@ Car::Car(Model &model, Shader &shader, Camera * camera, Physics* physics) : Obje
     physics->getWorld()->addRigidBody(carBody);
 }
 
-void Car::move() 
-{
-    //btVector3 acceleration(0, 0, 0);
-    //acceleration += btVector3(0, 0, -1); // forward movement test
-    //// Update the car's velocity based on the acceleration
-    //btVector3 velocity = car.getCarBody()->getLinearVelocity();
-    //velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
-    //car.getCarBody()->setLinearVelocity(velocity);
+void Car::move(float deltaTime) 
+{   
+    btTransform transform;
+    btVector3 position;
+    btVector3 velocity;
 
-    // Update the car's position based on the velocity
-    //btTransform transform = car.getCarBody()->getWorldTransform();
-    //btVector3 position = transform.getOrigin();
-    //position += velocity * deltaTime;
-    //transform.setOrigin(position);
-    //car.getCarBody()->setWorldTransform(transform);
+    btVector3 acceleration(0, 0, 0);
+    acceleration += btVector3(0, 0, -2.5); // forward movement test
+    // Update the car's velocity based on the acceleration
+    velocity = this->getCarBody()->getLinearVelocity();
+    velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
+    this->getCarBody()->setLinearVelocity(velocity);
 
-    btTransform transform = this->getCarBody()->getWorldTransform();
+    //Update the car's position based on the velocity
+    transform = this->getCarBody()->getWorldTransform();
+    position = transform.getOrigin();
+    position += velocity * deltaTime;
+    transform.setOrigin(position);
+    this->getCarBody()->setWorldTransform(transform);
+
+    transform = this->getCarBody()->getWorldTransform();
     // Create a GLM model matrix from the world transform
     glm::mat4 modelMatrix;
     transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));

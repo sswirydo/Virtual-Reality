@@ -1,5 +1,7 @@
 #include "../headers/Physics.hpp"
 
+btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape);
+
 Physics::Physics() 
 {
     // Create a collision configuration
@@ -14,6 +16,24 @@ Physics::Physics()
     this->world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
     // Set the gravity of the world
     this->world->setGravity(btVector3(0, -9.81, 0));
+
+
+    //keep track of the shapes, we release memory at exit.
+    //make sure to re-use collision shapes among rigid bodies whenever possible!
+    {
+        //Creates the ground shape
+        btCollisionShape* groundShape = new btBoxShape(btVector3(100, 1, 100));
+
+        //Stores on an array for reusing
+        collisionShapes.push_back(groundShape);
+
+        //Creates the ground rigidbody
+        btRigidBody* groundRigidBody = createGroundRigidBodyFromShape(groundShape);
+
+        //Adds it to the world
+        this->world->addRigidBody(groundRigidBody);
+    }
+
 }
 
 btDiscreteDynamicsWorld* Physics::getWorld() 
@@ -21,3 +41,24 @@ btDiscreteDynamicsWorld* Physics::getWorld()
     return this->world;
 }
 
+
+btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape)
+{
+    btTransform groundTransform;
+    groundTransform.setIdentity();
+    groundTransform.setOrigin(btVector3(0, -1, 0));
+
+    {
+        //The ground is not dynamic, we set its mass to 0
+        btScalar mass(0);
+
+        //No need for calculating the inertia on a static object
+        btVector3 localInertia(0, 0, 0);
+
+        //using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+        btDefaultMotionState* groundMotionState = new btDefaultMotionState(groundTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, groundMotionState, groundShape, localInertia);
+
+        return new btRigidBody(rbInfo);
+    }
+}

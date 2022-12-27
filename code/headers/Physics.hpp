@@ -15,6 +15,8 @@ protected:
 	btBroadphaseInterface* broadphase;
 	btSequentialImpulseConstraintSolver* solver;
 	btDiscreteDynamicsWorld* world;
+private:
+	btAlignedObjectArray<btCollisionShape*> collisionShapes;
 };
 
 #endif // !PHYSICS_HPP
