@@ -1,12 +1,11 @@
 #include "../headers/Skybox.hpp"
 
-Skybox::Skybox() {}
-
 Skybox::Skybox(Camera * camera) 
 {
+    this->camera = camera;
     cubeMapModel = Model("assets/objects/cube.obj");
     cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    cubeMap = Object(cubeMapModel, cubeMapShader, camera);
+    cubeMap = Object(cubeMapModel, cubeMapShader, camera, NULL);
     cubeMapTexture;
     glGenTextures(1, &cubeMapTexture);
     glActiveTexture(GL_TEXTURE0);
@@ -32,11 +31,11 @@ Skybox::Skybox(Camera * camera)
     }
 }
 
-void Skybox::render(glm::mat4 V, glm::mat4 P)
+void Skybox::render()
 {
     cubeMapShader.use();
-    cubeMapShader.setMat4("V", V);
-    cubeMapShader.setMat4("P", P);
+    cubeMapShader.setMat4("V", this->camera->GetViewMatrix());
+    cubeMapShader.setMat4("P", this->camera->GetProjectionMatrix());
     cubeMapShader.setInt("cubemapTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);

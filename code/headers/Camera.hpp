@@ -30,14 +30,16 @@ const float ZOOM = 45.0f;
 class Camera
 {
 public:
-    Camera( glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
+    Camera();
+    Camera( float screenRatio,
+            glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
             float yaw = YAW,
             float pitch = PITCH);
-    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+    Camera(float screenRatio, float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
     // void LookAt(Object* object);
     glm::mat4 GetViewMatrix();
-    glm::mat4 GetProjectionMatrix(float fov = 45.0, float ratio = 1.0, float near = 0.01, float far = 100.0);
+    glm::mat4 GetProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 8000.0f);
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
     void ProcessMouseScroll(float yoffset);
@@ -55,6 +57,7 @@ public:
     float MovementSpeed;
     float MouseSensitivity;
     float Zoom;
+    float ScreenRatio;
 
 protected:
     void updateCameraVectors();

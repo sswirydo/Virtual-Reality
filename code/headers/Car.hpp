@@ -6,12 +6,16 @@
 
 class Car : public Object
 {
-private:
-    /* data */
 public:
-    Car(Model model,Shader &shader, Camera *camera);
+    Car(Model model,Shader &shader, Camera * camera, Physics* physics);
+    void move();
     void render(LightSource &light);
-    ~Car();
+    btRigidBody* getCarBody();
+    btCollisionShape* getCarShape();
+    void renderShapeBox(Shader &shader);
+private:
+    btRigidBody* carBody;
+    btCollisionShape* carShape;
 };
 
 #endif

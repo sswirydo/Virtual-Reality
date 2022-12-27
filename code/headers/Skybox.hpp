@@ -14,14 +14,14 @@
 #include "Mesh.hpp"
 #include "Shader.hpp"
 #include "Object.hpp"
+#include "Camera.hpp"
 
 
 class Skybox
 {
 public:
-	Skybox();
 	Skybox(Camera * camera);
-	void render(glm::mat4 V, glm::mat4 P);
+	void render();
 	
 private:
 	void loadCubemapFace(const char* path, const GLenum & targetFace);
@@ -29,6 +29,7 @@ private:
 	Shader cubeMapShader;
 	Object cubeMap;
 	GLuint cubeMapTexture;
+	Camera* camera;
 };
 
 #endif // !SKYBOX_HPP
