@@ -14,14 +14,31 @@ Car::Car(Model &model, Shader &shader, Camera * camera, Physics* physics) : Obje
     physics->getWorld()->addRigidBody(carBody);
 }
 
-void Car::move(float deltaTime) 
+void Car::move(float deltaTime, unsigned direction) 
 {   
     btTransform transform;
     btVector3 position;
     btVector3 velocity;
 
     btVector3 acceleration(0, 0, 0);
-    acceleration += btVector3(0, 0, -2.5); // forward movement test
+
+    if (direction == 1) // FORWARD 
+    {
+        acceleration += btVector3(0, 0, -5);
+    }
+    else if (direction == 2) // BACKWARDS
+    {
+        acceleration += btVector3(0, 0, +5);
+    }
+    else if (direction == 3) // LEFT
+    {
+        acceleration += btVector3(-5, 0, 0);
+    }
+    else if (direction == 4) // RIGHT
+    {
+        acceleration += btVector3(+5, 0, 0);
+    }
+
     // Update the car's velocity based on the acceleration
     velocity = this->getCarBody()->getLinearVelocity();
     velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame

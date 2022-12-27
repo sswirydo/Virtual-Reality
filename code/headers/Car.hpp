@@ -4,11 +4,12 @@
 #include "LightSource.hpp"
 
 
+
 class Car : public Object
 {
 public:
     Car(Model &model,Shader &shader, Camera * camera, Physics* physics);
-    void move(float deltaTime);
+    void move(float deltaTime, unsigned direction);
     void render(LightSource &light);
     void Draw();
     std::vector<Mesh> getWheelsMesh();
