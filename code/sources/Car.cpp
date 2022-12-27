@@ -14,7 +14,7 @@ Car::Car(Model &model, Shader &shader, Camera * camera, Physics* physics) : Obje
     physics->getWorld()->addRigidBody(this->rigidBody);
 }
 
-void Car::move(float deltaTime, unsigned direction) 
+void Car::move(float deltaTime, glm::vec4 direction) 
 {   
     btTransform transform;
     btVector3 position;
@@ -24,19 +24,19 @@ void Car::move(float deltaTime, unsigned direction)
     
     const int accelerationFactor = 5;
 
-    if (direction == 1) // FORWARD 
+    if (direction.x) // FORWARD 
     {
         acceleration += btVector3(0, 0, -accelerationFactor);
     }
-    else if (direction == 2) // BACKWARDS
+    if (direction.y) // BACKWARDS
     {
         acceleration += btVector3(0, 0, +accelerationFactor);
     }
-    else if (direction == 3) // LEFT
+    if (direction.z) // LEFT
     {
         acceleration += btVector3(-accelerationFactor, 0, 0);
     }
-    else if (direction == 4) // RIGHT
+    if (direction.w) // RIGHT
     {
         acceleration += btVector3(+accelerationFactor, 0, 0);
     }

@@ -35,7 +35,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // game settings
 bool processMouseInput = true;
 bool pauseGame = false;
-unsigned movementDirection = 0;
+glm::vec4 movementDirection = glm::vec4(false,false,false,false);
 
 // window settings
 const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
@@ -174,16 +174,23 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         worldCamera.ProcessKeyboard(RIGHT, deltaTime);
     
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        movementDirection = 1; // forward
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        movementDirection = 2; // backward
-    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        movementDirection = 3; // left
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        movementDirection = 4; // right
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) // forward
+        movementDirection.x = true;
     else
-        movementDirection = 0;
+        movementDirection.x = false;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) // backward
+        movementDirection.y = true;
+    else
+        movementDirection.y = false;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) // left
+        movementDirection.z = true;
+    else
+        movementDirection.z = false;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) // right
+        movementDirection.w = true;
+    else
+        movementDirection.w = false;
+    
 }
 
 // because processInput() is called every frame and we want the key to be processed only once

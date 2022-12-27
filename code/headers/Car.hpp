@@ -11,7 +11,7 @@ class Car : public Object
 {
 public:
     Car(Model &model,Shader &shader, Camera * camera, Physics* physics);
-    void move(float deltaTime, unsigned direction);
+    void move(float deltaTime, glm::vec4 direction);
     void render(LightSource &light);
     void Draw();
 
