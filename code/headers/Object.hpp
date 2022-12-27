@@ -37,6 +37,7 @@ public:
     btRigidBody* getRigidBody();
     btCollisionShape* getCollisionShape();
     glm::vec3 getWorldCoordinates();
+    glm::vec3 getRotation();
 
 protected:
     Model model;

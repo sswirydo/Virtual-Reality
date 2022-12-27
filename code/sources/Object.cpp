@@ -48,6 +48,14 @@ glm::vec3 Object::getWorldCoordinates()
     return glmPosition;
 }
 
+glm::vec3 Object::getRotation() 
+{
+    btQuaternion rotation = this->getRigidBody()->getOrientation();
+    glm::quat quat(rotation.w(), rotation.x(), rotation.y(), rotation.z());
+    glm::vec3 eulerAngles = glm::eulerAngles(quat);
+    return eulerAngles; // pitch, yaw, roll
+}
+
 btRigidBody* Object::getRigidBody()
 {
     return this->rigidBody;
