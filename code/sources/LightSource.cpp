@@ -33,7 +33,7 @@ void LightSource::setPosition(glm::vec3 newPosition)
 
 void LightSource::setColor(glm::vec3 newColor)
 {
-    this->color = glm::vec4(newColor,1.0f);
+    this->color = glm::vec4(newColor,0.6f);
 }
 
 void LightSource::show(glm::mat4 projection, glm::mat4 view)

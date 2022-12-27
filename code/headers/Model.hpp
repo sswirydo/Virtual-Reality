@@ -37,6 +37,7 @@ public:
     Model(std::string const &path, bool gamma = false);
     Model(std::vector<Mesh> mesh_vector);
     Model();
+    std::vector<Mesh> getMeshes();
     // draws the model, and thus all its meshes
     void Draw(Shader &shader);
     

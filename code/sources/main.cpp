@@ -51,6 +51,9 @@ float lastFrame = 0.0f;
 int main()
 {
     Game game = Game("Racing Game", SCR_WIDTH, SCR_HEIGHT);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     #ifndef NDEBUG
     glDebug();
@@ -71,8 +74,7 @@ int main()
     Skybox skybox = Skybox(&camera);
 
     Physics* physics = new Physics();
-
-
+    
     double prev = 0;
     int deltaFrame = 0;
     //fps function

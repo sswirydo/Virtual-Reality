@@ -2,6 +2,10 @@
 
 Model::Model(){}
 
+std::vector<Mesh> Model::getMeshes(){
+    return this->meshes;
+}
+
 Model::Model(std::vector<Mesh> mesh_vector)
 {
     this->meshes = mesh_vector;
@@ -14,8 +18,15 @@ Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma)
 
 void Model::Draw(Shader &shader)
 {
-    for(unsigned int i = 0; i < this->meshes.size(); i++)
-        this->meshes[i].Draw(shader);
+    std::cout << this->meshes.size() << std::endl;
+    // for(unsigned int i = 0; i < this->meshes.size(); i++)
+    //     this->meshes[i].Draw(shader);
+    // this->meshes[1].Draw(shader);
+    // this->meshes[6].Draw(shader);
+    this->meshes[5].Draw(shader);
+    this->meshes[4].Draw(shader);
+
+
 }  
 
 void Model::loadModel(std::string path){
