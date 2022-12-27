@@ -20,7 +20,7 @@
 class Skybox
 {
 public:
-	Skybox(Camera * camera);
+	Skybox(Camera* camera);
 	void render();
 	
 private:

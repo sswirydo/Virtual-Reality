@@ -34,8 +34,8 @@ Skybox::Skybox(Camera * camera)
 void Skybox::render()
 {
     cubeMapShader.use();
-    cubeMapShader.setMat4("V", this->camera->GetViewMatrix());
-    cubeMapShader.setMat4("P", this->camera->GetProjectionMatrix());
+    cubeMapShader.setMat4("V", this->camera->getViewMatrix());
+    cubeMapShader.setMat4("P", this->camera->getProjectionMatrix());
     cubeMapShader.setInt("cubemapTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);

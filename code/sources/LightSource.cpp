@@ -40,8 +40,8 @@ void LightSource::show(Camera * camera)
 {
     glm::mat4 model(1.0f);
     this->lightShader.use();
-    this->lightShader.setMat4("projection", camera->GetProjectionMatrix());
-    this->lightShader.setMat4("view", camera->GetViewMatrix());
+    this->lightShader.setMat4("projection", camera->getProjectionMatrix());
+    this->lightShader.setMat4("view", camera->getViewMatrix());
     model = glm::mat4(1.0f);
     model = glm::translate(model, this->position);
     model = glm::scale(model, glm::vec3(.1f)); // a smaller cube

@@ -41,6 +41,12 @@ void Car::move(float deltaTime, unsigned direction)
         acceleration += btVector3(+accelerationFactor, 0, 0);
     }
 
+    // TODO : TEMPORARY FIX: making sure the car do not drift due to collision with the ground
+    transform = rigidBody->getWorldTransform();
+    transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
+    this->getRigidBody()->setWorldTransform(transform);
+
+
     // Update the car's velocity based on the acceleration
     velocity = this->getRigidBody()->getLinearVelocity();
     velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
@@ -120,13 +126,13 @@ std::vector<Mesh> Car::getCarosserieMesh()
 
 void Car::render(LightSource &light)
 {
-    glm::mat4 projection = camera->GetProjectionMatrix();
-    glm::mat4 view = camera->GetViewMatrix();
+    glm::mat4 projection = camera->getProjectionMatrix();
+    glm::mat4 view = camera->getViewMatrix();
 
     this->shader.use();
     this->shader.setVec3("lightPos", light.getPosition());
     this->shader.setVec4("lightColor", light.getColor());
-    this->shader.setVec3("viewPos", this->camera->Position); 
+    this->shader.setVec3("viewPos", this->camera->position); 
     this->shader.setMat4("projection", projection);
     this->shader.setMat4("view", view);
     this->shader.setMat4("model", this->modelMatrix);
@@ -172,8 +178,8 @@ void Car::renderShapeBox(Shader &shader)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     shader.use();
-    shader.setMat4("projection", this->camera->GetProjectionMatrix());
-    shader.setMat4("view", this->camera->GetViewMatrix());
+    shader.setMat4("projection", this->camera->getProjectionMatrix());
+    shader.setMat4("view", this->camera->getViewMatrix());
     shader.setMat4("model", modelMatrix);
     glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

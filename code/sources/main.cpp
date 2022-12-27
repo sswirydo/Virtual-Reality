@@ -21,8 +21,9 @@
 #include "../headers/LightSource.hpp"
 #include "../headers/Physics.hpp"
 #include "../headers/Debug.hpp"
-
 #include "../headers/Skybox.hpp"
+#include "../headers/PlayerCamera.hpp"
+#include "../headers/WorldCamera.hpp"
 
 
 void processInput(GLFWwindow* window);
@@ -42,7 +43,7 @@ const unsigned int SCR_HEIGHT = 600*1.5;
 float screenRatio = (float) SCR_WIDTH / (float) SCR_HEIGHT;
 
 // camera
-Camera camera(screenRatio, glm::vec3(0.0f, 3.0f, 7.0f));
+WorldCamera worldCamera(screenRatio, glm::vec3(0.0f, 3.0f, 7.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -72,19 +73,26 @@ int main()
 
     Physics* physics = new Physics();
 
-    Skybox skybox = Skybox(&camera);
-    
     LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
 
     Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
-    Car car = Car(carModel, carShader, &camera, physics);
+    Car car = Car(carModel, carShader, &worldCamera, physics);
 
     Shader roadShader= Shader("code/shaders/basicModel.vert","code/shaders/basicModel.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Object road = Object(roadModel, roadShader, &camera, physics);
+    Object road = Object(roadModel, roadShader, &worldCamera, physics);
+
+    PlayerCamera playerCamera = PlayerCamera(&car);
+
+    Camera* currentCamera = &worldCamera;
+    //Camera* currentCamera = &playerCamera;
+    car.setCamera(currentCamera);
+    road.setCamera(currentCamera);
+
+    Skybox skybox = Skybox(currentCamera);
 
     //double prev = 0;
     //int deltaFrame = 0;
@@ -112,8 +120,8 @@ int main()
         {
             car.move(deltaTime, movementDirection);
         }
-            
         
+
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -130,7 +138,7 @@ int main()
        
 
         car.render(light);
-        light.show(&camera);
+        light.show(currentCamera);
         road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         road.render();
 
@@ -158,13 +166,13 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        worldCamera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        worldCamera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        worldCamera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        worldCamera.ProcessKeyboard(RIGHT, deltaTime);
     
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         movementDirection = 1; // forward
@@ -244,7 +252,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
         lastX = xpos;
         lastY = ypos;
 
-        camera.ProcessMouseMovement(xoffset, yoffset);
+        worldCamera.ProcessMouseMovement(xoffset, yoffset);
     }
 }
 
@@ -252,7 +260,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
+    worldCamera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 
