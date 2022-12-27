@@ -69,27 +69,26 @@ int main()
     Skybox skybox = Skybox(&camera);
     
     LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
+
+    Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
     Car car = Car(carModel, carShader, &camera, physics);
 
-
-    double prev = 0;
-    int deltaFrame = 0;
-    //fps function
-    auto fps = [&](double now) {
-        double deltaTime = now - prev;
-        deltaFrame++;
-        if (deltaTime > 0.5) {
-            prev = now;
-            const double fpsCount = (double)deltaFrame / deltaTime;
-            deltaFrame = 0;
-            std::cout << "\r FPS: " << fpsCount;
-        }
-    };
-
-    glm::mat4 perspective = camera.GetProjectionMatrix();
+    //double prev = 0;
+    //int deltaFrame = 0;
+    ////fps function
+    //auto fps = [&](double now) {
+    //    double deltaTime = now - prev;
+    //    deltaFrame++;
+    //    if (deltaTime > 0.5) {
+    //        prev = now;
+    //        const double fpsCount = (double)deltaFrame / deltaTime;
+    //        deltaFrame = 0;
+    //        std::cout << "\r FPS: " << fpsCount;
+    //    }
+    //};
 
     while (!glfwWindowShouldClose(game.getWindow()))
     {
@@ -99,25 +98,37 @@ int main()
 
         processInput(game.getWindow());
 
+        car.move();
+        
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 model(1.0f);
-        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        car.setModelMatrix(model);                                                         
         glDepthFunc(GL_LEQUAL);
+        car.renderShapeBox(lightShader);
+
+        car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
+        car.setModelMatrix(glm::rotate(car.getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+
         car.render(light);
         light.show(&camera);
+
+        
+
+        
+
         skybox.render();
         glDepthFunc(GL_LESS);
 
-        fps(glfwGetTime());
+        //fps(glfwGetTime());
         glfwSwapBuffers(game.getWindow());
         glfwPollEvents();
+
+        //physics->getWorld()->stepSimulation(deltaTime); // <-- enable this for physics simulation
     }
     game.terminate();
     return 0;
 }
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
