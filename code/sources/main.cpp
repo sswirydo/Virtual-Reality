@@ -81,6 +81,10 @@ int main()
     Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
     Car car = Car(carModel, carShader, &camera, physics);
 
+    Shader roadShader= Shader("code/shaders/basicModel.vert","code/shaders/basicModel.frag");
+    Model roadModel = Model("assets/meshes/road/road.obj");
+    Object road = Object(roadModel, roadShader, &camera, physics);
+
     //double prev = 0;
     //int deltaFrame = 0;
     ////fps function
@@ -126,6 +130,8 @@ int main()
 
         car.render(light);
         light.show(&camera);
+        road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+        road.render();
 
         glDepthFunc(GL_LESS);
 
