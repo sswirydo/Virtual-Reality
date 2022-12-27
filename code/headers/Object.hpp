@@ -18,32 +18,21 @@
 
 class Camera;
 
-// settings
-const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
-const unsigned int SCR_HEIGHT = 600*1.5;
-
 class Object
 {
-protected:
-    Model model;
-    Shader shader;
-    Camera *camera;
-    glm::mat4 M;
-    glm::mat4 V;
-    glm::mat4 P;
 public:
-    Object(Model model,Shader &shader,Camera* camera);
     Object();
+    Object(Model model, Shader &shader, Camera * Camera);
     void render();
     void setModel(Model model);
     void setShader(Shader shader);
-    void setM(glm::mat4 model);
-    void setV(glm::mat4 view);
-    void setP(glm::mat4 projection);
-    glm::mat4 getM();
-    glm::mat4 getV();
-    glm::mat4 getP();
-    ~Object();
+    void setModelMatrix(glm::mat4 model);
+    glm::mat4 getModelMatrix();
+protected:
+    Model model;
+    Shader shader;
+    Camera * camera;
+    glm::mat4 modelMatrix;
 };
 
 

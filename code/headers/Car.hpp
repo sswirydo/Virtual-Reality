@@ -6,12 +6,9 @@
 
 class Car : public Object
 {
-private:
-    /* data */
 public:
-    Car(Model model,Shader &shader, Camera *camera);
+    Car(Model model,Shader &shader, Camera * camera);
     void render(LightSource &light);
-    ~Car();
 };
 
 #endif

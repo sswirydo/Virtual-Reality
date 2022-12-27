@@ -32,12 +32,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
-// // settings
-// const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
-// const unsigned int SCR_HEIGHT = 600*1.5;
+// settings
+const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
+const unsigned int SCR_HEIGHT = 600*1.5;
+float screenRatio = (float) SCR_WIDTH / (float) SCR_HEIGHT;
 
 // camera
-Camera camera(glm::vec3(0.0f, 3.0f, 7.0f));
+Camera camera(screenRatio, glm::vec3(0.0f, 3.0f, 7.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -62,15 +63,16 @@ int main()
     glfwSetScrollCallback(game.getWindow(), scroll_callback);
     glfwSetKeyCallback(game.getWindow(), key_callback);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // tell GLFW to capture our mouse
-    
-    LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
-    Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
-    Model model = Model("assets/meshes/free-car/free_car_001.obj");
-    Car car = Car(model,carShader,&camera);
-
-    Skybox skybox = Skybox(&camera);
 
     Physics* physics = new Physics();
+
+    Skybox skybox = Skybox(&camera);
+    
+    LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
+    
+    Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
+    Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
+    Car car = Car(carModel, carShader, &camera);
 
 
     double prev = 0;
@@ -102,11 +104,11 @@ int main()
 
         glm::mat4 model(1.0f);
         model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        car.setM(model);                                                         
+        car.setModelMatrix(model);                                                         
         glDepthFunc(GL_LEQUAL);
         car.render(light);
-        light.show(car.getP(),car.getV());
-        skybox.render(car.getV(), perspective);
+        light.show(&camera);
+        skybox.render();
         glDepthFunc(GL_LESS);
 
         fps(glfwGetTime());

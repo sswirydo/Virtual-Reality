@@ -6,7 +6,9 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #include "Shader.hpp"
+#include "Camera.hpp"
 
 const float vertices[] = {
     -0.5f, -0.5f, -0.5f, 
@@ -65,7 +67,7 @@ public:
     glm::vec4 getColor();
     void setPosition(glm::vec3 newPosition);
     void setColor(glm::vec3 newColor);
-    void show(glm::mat4 projection,glm::mat4 view);
+    void show(Camera * camera);
     ~LightSource();
 };
 

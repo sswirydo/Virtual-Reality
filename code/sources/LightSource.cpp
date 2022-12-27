@@ -36,19 +36,18 @@ void LightSource::setColor(glm::vec3 newColor)
     this->color = glm::vec4(newColor,1.0f);
 }
 
-void LightSource::show(glm::mat4 projection, glm::mat4 view)
+void LightSource::show(Camera * camera)
 {
     glm::mat4 model(1.0f);
     this->lightShader.use();
-    this->lightShader.setMat4("projection", projection);
-    this->lightShader.setMat4("view", view);
+    this->lightShader.setMat4("projection", camera->GetProjectionMatrix());
+    this->lightShader.setMat4("view", camera->GetViewMatrix());
     model = glm::mat4(1.0f);
     model = glm::translate(model, this->position);
     model = glm::scale(model, glm::vec3(.1f)); // a smaller cube
     this->lightShader.setMat4("model", model);
     glBindVertexArray(this->lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
 }
 
 LightSource::~LightSource()
