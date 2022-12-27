@@ -72,7 +72,7 @@ int main()
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
-    Car car = Car(carModel, carShader, &camera);
+    Car car = Car(carModel, carShader, &camera, physics);
 
 
     double prev = 0;

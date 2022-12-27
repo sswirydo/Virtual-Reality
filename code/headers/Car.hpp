@@ -7,7 +7,7 @@
 class Car : public Object
 {
 public:
-    Car(Model model,Shader &shader, Camera * camera);
+    Car(Model model,Shader &shader, Camera * camera, Physics* physics);
     void render(LightSource &light);
 };
 

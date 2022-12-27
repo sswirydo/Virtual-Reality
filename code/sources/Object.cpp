@@ -2,8 +2,9 @@
 
 Object::Object() {}
 
-Object::Object(Model model,Shader &shader, Camera * camera)
+Object::Object(Model model,Shader &shader, Camera* camera, Physics* physics)
 {
+    this->physics = physics;
     this->camera = camera;
     this->setModel(model);
     this->setShader(shader);

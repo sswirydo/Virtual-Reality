@@ -11,6 +11,7 @@
 #include "Shader.hpp"
 #include "Model.hpp"
 #include "Camera.hpp"
+#include "Physics.hpp"
 
 #include <string>
 #include <iostream>
@@ -22,7 +23,7 @@ class Object
 {
 public:
     Object();
-    Object(Model model, Shader &shader, Camera * Camera);
+    Object(Model model, Shader &shader, Camera* Camera, Physics* physics);
     void render();
     void setModel(Model model);
     void setShader(Shader shader);
@@ -30,9 +31,10 @@ public:
     glm::mat4 getModelMatrix();
 protected:
     Model model;
-    Shader shader;
-    Camera * camera;
     glm::mat4 modelMatrix;
+    Shader shader;
+    Camera* camera;
+    Physics* physics;
 };
 
 

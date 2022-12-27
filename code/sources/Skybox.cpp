@@ -5,7 +5,7 @@ Skybox::Skybox(Camera * camera)
     this->camera = camera;
     cubeMapModel = Model("assets/objects/cube.obj");
     cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    cubeMap = Object(cubeMapModel, cubeMapShader, camera);
+    cubeMap = Object(cubeMapModel, cubeMapShader, camera, NULL);
     cubeMapTexture;
     glGenTextures(1, &cubeMapTexture);
     glActiveTexture(GL_TEXTURE0);

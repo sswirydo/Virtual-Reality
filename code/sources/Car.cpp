@@ -1,6 +1,6 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model model,Shader &shader, Camera * camera) : Object(model, shader, camera) {}
+Car::Car(Model model, Shader &shader, Camera * camera, Physics* physics) : Object(model, shader, camera, physics) {}
 
 void Car::render(LightSource &light)
 {
