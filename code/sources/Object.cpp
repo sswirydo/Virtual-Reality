@@ -39,3 +39,21 @@ void Object::render()
     this->shader.setMat4("model", this->modelMatrix);
     this->model.Draw(this->shader);
 }
+
+glm::vec3 Object::getWorldCoordinates()
+{
+    btTransform carTransform = this->getRigidBody()->getWorldTransform();
+    btVector3 position = carTransform.getOrigin();
+    glm::vec3 glmPosition(position.x(), position.y(), position.z());
+    return glmPosition;
+}
+
+btRigidBody* Object::getRigidBody()
+{
+    return this->rigidBody;
+}
+
+btCollisionShape* Object::getCollisionShape()
+{
+    return this->collisionShape;
+}
