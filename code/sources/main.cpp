@@ -49,6 +49,9 @@ bool firstMouse = true;
 unsigned cameraNum = 1;
 unsigned cameraChanged = false;
 
+bool renderDebug = false;
+bool renderModel = true;
+
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
@@ -106,7 +109,6 @@ int main()
 
     DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
-    bool renderDebug = true;
 
     while (!glfwWindowShouldClose(game.getWindow()))
     {
@@ -157,7 +159,7 @@ int main()
             debugDrawer.setCamera(camera);
             physics->getWorld()->debugDrawWorld();
         }
-        else 
+        if (renderModel)
         {
             car.render(camera, light);
             light.show(camera);
@@ -192,28 +194,28 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera->ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         camera->ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         camera->ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera->ProcessKeyboard(RIGHT, deltaTime);
     
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) // forward
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // forward
         movementDirection.x = true;
     else
         movementDirection.x = false;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) // backward
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) // backward
         movementDirection.y = true;
     else
         movementDirection.y = false;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) // left
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) // left
         movementDirection.z = true;
     else
         movementDirection.z = false;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) // right
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) // right
         movementDirection.w = true;
     else
         movementDirection.w = false;
@@ -234,6 +236,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if (pauseGame) {pauseGame = false; std::cout << ">> Game resumed" << std::endl;}
         else {pauseGame = true; std::cout << ">> Game paused" << std::endl;}
     }
+    if (key == GLFW_KEY_X && action == GLFW_PRESS)
+    {
+        if (renderDebug) { renderDebug = false; std::cout << ">> DEBUG OFF" << std::endl; }
+        else { renderDebug = true; std::cout << ">> DEBUG ON" << std::endl; }
+    }
+    if (key == GLFW_KEY_C && action == GLFW_PRESS)
+    {
+        if (renderModel) { renderModel = false; std::cout << ">> MODEL OFF" << std::endl; }
+        else { renderModel = true; std::cout << ">> MODEL ON" << std::endl; }
+    }
 
     if (key == GLFW_KEY_1 && action == GLFW_PRESS)
     {
@@ -243,6 +255,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         cameraNum = 2; cameraChanged = true;
     }
+
 
 
 }
