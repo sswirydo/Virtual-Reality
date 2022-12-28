@@ -84,7 +84,7 @@ int main()
     Car car = Car(carModel, carShader, physics);
 
     Shader roadShader= Shader("code/shaders/basicModel.vert","code/shaders/basicModel.frag");
-    Model roadModel = Model("assets/meshes/road/road.obj");
+    Model roadModel = Model("assets/meshes/test_road/test_road.obj");
     Object road = Object(roadModel, roadShader, physics);
 
     PlayerCamera playerCamera = PlayerCamera(&car);
