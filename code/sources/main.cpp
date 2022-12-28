@@ -20,6 +20,7 @@
 #include "../headers/Camera.hpp"
 #include "../headers/Object.hpp"
 #include "../headers/Car.hpp"
+#include "../headers/Player.hpp"
 #include "../headers/LightSource.hpp"
 #include "../headers/Physics.hpp"
 #include "../headers/Debug.hpp"
