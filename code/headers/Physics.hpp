@@ -8,7 +8,7 @@ class Physics {
 public:
 	Physics();
 	btDiscreteDynamicsWorld* getWorld();
-
+	~Physics();
 protected:
 	btDefaultCollisionConfiguration* collisionConfiguration;
 	btCollisionDispatcher* dispatcher;

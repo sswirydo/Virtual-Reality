@@ -41,6 +41,21 @@ btDiscreteDynamicsWorld* Physics::getWorld()
     return this->world;
 }
 
+Physics::~Physics()
+{
+    for (int j = 0; j < collisionShapes.size(); j++)
+    {
+        btCollisionShape* shape = collisionShapes[j];
+        collisionShapes[j] = 0;
+        delete shape;
+    }
+
+    delete this->collisionConfiguration;
+    delete this->dispatcher;
+    delete this->world;
+    delete this->solver;
+    delete this->broadphase;
+}
 
 btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape)
 {
