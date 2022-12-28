@@ -17,29 +17,24 @@ Object::Object(Model &model,Shader &shader, Physics* physics, bool createRigidBo
         std::vector<Mesh> meshes = model.getMeshes();
         for (size_t i = 0; i < meshes.size(); i++) {
             Mesh mesh = meshes[i];
-            std::vector<unsigned int> indices = mesh.indices;
-            std::vector<Vertex> vertices = mesh.vertices;
-            std::cout << "VERTICES: " << vertices.size() << std::endl;
-            // TODO: make sure vertices.size % 3 == 0
-            for (size_t j = 0; j < vertices.size(); j += 3) {
-                std::cout << j << ": " << vertices[j].Position.x << " " << vertices[j].Position.y << " " << vertices[j].Position.z << std::endl;
-                std::cout << j << ": " << vertices[j+1].Position.x << " " << vertices[j+1].Position.y << " " << vertices[j+1].Position.z << std::endl;
-                std::cout << j << ": " << vertices[j+2].Position.x << " " << vertices[j+2].Position.y << " " << vertices[j+2].Position.z << std::endl;
+            std::vector<glm::vec3> positionTriangles = mesh.positionTriangles;
+            for (size_t j = 0; j < mesh.positionTriangles.size(); j += 3) {
+                glm::vec3 pos1 = mesh.positionTriangles[j];
+                glm::vec3 pos2 = mesh.positionTriangles[j+1];
+                glm::vec3 pos3 = mesh.positionTriangles[j+2];
                 meshInterface->addTriangle(
-                    btVector3(vertices[j].Position.x, vertices[j].Position.y, vertices[j].Position.z),
-                    btVector3(vertices[j + 1].Position.x, vertices[j + 1].Position.y, vertices[j + 1].Position.z),
-                    btVector3(vertices[j + 2].Position.x, vertices[j + 2].Position.y, vertices[j + 2].Position.z),
-                    true); // the last bool value is for removing duplicate vertices -> disable it if you want to specify addTriangleIndices()
-            }
-            //for (size_t k = 0; k < indices.size(); k += 3) {
-            //    meshInterface->addTriangleIndices(indices[k], indices[k + 1], indices[k + 2]); // en vrai sert � R car y a plain de vertex en double/triple/...
-            //}
-            this->collisionShape = new btBvhTriangleMeshShape(meshInterface, false, true);
-            btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 1, 0, 1), btVector3(0, 0, 0)));
-            btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0, motionState, collisionShape, btVector3(0, 0, 0));
-            this->rigidBody = new btRigidBody(rigidBodyCI);
-            physics->getWorld()->addRigidBody(rigidBody);
+                    btVector3(pos1.x, pos1.y, pos1.z),
+                    btVector3(pos2.x, pos2.y, pos2.z),
+                    btVector3(pos3.x, pos3.y, pos3.z)
+                );
+            }            
         }
+        this->collisionShape = new btBvhTriangleMeshShape(meshInterface, false, true);
+        btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 1, 0, 1), btVector3(0, 0, 0)));
+        btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0, motionState, collisionShape, btVector3(0, 0, 0));
+        this->rigidBody = new btRigidBody(rigidBodyCI);
+        this->rigidBody->setContactProcessingThreshold(0.f);
+        physics->getWorld()->addRigidBody(rigidBody);
     } 
 }
 

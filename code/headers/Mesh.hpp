@@ -35,9 +35,11 @@ struct Texture {
 class Mesh {
     public:
         // mesh data
-        std::vector<Vertex>       vertices;
-        std::vector<unsigned int> indices;
-        std::vector<Texture>      textures;
+        std::vector<Vertex>         vertices;
+        std::vector<unsigned int>   indices;
+        std::vector<Texture>        textures;
+
+        std::vector<glm::vec3>      positionTriangles;
 
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
         void Draw(Shader &shader);
@@ -46,6 +48,7 @@ class Mesh {
         unsigned int VAO, VBO, EBO;
         
         void setupMesh();
+        void createTriangles();
 };
 
 #endif

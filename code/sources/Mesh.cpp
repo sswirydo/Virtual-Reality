@@ -6,6 +6,23 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     this->indices = indices;
     this->textures = textures;
     setupMesh();
+    createTriangles();
+}
+
+void Mesh::createTriangles() 
+{
+    for (int i = 0; i < indices.size(); i += 3) {
+        Vertex v1 = vertices[indices[i]];
+        Vertex v2 = vertices[indices[i + 1]];
+        Vertex v3 = vertices[indices[i + 2]];
+        glm::vec3 pos1 = glm::vec3(v1.Position.x, v1.Position.y, v1.Position.z);
+        glm::vec3 pos2 = glm::vec3(v2.Position.x, v2.Position.y, v2.Position.z);
+        glm::vec3 pos3 = glm::vec3(v3.Position.x, v3.Position.y, v3.Position.z);
+        positionTriangles.push_back(pos1);
+        positionTriangles.push_back(pos2);
+        positionTriangles.push_back(pos3);
+    }
+
 }
 
 

@@ -1,20 +1,35 @@
 
+#include "Shader.hpp"
+
+
 // Implementation based on the following blog post:
 // https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=11517
 
 class DebugDrawer : public btIDebugDraw {
 public:
 	
-	DebugDrawer(Camera* camera, Shader* shader)
+	DebugDrawer()
+	{
+		shader = new Shader("code/shaders/bulletDebug.vert", "code/shaders/bulletDebug.frag");
+
+	}
+	Camera* camera = NULL;
+	Shader* shader;
+
+	~DebugDrawer() 
+	{
+		delete shader;
+	}
+
+	// Must be called before physics->getWorld()->debugDrawWorld();
+	void setCamera(Camera* camera) 
 	{
 		this->camera = camera;
-		this->shader = shader;
 	}
-	Camera* camera;
-	Shader* shader;
 
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
+
 		// Vertex data
 		GLfloat points[12];
 
