@@ -63,8 +63,10 @@ void Car::move(float deltaTime, glm::vec4 direction)
 
     transform = this->getRigidBody()->getWorldTransform();
     // Create a GLM model matrix from the world transform
-    glm::mat4 modelMatrix;
-    transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));
+    
+    float matrixArray[16];
+    transform.getOpenGLMatrix(matrixArray);
+    glm::mat4 modelMatrix = glm::make_mat4(matrixArray);
     this->setModelMatrix(modelMatrix);
 }
 
