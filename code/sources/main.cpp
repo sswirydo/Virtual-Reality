@@ -162,10 +162,10 @@ int main()
         }
         if (renderModel)
         {
+            road.render(camera);
             car.render(camera, light);
             light.show(camera);
             // road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
-            road.render(camera);
         }
         
         glDepthFunc(GL_LESS);

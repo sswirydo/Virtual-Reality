@@ -30,7 +30,7 @@ Object::Object(Model &model,Shader &shader, Physics* physics, bool createRigidBo
             }            
         }
         this->collisionShape = new btBvhTriangleMeshShape(meshInterface, false, true);
-        btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 1, 0, 1), btVector3(0, 0, 0)));
+        btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
         btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0, motionState, collisionShape, btVector3(0, 0, 0));
         this->rigidBody = new btRigidBody(rigidBodyCI);
         this->rigidBody->setContactProcessingThreshold(0.f);
