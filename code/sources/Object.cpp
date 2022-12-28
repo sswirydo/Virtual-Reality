@@ -2,8 +2,9 @@
 
 Object::Object() {}
 
-Object::Object(Model &model,Shader &shader, Physics* physics, bool createRigidBody)
+Object::Object(Model &model,Shader &shader, Physics* physics,LightSource &light, bool createRigidBody)
 {
+    this->light = light;
     this->physics = physics;
     this->setModel(model);
     this->setShader(shader);
@@ -56,15 +57,21 @@ glm::mat4 Object::getModelMatrix()
     return this->modelMatrix;
 }
 
+void Object::Draw(){
+    this->model.Draw(this->shader);
+}
+
 void Object::render(Camera* camera)
 {
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
     this->shader.use();
+    this->shader.setVec3("lightPos", this->light.getPosition());
+    this->shader.setVec4("lightColor", this->light.getColor());
     this->shader.setMat4("projection", projection);
     this->shader.setMat4("view", view);
     this->shader.setMat4("model", this->modelMatrix);
-    this->model.Draw(this->shader);
+    this->Draw();
 }
 
 glm::vec3 Object::getWorldCoordinates()

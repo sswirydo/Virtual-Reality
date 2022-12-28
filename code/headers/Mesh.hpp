@@ -41,7 +41,8 @@ struct Material {
     float Shininess;        // specular exponent    // AI_MATKEY_SHININESS          
     float RefractI;      // index of refraction  // AI_MATKEY_REFRACTI
     float Reflectivity;     // reflection factor    // AI_MATKEY_REFLECTIVITY
-    glm::vec3 Transparency; // transparency         // AI_MATKEY_COLOR_TRANSPARENT
+    glm::vec3 Transparency; //transparency         // AI_MATKEY_COLOR_TRANSPARENT
+    float TransparencyFactor; // transparencyFactor // AI_MATKEY_TRANSPARENCYFACTOR
     glm::vec3 Reflective;   // reflection color     // AI_MATKEY_COLOR_REFLECTIVE
 };
 

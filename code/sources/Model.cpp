@@ -215,6 +215,13 @@ Material Model::loadMaterial(aiMaterial* mat) {
     }
     else
         std::cout << "reflectivity scalar" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_TRANSPARENCYFACTOR, scalar);
+    if (!error) {
+        material.TransparencyFactor = scalar;
+        std::cout << "TransparencyFactor scalar" << " OK" << std::endl;
+    }
+    else
+        std::cout << "TransparencyFactor scalar" << " not found" << std::endl;
 
     return material;
 }

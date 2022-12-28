@@ -1,6 +1,6 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model &model, Shader &shader, Physics* physics) : Object(model, shader, physics, false) 
+Car::Car(Model &model, Shader &shader, Physics* physics,LightSource &light) : Object(model, shader, physics,light, false) 
 {
     // TODO: below is provisory (testing)
     this->collisionShape = new btBoxShape(btVector3(1, 1, 2));
@@ -125,21 +125,20 @@ std::vector<Mesh> Car::getCarosserieMesh()
     return carosserie;
 }
 
-void Car::render(Camera* camera, LightSource &light)
-{
-    glm::mat4 projection = camera->getProjectionMatrix();
-    glm::mat4 view = camera->getViewMatrix();
+// void Car::render(Camera* camera, LightSource &light)
+// {
+//     glm::mat4 projection = camera->getProjectionMatrix();
+//     glm::mat4 view = camera->getViewMatrix();
 
-    this->shader.use();
-    this->shader.setVec3("lightPos", light.getPosition());
-    this->shader.setVec4("lightColor", light.getColor());
-    this->shader.setVec3("viewPos", camera->position); 
-    this->shader.setMat4("projection", projection);
-    this->shader.setMat4("view", view);
-    this->shader.setMat4("model", this->modelMatrix);
-
-    this->Draw();
-}
+//     this->shader.use();
+//     this->shader.setVec3("lightPos", light.getPosition());
+//     this->shader.setVec4("lightColor", light.getColor());
+//     this->shader.setVec3("viewPos", camera->position); 
+//     this->shader.setMat4("projection", projection);
+//     this->shader.setMat4("view", view);
+//     this->shader.setMat4("model", this->modelMatrix);
+//     this->Draw();
+// }
 
 void Car::renderShapeBox(Camera* camera, Shader &shader)
 {

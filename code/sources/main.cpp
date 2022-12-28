@@ -20,7 +20,7 @@
 #include "../headers/Camera.hpp"
 #include "../headers/Object.hpp"
 #include "../headers/Car.hpp"
-#include "../headers/Player.hpp"
+// #include "../headers/Player.hpp"
 #include "../headers/LightSource.hpp"
 #include "../headers/Physics.hpp"
 #include "../headers/Debug.hpp"
@@ -78,23 +78,23 @@ int main()
     WorldCamera worldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
-    LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
+    LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec4(1.0f, 1.0f, 1.0f,1.0f));
 
     Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
-    Car car = Car(carModel, carShader, physics);
+    Car *car = new Car(carModel, carShader, physics,light);
 
     Shader roadShader= Shader("code/shaders/basicModel.vert","code/shaders/basicModel.frag");
     Model roadModel = Model("assets/meshes/test_road/test_road.obj");
-    Object road = Object(roadModel, roadShader, physics);
+    Object road = Object(roadModel, roadShader, physics,light);
 
-    PlayerCamera playerCamera = PlayerCamera(&car);
+    PlayerCamera playerCamera = PlayerCamera(car);
 
 
 
-    Skybox skybox = Skybox();
+    Skybox skybox = Skybox(light);
 
     //double prev = 0;
     //int deltaFrame = 0;
@@ -140,7 +140,7 @@ int main()
 
         if (!pauseGame) 
         {
-            car.move(deltaTime, movementDirection);
+            car->move(deltaTime, movementDirection);
         }
         
 
@@ -153,8 +153,8 @@ int main()
 
         if (!pauseGame) 
         {
-            car.setModelMatrix(glm::translate(car.getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
-            car.setModelMatrix(glm::rotate(car.getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+            car->setModelMatrix(glm::translate(car->getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
+            car->setModelMatrix(glm::rotate(car->getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         }
        
         if (renderDebug) 
@@ -165,7 +165,7 @@ int main()
         if (renderModel)
         {
             road.render(camera);
-            car.render(camera, light);
+            car->render(camera);
             light.show(camera);
             // road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         }
@@ -186,6 +186,7 @@ int main()
         
     }
     game.terminate();
+    delete car;
     return 0;
 }
 

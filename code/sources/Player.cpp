@@ -1,6 +1,6 @@
 #include "../headers/Player.hpp"
 
-Player::Player(Model& model, Shader& shader, Physics* physics) : Car(model, shader, physics)
+Player::Player(Model& model, Shader& shader, Physics* physics,LightSource &light) : Car(model, shader, physics, light)
 {
 
 }
