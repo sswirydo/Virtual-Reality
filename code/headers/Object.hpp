@@ -27,9 +27,8 @@ class Object
 {
 public:
     Object();
-    Object(Model &model, Shader &shader, Camera* Camera, Physics* physics);
-    void render();
-    void setCamera(Camera* camera);
+    Object(Model &model, Shader &shader, Physics* physics);
+    void render(Camera* camera);
     void setModel(Model &model);
     void setShader(Shader &shader);
     void setModelMatrix(glm::mat4 model);
@@ -44,7 +43,6 @@ protected:
     Model model;
     glm::mat4 modelMatrix;
     Shader shader;
-    Camera* camera;
     Physics* physics;
 
     btRigidBody* rigidBody = NULL;

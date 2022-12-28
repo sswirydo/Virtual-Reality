@@ -10,16 +10,16 @@ class Object;
 class Car : public Object
 {
 public:
-    Car(Model &model,Shader &shader, Camera * camera, Physics* physics);
+    Car(Model &model,Shader &shader, Physics* physics);
     void move(float deltaTime, glm::vec4 direction);
-    void render(LightSource &light);
+    void render(Camera* camera, LightSource &light);
     void Draw();
 
     std::vector<Mesh> getWheelsMesh();
     std::vector<Mesh> getWindowsMesh();
     std::vector<Mesh> getCarosserieMesh();
 
-    void renderShapeBox(Shader &shader);
+    void renderShapeBox(Camera* camera, Shader &shader);
 
 private:
 

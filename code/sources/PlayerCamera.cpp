@@ -3,6 +3,7 @@
 PlayerCamera::PlayerCamera(Object* player) 
 {
 	this->player = player;
+	this->pitch = 20;
 }
 
 glm::mat4 PlayerCamera::getViewMatrix() 
@@ -50,21 +51,21 @@ void PlayerCamera::computeZoom()
 {
 	//float zoomLevel = Zoom * 0.1f; // mouse wheel
 	//distanceFromPlayer -= zoomLevel;
-	distanceFromPlayer = 10;
+	//distanceFromPlayer = 10;
 }
 
 void PlayerCamera::computePitch()
 {
 	//float pitchChange = Pitch * 0.1f; // mouse.getDY()
 	//Pitch -= pitchChange;
-	pitch = 20;
+	//pitch = 20;
 }
 
 void PlayerCamera::computeAngleAroundPlayer()
 {
 	//float angleChange = 0 * 0.3f; // mouse.getDX()
 	//angleAroundPlayer -= angleChange;
-	angleAroundPlayer = -180;
+	//angleAroundPlayer = -180;
 }
 
 float PlayerCamera::computeHorizontalDistance()
@@ -75,4 +76,41 @@ float PlayerCamera::computeHorizontalDistance()
 float PlayerCamera::computeVerticalDistance()
 {
 	return (float)(distanceFromPlayer * sin(glm::radians(pitch)));
+}
+
+
+
+// processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
+void PlayerCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+{
+	/* ... */
+}
+
+// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
+void PlayerCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
+{
+	xoffset *= MouseSensitivity;
+	yoffset *= MouseSensitivity;
+
+	this->angleAroundPlayer -= xoffset;
+	this->pitch -= yoffset;
+
+	//// make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (constrainPitch)
+	{
+		if (this->pitch > 89.0f)
+			this->pitch = 89.0f;
+		if (this->pitch < -89.0f)
+			this->pitch = -89.0f;
+	}
+}
+
+// processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
+void PlayerCamera::ProcessMouseScroll(float yoffset)
+{
+	distanceFromPlayer -= (float)yoffset;
+	if (distanceFromPlayer < 5.0f)
+		distanceFromPlayer = 5.0f;
+	if (distanceFromPlayer > 45.0f)
+		distanceFromPlayer = 45.0f;
 }

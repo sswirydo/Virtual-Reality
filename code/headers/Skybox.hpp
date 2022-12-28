@@ -20,8 +20,8 @@
 class Skybox
 {
 public:
-	Skybox(Camera* camera);
-	void render();
+	Skybox();
+	void render(Camera* camera);
 	
 private:
 	void loadCubemapFace(const char* path, const GLenum & targetFace);
@@ -29,7 +29,6 @@ private:
 	Shader cubeMapShader;
 	Object cubeMap;
 	GLuint cubeMapTexture;
-	Camera* camera;
 };
 
 #endif // !SKYBOX_HPP

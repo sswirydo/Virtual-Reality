@@ -1,6 +1,6 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model &model, Shader &shader, Camera * camera, Physics* physics) : Object(model, shader, camera, physics) 
+Car::Car(Model &model, Shader &shader, Physics* physics) : Object(model, shader, physics) 
 {
     // TODO: below is provisory (testing)
     this->collisionShape = new btBoxShape(btVector3(1, 1, 2));
@@ -124,7 +124,7 @@ std::vector<Mesh> Car::getCarosserieMesh()
     return carosserie;
 }
 
-void Car::render(LightSource &light)
+void Car::render(Camera* camera, LightSource &light)
 {
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
@@ -132,7 +132,7 @@ void Car::render(LightSource &light)
     this->shader.use();
     this->shader.setVec3("lightPos", light.getPosition());
     this->shader.setVec4("lightColor", light.getColor());
-    this->shader.setVec3("viewPos", this->camera->position); 
+    this->shader.setVec3("viewPos", camera->position); 
     this->shader.setMat4("projection", projection);
     this->shader.setMat4("view", view);
     this->shader.setMat4("model", this->modelMatrix);
@@ -140,7 +140,7 @@ void Car::render(LightSource &light)
     this->Draw();
 }
 
-void Car::renderShapeBox(Shader &shader)
+void Car::renderShapeBox(Camera* camera, Shader &shader)
 {
     const btBoxShape* boxShape = static_cast<const btBoxShape*>(this->getCollisionShape());
     btVector3 halfExtents = boxShape->getHalfExtentsWithMargin();
@@ -178,8 +178,8 @@ void Car::renderShapeBox(Shader &shader)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     shader.use();
-    shader.setMat4("projection", this->camera->getProjectionMatrix());
-    shader.setMat4("view", this->camera->getViewMatrix());
+    shader.setMat4("projection", camera->getProjectionMatrix());
+    shader.setMat4("view", camera->getViewMatrix());
     shader.setMat4("model", modelMatrix);
     glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

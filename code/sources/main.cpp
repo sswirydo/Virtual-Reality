@@ -14,6 +14,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "../headers/Settings.hpp"
+
 #include "../headers/Game.hpp"
 #include "../headers/Camera.hpp"
 #include "../headers/Object.hpp"
@@ -37,19 +39,13 @@ bool processMouseInput = true;
 bool pauseGame = false;
 glm::vec4 movementDirection = glm::vec4(false,false,false,false);
 
-// window settings
-const unsigned int SCR_WIDTH = 800*1.5; // 800x600 ? are you executing this on your phone or what ? :p
-const unsigned int SCR_HEIGHT = 600*1.5;
-float screenRatio = (float) SCR_WIDTH / (float) SCR_HEIGHT;
-
 // camera
-WorldCamera worldCamera(screenRatio, glm::vec3(0.0f, 3.0f, 7.0f));
+Camera* camera = NULL;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
-
-
-
+unsigned cameraNum = 1;
+unsigned cameraChanged = false;
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -71,6 +67,7 @@ int main()
     glfwSetKeyCallback(game.getWindow(), key_callback);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // tell GLFW to capture our mouse
 
+    WorldCamera worldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
     LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec3(1.0f, 1.0f, 1.0f));
@@ -79,20 +76,17 @@ int main()
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
-    Car car = Car(carModel, carShader, &worldCamera, physics);
+    Car car = Car(carModel, carShader, physics);
 
     Shader roadShader= Shader("code/shaders/basicModel.vert","code/shaders/basicModel.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Object road = Object(roadModel, roadShader, &worldCamera, physics);
+    Object road = Object(roadModel, roadShader, physics);
 
     PlayerCamera playerCamera = PlayerCamera(&car);
 
-    Camera* currentCamera = &worldCamera;
-    //Camera* currentCamera = &playerCamera;
-    car.setCamera(currentCamera);
-    road.setCamera(currentCamera);
 
-    Skybox skybox = Skybox(currentCamera);
+
+    Skybox skybox = Skybox();
 
     //double prev = 0;
     //int deltaFrame = 0;
@@ -110,6 +104,23 @@ int main()
 
     while (!glfwWindowShouldClose(game.getWindow()))
     {
+        if (cameraChanged) 
+        {
+            worldCamera.position = playerCamera.position;
+            worldCamera.pitch = playerCamera.pitch;
+            worldCamera.yaw = playerCamera.yaw;
+            cameraChanged = false;
+        }
+        if (cameraNum == 1) 
+        {
+            camera = &worldCamera;
+        }
+        else if (cameraNum == 2)
+        {
+            camera = &playerCamera;
+        }
+
+
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -126,9 +137,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glDepthFunc(GL_LEQUAL);
-        skybox.render();
+        skybox.render(camera);
 
-        car.renderShapeBox(lightShader);
+        car.renderShapeBox(camera, lightShader);
 
         if (!pauseGame) 
         {
@@ -137,10 +148,10 @@ int main()
         }
        
 
-        car.render(light);
-        light.show(currentCamera);
+        car.render(camera, light);
+        light.show(camera);
         road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
-        road.render();
+        road.render(camera);
 
         glDepthFunc(GL_LESS);
 
@@ -166,13 +177,13 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-        worldCamera.ProcessKeyboard(FORWARD, deltaTime);
+        camera->ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        worldCamera.ProcessKeyboard(BACKWARD, deltaTime);
+        camera->ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        worldCamera.ProcessKeyboard(LEFT, deltaTime);
+        camera->ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        worldCamera.ProcessKeyboard(RIGHT, deltaTime);
+        camera->ProcessKeyboard(RIGHT, deltaTime);
     
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) // forward
         movementDirection.x = true;
@@ -198,33 +209,26 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {   
     if (key == GLFW_KEY_Z && action == GLFW_PRESS)
     {
-        if (processMouseInput) 
-        {
-            processMouseInput = false;
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            std::cout << "\nMOUSE DETACHED\n";
-        }
-        else 
-        {
-            processMouseInput = true;
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            std::cout << "\nMOUSE ATTACHED\n";
-        }
+        if (processMouseInput) {processMouseInput = false; glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); std::cout << "\nMOUSE DETACHED\n";}
+        else {processMouseInput = true; glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); std::cout << "\nMOUSE ATTACHED\n";}
     }
 
     if (key == GLFW_KEY_P && action == GLFW_PRESS) 
     {
-        if (pauseGame) 
-        {
-            pauseGame = false;
-            std::cout << ">> Game resumed" << std::endl;
-        }
-        else 
-        {
-            pauseGame = true;
-            std::cout << ">> Game paused" << std::endl;
-        }
+        if (pauseGame) {pauseGame = false; std::cout << ">> Game resumed" << std::endl;}
+        else {pauseGame = true; std::cout << ">> Game paused" << std::endl;}
     }
+
+    if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+    {
+        cameraNum = 1; cameraChanged = true;
+    }
+    if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+    {
+        cameraNum = 2; cameraChanged = true;
+    }
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -259,7 +263,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
         lastX = xpos;
         lastY = ypos;
 
-        worldCamera.ProcessMouseMovement(xoffset, yoffset);
+        camera->ProcessMouseMovement(xoffset, yoffset);
     }
 }
 
@@ -267,7 +271,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    worldCamera.ProcessMouseScroll(static_cast<float>(yoffset));
+    camera->ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 

@@ -2,18 +2,12 @@
 
 Object::Object() {}
 
-Object::Object(Model &model,Shader &shader, Camera* camera, Physics* physics)
+Object::Object(Model &model,Shader &shader, Physics* physics)
 {
     this->physics = physics;
-    this->camera = camera;
     this->setModel(model);
     this->setShader(shader);
     this->modelMatrix = glm::mat4(1.0f);
-}
-
-void Object::setCamera(Camera* camera) 
-{
-    this->camera = camera;
 }
 
 void Object::setModel(Model &model){
@@ -34,10 +28,10 @@ glm::mat4 Object::getModelMatrix()
     return this->modelMatrix;
 }
 
-void Object::render()
+void Object::render(Camera* camera)
 {
-    glm::mat4 projection = this->camera->getProjectionMatrix();
-    glm::mat4 view = this->camera->getViewMatrix();
+    glm::mat4 projection = camera->getProjectionMatrix();
+    glm::mat4 view = camera->getViewMatrix();
     this->shader.use();
     this->shader.setMat4("projection", projection);
     this->shader.setMat4("view", view);

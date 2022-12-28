@@ -24,14 +24,14 @@ public:
 	float computeHorizontalDistance();
 	float computeVerticalDistance();
 
-	//glm::vec3 position = glm::vec3(0.0f,0.0f,0.0f);
-	//float pitch;
-	//float yaw;
-	//float roll = 45;
+	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
+	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
+	void ProcessMouseScroll(float yoffset);
+
 	Object* player = NULL;
 
-	float distanceFromPlayer = 50;
-	float angleAroundPlayer = 0;
+	float distanceFromPlayer = 20;
+	float angleAroundPlayer = 180;
 
 protected:
 private:
