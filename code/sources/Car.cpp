@@ -1,10 +1,10 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model &model, Shader &shader, Physics* physics) : Object(model, shader, physics) 
+Car::Car(Model &model, Shader &shader, Physics* physics) : Object(model, shader, physics, false) 
 {
     // TODO: below is provisory (testing)
     this->collisionShape = new btBoxShape(btVector3(1, 1, 2));
-    btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+    btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2, 0)));
     btScalar carMass = 1000;
     btVector3 carInertia(0, 0, 0);
     this->collisionShape->calculateLocalInertia(carMass, carInertia);
@@ -42,9 +42,9 @@ void Car::move(float deltaTime, glm::vec4 direction)
     }
 
     // TODO : TEMPORARY FIX: making sure the car do not drift due to collision with the ground
-    transform = rigidBody->getWorldTransform();
-    transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
-    this->getRigidBody()->setWorldTransform(transform);
+    //transform = rigidBody->getWorldTransform();
+    //transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
+    //this->getRigidBody()->setWorldTransform(transform);
 
 
     // Update the car's velocity based on the acceleration
