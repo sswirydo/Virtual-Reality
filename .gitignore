@@ -45,6 +45,7 @@ CMakeCache.txt
 *.i*86
 *.x86_64
 *.hex
+racing_game
 
 # Debug files
 *.dSYM/
