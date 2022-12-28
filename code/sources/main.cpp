@@ -104,8 +104,7 @@ int main()
     //    }
     //};
 
-    Shader debugShader = Shader("code/shaders/bulletDebug.vert", "code/shaders/bulletDebug.frag");
-    DebugDrawer debugDrawer = DebugDrawer(&worldCamera, &debugShader);
+    DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
     bool renderDebug = true;
 
@@ -155,6 +154,7 @@ int main()
        
         if (renderDebug) 
         {
+            debugDrawer.setCamera(camera);
             physics->getWorld()->debugDrawWorld();
         }
         else 
