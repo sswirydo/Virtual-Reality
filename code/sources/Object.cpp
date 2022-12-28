@@ -32,10 +32,10 @@ Object::Object(Model &model,Shader &shader, Physics* physics, bool createRigidBo
                     true); // the last bool value is for removing duplicate vertices -> disable it if you want to specify addTriangleIndices()
             }
             //for (size_t k = 0; k < indices.size(); k += 3) {
-            //    meshInterface->addTriangleIndices(indices[k], indices[k + 1], indices[k + 2]); // en vrai sert à R car y a plain de vertex en double/triple/...
+            //    meshInterface->addTriangleIndices(indices[k], indices[k + 1], indices[k + 2]); // en vrai sert ï¿½ R car y a plain de vertex en double/triple/...
             //}
             this->collisionShape = new btBvhTriangleMeshShape(meshInterface, false, true);
-            btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+            btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 1, 0, 1), btVector3(0, 0, 0)));
             btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0, motionState, collisionShape, btVector3(0, 0, 0));
             this->rigidBody = new btRigidBody(rigidBodyCI);
             physics->getWorld()->addRigidBody(rigidBody);
