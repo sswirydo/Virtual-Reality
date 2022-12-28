@@ -59,6 +59,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
 
+    std::vector<Material> materials;
+
     // walk through each of the mesh's vertices
     // std::cout  << "Has normals ?: " << mesh->HasNormals() << std::endl;
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -111,35 +113,110 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     for(unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
-        // retrieve all indices of the face and store them in the indices vector
         for(unsigned int j = 0; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);        
     }
     // process materials
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
-    // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-    // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-    // Same applies to other texture as the following list summarizes:
-    // diffuse: texture_diffuseN
-    // specular: texture_specularN
-    // normal: texture_normalN
+    aiMaterial* ai_material = scene->mMaterials[mesh->mMaterialIndex];    
+        // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
+        // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
+        // Same applies to other texture as the following list summarizes:
+        // diffuse: texture_diffuseN
+        // specular: texture_specularN
+        // normal: texture_normalN
+    
+    Material mat = loadMaterial(ai_material);
 
     // 1. diffuse maps
-    std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<Texture> diffuseMaps = loadMaterialTextures(ai_material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     // 2. specular maps
-    std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<Texture> specularMaps = loadMaterialTextures(ai_material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     // 3. normal maps
-    std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+    std::vector<Texture> normalMaps = loadMaterialTextures(ai_material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     // 4. height maps
-    std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<Texture> heightMaps = loadMaterialTextures(ai_material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-    // std::cout << "textures size " << textures.size() <<std::endl;
 
-    // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, mat);
+}
+
+Material Model::loadMaterial(aiMaterial* mat) {
+    Material material;
+    aiColor3D color(0.f, 0.f, 0.f);
+    float scalar;
+
+    bool error;
+
+    error = mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+    if (!error) {
+        material.Diffuse = glm::vec3(color.r, color.g, color.b);
+        std::cout << "diffuse color" << " OK" << std::endl;
+    }   
+    else
+        std::cout << "diffuse color" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    if (!error) {
+        material.Ambient = glm::vec3(color.r, color.g, color.b);
+        std::cout << "ambient color" << " OK" << std::endl;
+    }
+    else
+        std::cout << "ambient color" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+    if (!error) {
+        material.Specular = glm::vec3(color.r, color.g, color.b);
+        std::cout << "specular color" << " OK" << std::endl;
+    }
+    else
+        std::cout << "specular color" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_COLOR_EMISSIVE, color);
+    if (!error) {
+        material.Emissive = glm::vec3(color.r, color.g, color.b);
+        std::cout << "emissive color" << " OK" << std::endl;
+    }
+    else
+        std::cout << "emissive color" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_COLOR_TRANSPARENT, color);
+    if (!error) { 
+        material.Transparency = glm::vec3(color.r, color.g, color.b);
+        std::cout << "transparent color" << " OK" << std::endl;
+    }
+    else
+        std::cout << "transparent color" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_COLOR_REFLECTIVE, color);
+    if (!error) {
+        material.Reflective = glm::vec3(color.r, color.g, color.b);
+        std::cout << "reflective color" << " OK" << std::endl;
+    }
+    else
+        std::cout << "reflective color" << " not found." << std::endl;
+    
+
+    error = mat->Get(AI_MATKEY_SHININESS, scalar);
+    if (!error)  {
+        material.Shininess = scalar;
+        std::cout << "shininess scalar" << " OK" << std::endl;
+    }
+    else
+        std::cout << "shininess scalar" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_REFRACTI, scalar);
+    if (!error) {
+        material.RefractI = scalar;
+        std::cout << "refracti scalar" << " OK" << std::endl;
+    }
+    else
+        std::cout << "refracti scalar" << " not found" << std::endl;
+    error = mat->Get(AI_MATKEY_REFLECTIVITY, scalar);
+    if (!error) {
+        material.Reflectivity = scalar;
+        std::cout << "reflectivity scalar" << " OK" << std::endl;
+    }
+    else
+        std::cout << "reflectivity scalar" << " not found" << std::endl;
+
+    return material;
 }
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
@@ -151,7 +228,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        // std::cout << "textures name " << str.C_Str() << ", type: " << typeName.c_str() <<std::endl;
 
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;

@@ -40,7 +40,9 @@ public:
     std::vector<Mesh> getMeshes();
     // draws the model, and thus all its meshes
     void Draw(Shader &shader);
-    
+
+protected:
+    Material loadMaterial(aiMaterial* mat);
 private:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string path);

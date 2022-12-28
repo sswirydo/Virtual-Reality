@@ -60,6 +60,8 @@ float lastFrame = 0.0f;
 
 int main()
 {
+    std::cout << ">>> PROGRAM START <<<" << std::endl;
+
     Game game = Game("Racing Game", SCR_WIDTH, SCR_HEIGHT);
 
     #ifndef NDEBUG

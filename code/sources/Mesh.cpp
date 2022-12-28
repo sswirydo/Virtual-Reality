@@ -1,12 +1,14 @@
 #include "../headers/Mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, Material material)
 {
     this->vertices = vertices;
+    this->material = material;
     this->indices = indices;
     this->textures = textures;
     setupMesh();
     createTriangles();
+    printMaterial();
 }
 
 void Mesh::createTriangles() 
@@ -23,6 +25,19 @@ void Mesh::createTriangles()
         positionTriangles.push_back(pos3);
     }
 
+}
+
+void Mesh::printMaterial() 
+{
+    std::cout << "diffuse" << material.Diffuse.x << " " << material.Diffuse.y << " " << material.Diffuse.z << std::endl;
+    std::cout << "specular" << material.Specular.x << " " << material.Specular.y << " " << material.Specular.z << std::endl;
+    std::cout << "ambient" << material.Ambient.x << " " << material.Ambient.y << " " << material.Ambient.z << std::endl;
+    std::cout << "emissive" << material.Emissive.x << " " << material.Emissive.y << " " << material.Emissive.z << std::endl;
+    std::cout << "transparency" << material.Transparency.x << " " << material.Transparency.y << " " << material.Transparency.z << std::endl;
+    std::cout << "reflective" << material.Reflective.x << " " << material.Reflective.y << " " << material.Reflective.z << std::endl;
+    std::cout << "Shininess" << material.Shininess << std::endl;
+    std::cout << "RefractI" << material.RefractI << std::endl;
+    std::cout << "Reflectivity" << material.Reflectivity << std::endl;
 }
 
 
@@ -51,7 +66,7 @@ void Mesh::setupMesh()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
     glBindVertexArray(0);
-}  
+} 
 
 void Mesh::Draw(Shader &shader) 
 {
@@ -75,7 +90,14 @@ void Mesh::Draw(Shader &shader)
         shader.setInt(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+    // send material
+    shader.setVec3("material_diffuse",this->material.Diffuse);
+    shader.setVec3("material_ambient",this->material.Ambient);
+    shader.setVec3("material_specular",this->material.Specular);
+    shader.setFloat("material_shininess",this->material.Shininess);
+
     glActiveTexture(GL_TEXTURE0);
+    
 
     // draw mesh
     glBindVertexArray(VAO);

@@ -30,7 +30,20 @@ struct Texture {
     unsigned int id;
     std::string type;
     std::string path;
-};  
+};
+
+
+struct Material {
+    glm::vec3 Diffuse;      // diffuse color        // AI_MATKEY_COLOR_DIFFUSE
+    glm::vec3 Specular;     // specular color       // AI_MATKEY_COLOR_SPECULAR
+    glm::vec3 Ambient;      // ambient color        // AI_MATKEY_COLOR_AMBIENT
+    glm::vec3 Emissive;     // emission color       // AI_MATKEY_COLOR_EMISSIVE
+    float Shininess;        // specular exponent    // AI_MATKEY_SHININESS          
+    float RefractI;      // index of refraction  // AI_MATKEY_REFRACTI
+    float Reflectivity;     // reflection factor    // AI_MATKEY_REFLECTIVITY
+    glm::vec3 Transparency; // transparency         // AI_MATKEY_COLOR_TRANSPARENT
+    glm::vec3 Reflective;   // reflection color     // AI_MATKEY_COLOR_REFLECTIVE
+};
 
 class Mesh {
     public:
@@ -38,17 +51,21 @@ class Mesh {
         std::vector<Vertex>         vertices;
         std::vector<unsigned int>   indices;
         std::vector<Texture>        textures;
+        Material                    material;
 
         std::vector<glm::vec3>      positionTriangles;
 
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures,Material material);
         void Draw(Shader &shader);
+
+        void printMaterial();
     private:
         //  render data
         unsigned int VAO, VBO, EBO;
         
         void setupMesh();
         void createTriangles();
+    
 };
 
 #endif
