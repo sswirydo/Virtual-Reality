@@ -27,7 +27,7 @@ class Object
 {
 public:
     Object();
-    Object(Model &model, Shader &shader, Physics* physics);
+    Object(Model &model, Shader &shader, Physics* physics, bool createRigidBody = true);
     void render(Camera* camera);
     void setModel(Model &model);
     void setShader(Shader &shader);

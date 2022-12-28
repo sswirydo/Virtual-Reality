@@ -20,19 +20,19 @@ Physics::Physics()
 
     //keep track of the shapes, we release memory at exit.
     //make sure to re-use collision shapes among rigid bodies whenever possible!
-    {
-        //Creates the ground shape
-        btCollisionShape* groundShape = new btBoxShape(btVector3(100, 1, 100));
+    //{
+    //    //Creates the ground shape
+    //    btCollisionShape* groundShape = new btBoxShape(btVector3(100, 1, 100));
 
-        //Stores on an array for reusing
-        collisionShapes.push_back(groundShape);
+    //    //Stores on an array for reusing
+    //    collisionShapes.push_back(groundShape);
 
-        //Creates the ground rigidbody
-        btRigidBody* groundRigidBody = createGroundRigidBodyFromShape(groundShape);
+    //    //Creates the ground rigidbody
+    //    btRigidBody* groundRigidBody = createGroundRigidBodyFromShape(groundShape);
 
-        //Adds it to the world
-        this->world->addRigidBody(groundRigidBody);
-    }
+    //    //Adds it to the world
+    //    this->world->addRigidBody(groundRigidBody);
+    //}
 
 }
 

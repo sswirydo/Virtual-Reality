@@ -4,7 +4,7 @@ Skybox::Skybox()
 {
     cubeMapModel = Model("assets/objects/cube.obj");
     cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    cubeMap = Object(cubeMapModel, cubeMapShader, NULL);
+    cubeMap = Object(cubeMapModel, cubeMapShader, NULL, false);
     cubeMapTexture;
     glGenTextures(1, &cubeMapTexture);
     glActiveTexture(GL_TEXTURE0);

@@ -27,6 +27,8 @@
 #include "../headers/PlayerCamera.hpp"
 #include "../headers/WorldCamera.hpp"
 
+#include "../headers/DebugDrawer.hpp"   
+
 
 void processInput(GLFWwindow* window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -102,6 +104,11 @@ int main()
     //    }
     //};
 
+    Shader debugShader = Shader("code/shaders/bulletDebug.vert", "code/shaders/bulletDebug.frag");
+    DebugDrawer debugDrawer = DebugDrawer(&worldCamera, &debugShader);
+    physics->getWorld()->setDebugDrawer(&debugDrawer);
+    bool renderDebug = true;
+
     while (!glfwWindowShouldClose(game.getWindow()))
     {
         if (cameraChanged) 
@@ -139,7 +146,6 @@ int main()
         glDepthFunc(GL_LEQUAL);
         skybox.render(camera);
 
-        car.renderShapeBox(camera, lightShader);
 
         if (!pauseGame) 
         {
@@ -147,13 +153,21 @@ int main()
             car.setModelMatrix(glm::rotate(car.getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         }
        
-
-        car.render(camera, light);
-        light.show(camera);
-        road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
-        road.render(camera);
-
+        if (renderDebug) 
+        {
+            physics->getWorld()->debugDrawWorld();
+        }
+        else 
+        {
+            car.render(camera, light);
+            light.show(camera);
+            // road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+            road.render(camera);
+        }
+        
         glDepthFunc(GL_LESS);
+
+
 
         //fps(glfwGetTime());
         glfwSwapBuffers(game.getWindow());
@@ -163,6 +177,8 @@ int main()
         {
             physics->getWorld()->stepSimulation(deltaTime); // <-- enable this for physics simulation
         }
+
+        
     }
     game.terminate();
     return 0;
