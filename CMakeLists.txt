@@ -39,7 +39,7 @@ include_directories(libs/assimp/include/)
 add_subdirectory(libs/bullet3)
 include_directories(libs/bullet3/src)
 LIST(APPEND BULLET_LIBS BulletDynamics BulletCollision LinearMath)
-add_definitions(-DBT_USE_DOUBLE_PRECISION)
+# add_definitions(-DBT_USE_DOUBLE_PRECISION)
 
 ## Out
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
