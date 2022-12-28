@@ -52,9 +52,9 @@ Physics::~Physics()
 
     delete this->collisionConfiguration;
     delete this->dispatcher;
-    delete this->world;
     delete this->solver;
     delete this->broadphase;
+    delete this->world;
 }
 
 btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape)
