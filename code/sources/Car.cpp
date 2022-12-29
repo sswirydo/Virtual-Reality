@@ -1,6 +1,6 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model &model, Shader &shader, Physics* physics,LightSource &light) : Object(model, shader, physics,light, false) 
+Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Object(model, shader, physics,light, false) 
 {
     // TODO: below is provisory (testing)
     this->collisionShape = new btBoxShape(btVector3(1, 1, 2));

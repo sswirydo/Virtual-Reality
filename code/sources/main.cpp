@@ -84,17 +84,17 @@ int main()
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/car/car.obj");
-    Car *car = new Car(carModel, carShader, physics,light);
+    Car *car = new Car(carModel, carShader, physics,&light);
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Object road = Object(roadModel, roadShader, physics,light);
+    Object road = Object(roadModel, roadShader, physics,&light);
 
     PlayerCamera playerCamera = PlayerCamera(car);
 
 
 
-    Skybox skybox = Skybox(light);
+    Skybox skybox = Skybox(&light);
 
     //double prev = 0;
     //int deltaFrame = 0;
@@ -164,10 +164,12 @@ int main()
         }
         if (renderModel)
         {
+            glm::vec3 newLightPosition = glm::vec3(car->getModelMatrix()[3])+glm::vec3(-100.0f, 100.0f, -100.0f);
+            light.setPosition(newLightPosition);
+            light.show(camera);
+
             road.render(camera);
             car->render(camera);
-            light.show(camera);
-            // road.setModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         }
         
         glDepthFunc(GL_LESS);

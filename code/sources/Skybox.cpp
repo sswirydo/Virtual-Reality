@@ -1,6 +1,6 @@
 #include "../headers/Skybox.hpp"
 Skybox::Skybox(){}
-Skybox::Skybox(LightSource light) 
+Skybox::Skybox(LightSource *light) 
 {
     cubeMapModel = Model("assets/objects/cube.obj");
     cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");

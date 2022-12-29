@@ -28,7 +28,7 @@ class Object
 {
 public:
     Object();
-    Object(Model &model, Shader &shader, Physics* physics, LightSource &light,bool createRigidBody = true);
+    Object(Model &model, Shader &shader, Physics* physics, LightSource *light,bool createRigidBody = true);
     void render(Camera* camera);
     void setModel(Model &model);
     void setShader(Shader &shader);
@@ -43,7 +43,7 @@ public:
 protected:
     Model model;
     glm::mat4 modelMatrix;
-    LightSource light;
+    LightSource *light;
     Shader shader;
     Physics* physics;
     glm::vec3 cameraPos;

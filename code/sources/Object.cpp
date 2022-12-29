@@ -2,7 +2,7 @@
 
 Object::Object() {}
 
-Object::Object(Model &model,Shader &shader, Physics* physics,LightSource &light, bool createRigidBody)
+Object::Object(Model &model,Shader &shader, Physics* physics,LightSource *light, bool createRigidBody)
 {
     this->light = light;
     this->physics = physics;
@@ -67,8 +67,8 @@ void Object::render(Camera* camera)
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
     this->shader.use();
-    this->shader.setVec3("lightPos", this->light.getPosition());
-    this->shader.setVec4("lightColor", this->light.getColor());
+    this->shader.setVec3("lightPos", this->light->getPosition());
+    this->shader.setVec4("lightColor", this->light->getColor());
     this->shader.setMat4("projection", projection);
     this->shader.setMat4("view", view);
     this->shader.setMat4("model", this->modelMatrix);

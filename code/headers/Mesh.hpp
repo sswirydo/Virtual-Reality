@@ -39,7 +39,7 @@ struct Material {
     glm::vec3 Ambient;      // ambient color        // AI_MATKEY_COLOR_AMBIENT
     glm::vec3 Emissive;     // emission color       // AI_MATKEY_COLOR_EMISSIVE
     float Shininess;        // specular exponent    // AI_MATKEY_SHININESS          
-    float RefractI;      // index of refraction  // AI_MATKEY_REFRACTI
+    float RefractI;         // index of refraction  // AI_MATKEY_REFRACTI
     float Reflectivity;     // reflection factor    // AI_MATKEY_REFLECTIVITY
     glm::vec3 Transparency; //transparency         // AI_MATKEY_COLOR_TRANSPARENT
     float TransparencyFactor; // transparencyFactor // AI_MATKEY_TRANSPARENCYFACTOR

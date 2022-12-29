@@ -12,7 +12,7 @@ class Player : public Car
 {
 
 public:
-    Player (Model& model, Shader& shader, Physics* physics, LightSource &light);
+    Player (Model& model, Shader& shader, Physics* physics, LightSource *light);
 private:
 
 };
