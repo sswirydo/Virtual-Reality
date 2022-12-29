@@ -1,7 +1,5 @@
 #include "../headers/LightSource.hpp"
-LightSource::LightSource()
-{
-}
+
 LightSource::LightSource(glm::vec3 lightPosition, glm::vec4 lightColor)
 {
     this->lightShader = Shader("code/shaders/lightShader.vert","code/shaders/lightShader.frag");
@@ -38,6 +36,13 @@ void LightSource::setColor(glm::vec4 newColor)
     this->color = newColor;
 }
 
+void LightSource::rotate(){
+    // implementation of day and night
+    double time = (glfwGetTime())/50.0f;
+    this->position = this->position * glm::vec3(-glm::sin(time),glm::cos(time),-glm::sin(time));
+    
+}
+
 void LightSource::show(Camera * camera)
 {
     glm::mat4 model(1.0f);
@@ -47,6 +52,7 @@ void LightSource::show(Camera * camera)
     model = glm::mat4(1.0f);
     model = glm::translate(model, this->position);
     model = glm::scale(model, glm::vec3(.5f)); // a smaller cube
+
     this->lightShader.setMat4("model", model);
     glBindVertexArray(this->lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);

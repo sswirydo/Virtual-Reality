@@ -1,5 +1,4 @@
 #include "../headers/Physics.hpp"
-#include "Physics.hpp"
 
 btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape);
 

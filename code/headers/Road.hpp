@@ -15,7 +15,7 @@ public:
 private:
     btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape);
     std::vector<btRigidBody*> otherBodies;
-    void Road::translateBarriers(int pos);
+    void translateBarriers(int pos);
 
 };
 

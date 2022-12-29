@@ -62,12 +62,12 @@ private:
     GLuint lightCubeVAO, VBO;
     Shader lightShader;
 public:
-    LightSource(glm::vec3 lightPosition, glm::vec4 lightColor);
-    LightSource();
+    LightSource(glm::vec3 lightPosition = glm::vec3(-5.0f, 5.0f, -5.0f), glm::vec4 lightColor  = glm::vec4(1.0f, 1.0f, 1.0f,1.0f));
     glm::vec3 getPosition();
     glm::vec4 getColor();
     void setPosition(glm::vec3 newPosition);
     void setColor(glm::vec4 newColor);
+    void rotate();
     void show(Camera * camera);
     ~LightSource();
 };

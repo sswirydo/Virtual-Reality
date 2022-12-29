@@ -79,19 +79,19 @@ int main()
     WorldCamera worldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
-    LightSource light(glm::vec3(-100.0f, 100.0f, -100.0f),glm::vec4(1.0f, 1.0f, 1.0f,1.0f));
+    LightSource sun;
 
     Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/car/car.obj");
-    Player *playerCar = new Player(carModel, carShader, physics,&light);
+    Player *playerCar = new Player(carModel, carShader, physics,&sun);
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Road road = Road(roadModel, roadShader, physics, &light);
-    Road road2 = Road(roadModel, roadShader, physics, &light);
-    Road road3 = Road(roadModel, roadShader, physics,&light);
+    Road road = Road(roadModel, roadShader, physics, &sun);
+    Road road2 = Road(roadModel, roadShader, physics, &sun);
+    Road road3 = Road(roadModel, roadShader, physics,&sun);
 
     road.move(0);
     road2.move(1);
@@ -101,7 +101,7 @@ int main()
 
 
 
-    Skybox skybox = Skybox(&light);
+    Skybox skybox = Skybox(&sun);
 
     //double prev = 0;
     //int deltaFrame = 0;
@@ -167,7 +167,7 @@ int main()
         */
 
         float distance = playerCar->getWorldCoordinates().z;
-        std::cout << "XOXO " << distance << " " << -200 * (roadDisplacement - 2) << std::endl;
+        // std::cout << "XOXO " << distance << " " << -200 * (roadDisplacement - 2) << std::endl;
         if (distance < -200 * (roadDisplacement - 2)) // TODO check if correct
         {
             if (roadDisplacement % 3 == 0) {
@@ -196,9 +196,10 @@ int main()
         }
         if (renderModel)
         {
-            glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3])+glm::vec3(-100.0f, 100.0f, -100.0f);
-            light.setPosition(newLightPosition);
-            light.show(camera);
+            glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3])+glm::vec3(-250.0f, 250.0f, -250.0f);
+            sun.setPosition(newLightPosition);
+            sun.rotate();
+            sun.show(camera);
 
             road.render(camera);
             road2.render(camera);
