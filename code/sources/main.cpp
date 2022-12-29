@@ -186,11 +186,11 @@ int main()
         }
         if (cameraNum == 1) 
         {
-            camera = &worldCamera;
+            camera = &playerCamera;
         }
         else if (cameraNum == 2)
         {
-            camera = &playerCamera;
+            camera = &worldCamera;
         }
 
  
