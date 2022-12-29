@@ -17,8 +17,6 @@ public:
     std::vector<Mesh> getWindowsMesh();
     std::vector<Mesh> getCarosserieMesh();
 
-    void renderShapeBox(Camera* camera, Shader &shader);
-
 private:
 
 };

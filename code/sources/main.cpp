@@ -20,6 +20,7 @@
 #include "../headers/Camera.hpp"
 #include "../headers/Object.hpp"
 #include "../headers/Car.hpp"
+#include "../headers/Road.hpp"
 // #include "../headers/Player.hpp"
 #include "../headers/LightSource.hpp"
 #include "../headers/Physics.hpp"
@@ -88,7 +89,7 @@ int main()
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Object road = Object(roadModel, roadShader, physics,&light);
+    Road road = Road(roadModel, roadShader, physics,&light);
 
     PlayerCamera playerCamera = PlayerCamera(car);
 
