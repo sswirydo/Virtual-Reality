@@ -67,7 +67,7 @@ public:
     glm::vec4 getColor();
     void setPosition(glm::vec3 newPosition);
     void setColor(glm::vec4 newColor);
-    void rotate();
+    void rotate(glm::vec3 carPos);
     void show(Camera * camera);
     ~LightSource();
 };

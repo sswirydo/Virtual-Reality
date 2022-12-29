@@ -219,8 +219,7 @@ int main()
         if (renderModel)
         {
             glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
-            sun.setPosition(newLightPosition);
-            sun.rotate();
+            sun.rotate(newLightPosition);
             sun.show(camera);
 
             for (size_t t = 0; t < roads.size(); t++) {
