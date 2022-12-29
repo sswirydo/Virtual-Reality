@@ -83,12 +83,12 @@ int main()
     Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
-    Model carModel = Model("assets/meshes/free-car/free_car_001.obj");
+    Model carModel = Model("assets/meshes/car/car.obj");
     Car *car = new Car(carModel, carShader, physics,light);
 
     Shader roadShader= Shader("code/shaders/basicModel.vert","code/shaders/basicModel.frag");
-    Model roadModel = Model("assets/meshes/vr_road/vr_road.obj");
-    Object road = Object(roadModel, roadShader, physics,light);
+    Model roadModel = Model("assets/meshes/road/road.obj");
+    Object road = Object(roadModel, roadShader, physics,light, false);
 
     PlayerCamera playerCamera = PlayerCamera(car);
 

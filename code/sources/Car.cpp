@@ -42,9 +42,9 @@ void Car::move(float deltaTime, glm::vec4 direction)
     }
 
     // TODO : TEMPORARY FIX: making sure the car do not drift due to collision with the ground
-    //transform = rigidBody->getWorldTransform();
-    //transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
-    //this->getRigidBody()->setWorldTransform(transform);
+    transform = rigidBody->getWorldTransform();
+    transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
+    this->getRigidBody()->setWorldTransform(transform);
 
 
     // Update the car's velocity based on the acceleration

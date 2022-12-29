@@ -10,7 +10,7 @@ Object::Object(Model &model,Shader &shader, Physics* physics,LightSource &light,
     this->setShader(shader);
     this->modelMatrix = glm::mat4(1.0f);
 
-    if (createRigidBody) 
+    if (false) 
     {
         std::cout << "HELLO WORLD " << model.directory << std::endl;
         
