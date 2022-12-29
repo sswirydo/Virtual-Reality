@@ -218,7 +218,7 @@ int main()
         }
         if (renderModel)
         {
-            glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3])+glm::vec3(-250.0f, 250.0f, -250.0f);
+            glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
             sun.setPosition(newLightPosition);
             sun.rotate();
             sun.show(camera);

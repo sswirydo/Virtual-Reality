@@ -37,10 +37,9 @@ void LightSource::setColor(glm::vec4 newColor)
 }
 
 void LightSource::rotate(){
-    // implementation of day and night
-    double time = (glfwGetTime())/50.0f;
-    this->position = this->position * glm::vec3(-glm::sin(time),glm::cos(time),-glm::sin(time));
-    
+    // implementation of day and night: we set a rotation radius of 250
+    double time = (glfwGetTime())/20.0f;
+    this->position = glm::vec3(-250.0f,250.0f,-250.0f) * glm::vec3(-glm::sin(time),glm::cos(time),-glm::sin(time)) + this->position;
 }
 
 void LightSource::show(Camera * camera)
