@@ -39,5 +39,5 @@ void main()
 
     FragColor = (specular+ambient+diffuse);
 
-    //FragColor = vec4(material_diffuse, 1.0);
+    FragColor = vec4(material_diffuse, 1.0); // TODO: TEMPORARY
 }
