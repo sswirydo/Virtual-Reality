@@ -120,7 +120,7 @@ int main()
 
 
     // TODO: temp tree add test
-    Shader treeShader = Shader("code/shaders/road.vert", "code/shaders/road.frag");
+    Shader treeShader = Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
     Model treeModel = Model("assets/meshes/tree/tree.obj");
     for (int i = 0; i < 1000; i++) { 
         int minZ = 0;

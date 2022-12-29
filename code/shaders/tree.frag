@@ -20,19 +20,19 @@ void main()
 {    
 
     // ambient light
-    vec4 ambient = vec4(material_ambient,1.0) * lightColor * 0.18;
+    vec4 ambient = vec4(material_ambient,1.0) * lightColor * 0.1;
 
     // diffuse light 
     vec3 normalizedNormal = normalize(Normal);
     vec3 lightDirection = normalize(lightVector);  
     float diff = max(dot(normalizedNormal, lightDirection), 0.0);
-    vec4 diffuse = (diff * vec4(material_diffuse,1.0))* lightColor * 1.0 ;
+    vec4 diffuse = (diff * vec4(material_diffuse,1.0))* lightColor * 0.7 ;
     
     // specular light 
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDirection, normalizedNormal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material_shininess);
-    vec4 specular = (vec4(material_specular,1.0) * spec) * lightColor * 0;  
+    vec4 specular = (vec4(material_specular,1.0) * spec) * lightColor * 0.1;  
 
     FragColor = (specular+ambient+diffuse);
 }
