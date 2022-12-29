@@ -1,6 +1,6 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Object(model, shader, physics,light) 
+Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Object(model, shader, physics,light)
 {
     // TODO: below is provisory (testing)
     this->collisionShape = new btBoxShape(btVector3(1, 1, 1.8));
@@ -14,7 +14,7 @@ Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Ob
     //this->rigidBody->setFriction(0.9);
     this->rigidBody->setAngularFactor(btVector3(1, 0, 1)); // disables Y-axis rotation
 
-    physics->getWorld()->addRigidBody(this->rigidBody);
+    physics->addBody(rigidBody, CAR);
 }
 
 void Car::move(float deltaTime) 
