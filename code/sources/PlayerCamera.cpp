@@ -44,6 +44,10 @@ void PlayerCamera::computeCameraPosition(float horizontalDistance, float vertica
 	float positionX = playerPosition.x - offsetX;
 	float positionZ = playerPosition.z - offsetZ;
 	float positionY = playerPosition.y + verticalDistance;
+
+	if (positionY < 0.1f)
+		positionY = 0.1f;
+
 	this->position = glm::vec3(positionX, positionY, positionZ);
 }
 

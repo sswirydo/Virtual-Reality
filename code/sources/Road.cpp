@@ -27,10 +27,9 @@ Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) :
     this->otherBodies.push_back(rigidBody_r);
 
     //Adds it to the world
-    physics->getWorld()->addRigidBody(this->rigidBody);
-    physics->getWorld()->addRigidBody(rigidBody_l);
-    physics->getWorld()->addRigidBody(rigidBody_r);
-
+    physics->addBody(this->rigidBody, ROAD);
+    physics->addBody(rigidBody_l, BARRIER);
+    physics->addBody(rigidBody_r, BARRIER);
 }
 
 

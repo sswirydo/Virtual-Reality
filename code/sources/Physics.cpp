@@ -17,6 +17,14 @@ Physics::Physics()
     this->world->setGravity(btVector3(0, -9.81, 0));
 }
 
+void Physics::addBody(btRigidBody* body, int gameObjectId)
+{
+    this->getWorld()->addRigidBody(body);
+    BulletObject* bo = new BulletObject(body, gameObjectId);
+    this->bulletObjects.push_back(bo);
+    body->setUserPointer(bo);
+}
+
 btDiscreteDynamicsWorld* Physics::getWorld() 
 {
     return this->world;

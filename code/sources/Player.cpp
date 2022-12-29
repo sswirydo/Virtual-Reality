@@ -2,12 +2,16 @@
 
 Player::Player(Model& model, Shader& shader, Physics* physics,LightSource *light) : Car(model, shader, physics, light)
 {
-
+    btRigidBody* body = this->getRigidBody();
+    body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+    ((BulletObject*)body->getUserPointer())->id = PLAYER;
 }
 
-
-void Player::checkCollision() {}
-
+bool Player::wasHit() 
+{
+    BulletObject* bo = (BulletObject*)this->getRigidBody()->getUserPointer();
+    return bo->hit;
+}
 
 void Player::move(float deltaTime, glm::vec4 direction)
 {

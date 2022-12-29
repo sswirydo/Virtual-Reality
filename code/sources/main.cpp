@@ -59,11 +59,31 @@ float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 
+// Based on https://www.youtube.com/watch?v=YweNArzAHs4
+bool contactAddedCallbackBullet(
+    btManifoldPoint& cp,
+    const btCollisionObjectWrapper* colObj0,
+    int partId0,
+    int index0,
+    const btCollisionObjectWrapper* colObj1,
+    int partId1,
+    int index1)
+{    
+    BulletObject* bo0 = (BulletObject*)colObj0->getCollisionObject()->getUserPointer(); // PLAYER
+    BulletObject* bo1 = (BulletObject*)colObj1->getCollisionObject()->getUserPointer(); // OTHER
+    if (bo1->id == CAR) {
+        bo0->hit = true; // PLAYER WAS HIT :(
+    }
+    return false;
+}
+
+
 int main()
 {
     std::cout << ">>> PROGRAM START <<<" << std::endl;
 
     Game game = Game("Racing Game", SCR_WIDTH, SCR_HEIGHT);
+    gContactAddedCallback = contactAddedCallbackBullet;
 
     #ifndef NDEBUG
     glDebug();
@@ -85,7 +105,7 @@ int main()
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/car/car.obj");
-    Player *playerCar = new Player(carModel, carShader, physics,&sun);
+    Player* playerCar = new Player(carModel, carShader, physics,&sun);
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
@@ -97,7 +117,6 @@ int main()
     roads.push_back(road);
     roads.push_back(road2);
     roads.push_back(road3);
-
 
     // TODO: temp car add test
     const int nbOfCars = 4;
@@ -200,7 +219,7 @@ int main()
 
         processInput(game.getWindow());
 
-        if (!pauseGame) 
+        if (!pauseGame && !playerCar->wasHit()) 
         {
             playerCar->move(deltaTime, movementDirection);
         }
@@ -259,6 +278,8 @@ int main()
         }
         
         glDepthFunc(GL_LESS);
+
+
 
 
 
