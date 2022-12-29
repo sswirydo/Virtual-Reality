@@ -57,6 +57,7 @@ const float vertices[] = {
 class LightSource
 {
 private:
+    unsigned int frameNumber=0;
     glm::vec3 position;
     glm::vec4 color;
     GLuint lightCubeVAO, VBO;
