@@ -22,7 +22,7 @@ Physics::Physics()
     //make sure to re-use collision shapes among rigid bodies whenever possible!
     {
         //Creates the ground shape
-        btCollisionShape* groundShape = new btBoxShape(btVector3(100, 1, 110));
+        btCollisionShape* groundShape = new btBoxShape(btVector3(107, 1, 100));
         //Stores on an array for reusing
         collisionShapes.push_back(groundShape);
         //Creates the ground rigidbody
