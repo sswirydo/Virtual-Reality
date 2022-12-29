@@ -6,6 +6,9 @@ Player::Player(Model& model, Shader& shader, Physics* physics,LightSource *light
 }
 
 
+void Player::checkCollision() {}
+
+
 void Player::move(float deltaTime, glm::vec4 direction)
 {
     btTransform transform;

@@ -4,17 +4,16 @@ btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape);
 
 Physics::Physics() 
 {
-    // Create a collision configuration
+    // Provides default collision detection configuration and is responsible for creating and configuring the btCollisionDispatcher.
     this->collisionConfiguration = new btDefaultCollisionConfiguration();
-    // Create a collision dispatcher
+    // Is responsible for dispatching collision detection requests to the appropriate collision detection algorithms.
     this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
-    // Create a broadphase interface
+    // Broadphase collision detection algorithm that uses dynamic bounding volume trees to quicklyand efficiently determine which pairs of objects may potentially be colliding.
     this->broadphase = new btDbvtBroadphase();
-    // Create a constraint solver
+    // Applies impulses to objects in order to resolve constraints (e.g., joint limits, contact constraints)
     this->solver = new btSequentialImpulseConstraintSolver;
-    // Create a physics world
+    // Create a physics world that simulates a dynamics system using discrete time steps
     this->world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-    // Set the gravity of the world
     this->world->setGravity(btVector3(0, -9.81, 0));
 }
 
