@@ -104,7 +104,7 @@ int main()
     for (size_t t = 0; t < roads.size(); t++) {
         std::vector<Car*> tempCars;
         for (int i = 0; i < nbOfCars; i++) {
-            Car* car = new Car(carModel, carShader, physics, &light);
+            Car* car = new Car(carModel, carShader, physics, &sun);
             glm::vec3 vector = glm::vec3(0, 2, 50);
             
             if (i % nbOfCars == 0) { vector = vector + glm::vec3(-5.25, 0, 0); }
@@ -234,7 +234,9 @@ int main()
         {
             glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
             sun.setPosition(newLightPosition);
-            sun.rotate();
+            if (!pauseGame) {
+                sun.rotate();
+            }
             sun.show(camera);
 
             for (size_t t = 0; t < roads.size(); t++) {
@@ -242,8 +244,9 @@ int main()
 
                 std::vector<Car*> linkedCars = roads[t].getCars();
                 for (size_t l = 0; l < linkedCars.size(); l++) {
-                    if (!pauseGame)
+                    if (!pauseGame) {
                         // linkedCars[l]->move(deltaTime);
+                    }
                     linkedCars[l]->render(camera);
                 }
 
