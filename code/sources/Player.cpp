@@ -7,13 +7,11 @@ Player::Player(Model& model, Shader& shader, Physics* physics,LightSource *light
     ((BulletObject*)body->getUserPointer())->id = PLAYER;
 }
 
-
-void Player::checkCollision() {
-    this->physics->getWorld();
+bool Player::wasHit() 
+{
+    BulletObject* bo = (BulletObject*)this->getRigidBody()->getUserPointer();
+    return bo->hit;
 }
-
-
-
 
 void Player::move(float deltaTime, glm::vec4 direction)
 {

@@ -69,11 +69,11 @@ bool contactAddedCallbackBullet(
     int partId1,
     int index1)
 {    
-    std::cout   << "collision: " 
-                << ((BulletObject*)colObj0->getCollisionObject()->getUserPointer())->id 
-                << " with " 
-                << ((BulletObject*)colObj1->getCollisionObject()->getUserPointer())->id
-                << std::endl;
+    BulletObject* bo0 = (BulletObject*)colObj0->getCollisionObject()->getUserPointer(); // PLAYER
+    BulletObject* bo1 = (BulletObject*)colObj1->getCollisionObject()->getUserPointer(); // OTHER
+    if (bo1->id == CAR) {
+        bo0->hit = true; // PLAYER WAS HIT :(
+    }
     return false;
 }
 
@@ -219,7 +219,7 @@ int main()
 
         processInput(game.getWindow());
 
-        if (!pauseGame) 
+        if (!pauseGame && !playerCar->wasHit()) 
         {
             playerCar->move(deltaTime, movementDirection);
         }
