@@ -93,9 +93,43 @@ int main()
     Road road2 = Road(roadModel, roadShader, physics, &light);
     Road road3 = Road(roadModel, roadShader, physics,&light);
 
-    road.move(0);
-    road2.move(1);
-    road3.move(2);
+    std::vector<Road> roads;
+    roads.push_back(road);
+    roads.push_back(road2);
+    roads.push_back(road3);
+
+
+    // TODO: temp tree add test
+    Shader treeShader = Shader("code/shaders/road.vert", "code/shaders/road.frag");
+    Model treeModel = Model("assets/meshes/tree/tree.obj");
+    for (int i = 0; i < 1000; i++) { 
+        int minZ = 0;
+        int maxZ = 99;
+        int minX = 9;
+        int maxX = 100;
+
+        int rangeZ = maxZ - minZ + 1;
+        int rangeX = maxX - minX + 1;
+        int numZ = rand() % rangeZ + minZ;
+        int numX = rand() % rangeX + minX;
+
+        Object* tree = new Object(treeModel, treeShader, physics, &light);
+
+        if (i % 4 == 0) { numZ = -numZ; }
+        if (i % 4 == 1) { numX = -numX; }
+        if (i % 4 == 2) { numZ = -numZ; numX = -numX; }
+
+        glm::vec3 vector = glm::vec3(numX, 0, numZ);
+        tree->setModelMatrix(glm::translate(tree->getModelMatrix(), vector));
+
+        roads[i % roads.size()].linkObject(tree);
+    }
+
+    for (size_t t = 0; t < roads.size(); t++) {
+        roads[t].move(roads.size(), t);
+    }
+
+    
 
     PlayerCamera playerCamera = PlayerCamera(playerCar);
 
@@ -158,26 +192,14 @@ int main()
         glDepthFunc(GL_LEQUAL);
         skybox.render(camera);
 
-        /*
-        
-        -100 -> 100 : 150
-        100->300 : 350
-        300->500 : 550
-        
-        */
 
         float distance = playerCar->getWorldCoordinates().z;
-        std::cout << "XOXO " << distance << " " << -200 * (roadDisplacement - 2) << std::endl;
-        if (distance < -200 * (roadDisplacement - 2)) // TODO check if correct
+        if (distance < -200 * (roadDisplacement - 2))
         {
-            if (roadDisplacement % 3 == 0) {
-                road.move(roadDisplacement);
-            }
-            else if (roadDisplacement % 3 == 1) {
-                road2.move(roadDisplacement);
-            }
-            else {
-                road3.move(roadDisplacement);
+            for (size_t t = 0; t < roads.size(); t++) {
+                if (roadDisplacement % roads.size() == t) {
+                    roads[t].move(roads.size());
+                }
             }
             roadDisplacement++;
         }
@@ -200,9 +222,13 @@ int main()
             light.setPosition(newLightPosition);
             light.show(camera);
 
-            road.render(camera);
-            road2.render(camera);
-            road3.render(camera);
+            for (size_t t = 0; t < roads.size(); t++) {
+                roads[t].render(camera);
+                std::vector<Object*> linkedObjects = roads[t].getLinkedObjects();
+                for (size_t l = 0; l < linkedObjects.size(); l++) {
+                    linkedObjects[l]->render(camera);
+                }
+            }
 
             playerCar->render(camera);
         }
