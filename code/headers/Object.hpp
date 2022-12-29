@@ -35,14 +35,25 @@ public:
     void setModelMatrix(glm::mat4 model);
     glm::mat4 getModelMatrix();
     virtual void Draw();
+    void setRigidBody(btRigidBody* rigidBody);
     btRigidBody* getRigidBody();
     btCollisionShape* getCollisionShape();
     glm::vec3 getWorldCoordinates();
     glm::vec3 getRotation();
 
-    void translateFrom(glm::vec3 vector, glm::mat4 fromModel);
-    void translate(glm::vec3 vector);
-    void rotate(float degrees, glm::vec3 axis);
+    // Simple operations on the gl model matrix.
+    void translateModel(glm::vec3 vector);
+    void rotateModel(float degrees, glm::vec3 axis);
+
+    // Updates the rigidbody transform based on the gl model matrix.
+    void forceUpdatePhysics();
+    void forceTranslate(glm::vec3 vector);
+    void forceRotate(float degrees, glm::vec3 axis);
+
+    // Upades the gl model matrix based on the rigidbody transform.
+    void updateModelFromPhysics();
+    void translatePhysics(glm::vec3 vector);
+    void rotatePhysics(float degrees, glm::vec3 axis);
 
 protected:
     Model model;
@@ -53,9 +64,6 @@ protected:
     glm::vec3 cameraPos;
     btRigidBody* rigidBody = NULL;
     btCollisionShape* collisionShape = NULL;
-
-    void forceUpdatePhysics();
-    
 };
 
 

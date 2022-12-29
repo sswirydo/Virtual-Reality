@@ -99,6 +99,26 @@ int main()
     roads.push_back(road3);
 
 
+    // TODO: temp car add test
+    const int nbOfCars = 4;
+    for (size_t t = 0; t < roads.size(); t++) {
+        std::vector<Car*> tempCars;
+        for (int i = 0; i < nbOfCars; i++) {
+            Car* car = new Car(carModel, carShader, physics, &sun);
+            glm::vec3 vector = glm::vec3(0, 2, 50);
+            
+            if (i % nbOfCars == 0) { vector = vector + glm::vec3(-5.25, 0, 0); }
+            else if (i % nbOfCars == 1) { vector = vector + glm::vec3(5.25, 0, 0); }
+            else if (i % nbOfCars == 2) { vector = vector + glm::vec3(-1.75, 0, 0); }
+            else if (i % nbOfCars == 3) { vector = vector + glm::vec3(1.75, 0, 0); }
+            
+            car->translatePhysics(vector);
+            tempCars.push_back(car);
+        }
+        roads[t].addCars(tempCars);
+    }
+
+
     // TODO: temp tree add test
     Shader treeShader = Shader("code/shaders/road.vert", "code/shaders/road.frag");
     Model treeModel = Model("assets/meshes/tree/tree.obj");
@@ -166,11 +186,11 @@ int main()
         }
         if (cameraNum == 1) 
         {
-            camera = &worldCamera;
+            camera = &playerCamera;
         }
         else if (cameraNum == 2)
         {
-            camera = &playerCamera;
+            camera = &worldCamera;
         }
 
  
@@ -204,12 +224,6 @@ int main()
             roadDisplacement++;
         }
 
-
-        if (!pauseGame) 
-        {
-            playerCar->setModelMatrix(glm::translate(playerCar->getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
-            playerCar->setModelMatrix(glm::rotate(playerCar->getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
-        }
        
         if (renderDebug) 
         {
@@ -219,11 +233,22 @@ int main()
         if (renderModel)
         {
             glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
-            sun.rotate(newLightPosition);
+            if (!pauseGame) {
+                sun.rotate(newLightPosition);
+            }
             sun.show(camera);
 
             for (size_t t = 0; t < roads.size(); t++) {
                 roads[t].render(camera);
+
+                std::vector<Car*> linkedCars = roads[t].getCars();
+                for (size_t l = 0; l < linkedCars.size(); l++) {
+                    if (!pauseGame) {
+                        // linkedCars[l]->move(deltaTime);
+                    }
+                    linkedCars[l]->render(camera);
+                }
+
                 std::vector<Object*> linkedObjects = roads[t].getLinkedObjects();
                 for (size_t l = 0; l < linkedObjects.size(); l++) {
                     linkedObjects[l]->render(camera);

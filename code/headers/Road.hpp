@@ -2,9 +2,11 @@
 #define ROAD_HPP
 
 #include "Object.hpp"
+#include "Car.hpp"
 #include "Camera.hpp"
 
 class Object;
+class Car;
 
 class Road : public Object
 {
@@ -15,6 +17,7 @@ public:
     void addCars(std::vector<Car*> cars);
     void linkObject(Object* obj);
     std::vector<Object*> getLinkedObjects();
+    std::vector<Car*> getCars();
 
 protected:
 

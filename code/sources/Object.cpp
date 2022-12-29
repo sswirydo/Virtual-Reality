@@ -10,19 +10,23 @@ Object::Object(Model &model,Shader &shader, Physics* physics,LightSource *light)
     this->setShader(shader);
 }
 
-void Object::translateFrom(glm::vec3 vector, glm::mat4 fromModel)
-{
-    this->setModelMatrix(glm::translate(fromModel, vector));
-    this->forceUpdatePhysics();
-}
-void Object::translate(glm::vec3 vector)
+
+void Object::translateModel(glm::vec3 vector)
 {
     this->setModelMatrix(glm::translate(this->getModelMatrix(), vector));
-    this->forceUpdatePhysics();
 }
-void Object::rotate(float degrees, glm::vec3 axis)
+void Object::rotateModel(float degrees, glm::vec3 axis)
 {
     this->setModelMatrix(glm::rotate(this->getModelMatrix(), glm::radians(degrees), axis));
+}
+void Object::forceTranslate(glm::vec3 vector)
+{
+    this->translateModel(vector);
+    this->forceUpdatePhysics();
+}
+void Object::forceRotate(float degrees, glm::vec3 axis)
+{
+    this->rotateModel(degrees, axis);
     this->forceUpdatePhysics();
 }
 void Object::forceUpdatePhysics() {
@@ -30,6 +34,26 @@ void Object::forceUpdatePhysics() {
     transform.setFromOpenGLMatrix((btScalar*)glm::value_ptr(this->getModelMatrix()));
     this->getRigidBody()->setWorldTransform(transform);
 }
+
+void Object::translatePhysics(glm::vec3 vector) 
+{
+    this->getRigidBody()->translate(btVector3(vector.x, vector.y, vector.z));
+}
+void Object::rotatePhysics(float degrees, glm::vec3 axis) 
+{
+
+}
+
+void Object::updateModelFromPhysics() 
+{
+    btTransform transform = this->getRigidBody()->getWorldTransform();
+    glm::mat4 modelMatrix;
+    transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));
+    this->setModelMatrix(modelMatrix);
+}
+
+
+
 
 void Object::setModel(Model &model){
     this->model = model;
@@ -83,7 +107,12 @@ glm::vec3 Object::getRotation()
     return eulerAngles; // pitch, yaw, roll
 }
 
-btRigidBody *Object::getRigidBody()
+void Object::setRigidBody(btRigidBody* rigidBody)
+{
+    this->rigidBody = rigidBody;
+}
+
+btRigidBody* Object::getRigidBody()
 {
     return this->rigidBody;
 }
@@ -92,6 +121,7 @@ btCollisionShape* Object::getCollisionShape()
 {
     return this->collisionShape;
 }
+
 
 
 
