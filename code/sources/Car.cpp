@@ -91,6 +91,17 @@ void Car::Draw()
     std::vector<Mesh> windows = this->getWindowsMesh();
     for(unsigned int i = 0; i < windows.size(); i++)
         windows[i].Draw(this->shader);
+    //
+    // Uncomment this if you want to load in order
+    //
+    // std::map<float, Mesh*> sorted;
+    // for (unsigned int i = 0; i < windows.size(); i++)
+    // {
+    //     float distance = glm::distance(this->cameraPos, windows[i].positionTriangles[0]);
+    //     sorted[distance] = &windows[i];
+    // }
+    // for(std::map<float,Mesh*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) 
+    //     it->second->Draw(this->shader);
     glDisable(GL_BLEND);
 
 }
@@ -108,9 +119,9 @@ std::vector<Mesh> Car::getWheelsMesh()
 std::vector<Mesh> Car::getWindowsMesh()
 {
     std::vector<Mesh> windows;
-    windows.push_back(this->model.getMeshes()[10]);
-    windows.push_back(this->model.getMeshes()[9]);
     windows.push_back(this->model.getMeshes()[8]);
+    windows.push_back(this->model.getMeshes()[9]);
+    windows.push_back(this->model.getMeshes()[10]);
     return windows;
 }
 

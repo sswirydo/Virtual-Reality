@@ -46,7 +46,7 @@ protected:
     LightSource light;
     Shader shader;
     Physics* physics;
-
+    glm::vec3 cameraPos;
     btRigidBody* rigidBody = NULL;
     btCollisionShape* collisionShape = NULL;
     

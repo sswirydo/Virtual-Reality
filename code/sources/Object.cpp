@@ -63,6 +63,7 @@ void Object::Draw(){
 
 void Object::render(Camera* camera)
 {
+    this->cameraPos = camera->position;
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
     this->shader.use();
@@ -90,7 +91,7 @@ glm::vec3 Object::getRotation()
     return eulerAngles; // pitch, yaw, roll
 }
 
-btRigidBody* Object::getRigidBody()
+btRigidBody *Object::getRigidBody()
 {
     return this->rigidBody;
 }
