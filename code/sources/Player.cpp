@@ -51,11 +51,4 @@ void Player::move(float deltaTime, glm::vec4 direction)
     this->getRigidBody()->setWorldTransform(transform);
 
     this->getRigidBody()->activate(true);
-
-    transform = this->getRigidBody()->getWorldTransform();
-    // Create a GLM model matrix from the world transform
-
-    glm::mat4 modelMatrix;
-    transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));
-    this->setModelMatrix(modelMatrix);
 }

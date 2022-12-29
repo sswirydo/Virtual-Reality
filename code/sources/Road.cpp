@@ -3,7 +3,7 @@
 Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light) 
 {
     //Creates the ground shape
-    btCollisionShape* groundShape = new btBoxShape(btVector3(107, 1, 100));
+    btCollisionShape* groundShape = new btBoxShape(btVector3(107, 0, 100)); // TODO: set Y to 0 or 1?
     btCollisionShape* borneShape_l = new btBoxShape(btVector3(0.5, 1, 100));
     btCollisionShape* borneShape_r = new btBoxShape(btVector3(0.5, 1, 100));
 
@@ -37,7 +37,8 @@ Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) :
 
 void Road::move(int nbOfRoads, int pos)
 {
-    
+    if (pos == 0) { return; }
+
     glm::vec3 vector;
     if (pos == -1) {
         vector = glm::vec3(0.f, 0.f, -200 * nbOfRoads);
@@ -46,7 +47,7 @@ void Road::move(int nbOfRoads, int pos)
         vector = glm::vec3(0, 0, -200 * pos);
     }
 
-    this->translate(vector);
+    this->forceTranslate(vector);
     this->translateBarriers(vector);
     this->moveLinkedCars(vector);
     this->moveLinkedObjects(vector);
@@ -57,7 +58,7 @@ void Road::moveLinkedObjects(glm::vec3 vector) // NOTE: simple objects without r
 {
     for (size_t t = 0; t < linkedObjects.size(); t++) {
         Object* obj = linkedObjects[t];
-        obj->setModelMatrix(glm::translate(obj->getModelMatrix(), vector));
+        obj->translateModel(vector);
     }
 }
 
@@ -70,10 +71,9 @@ void Road::moveLinkedCars(glm::vec3 vector)
 
     /* ... */
 
-    for (size_t t = 0; t < cars.size(); t++) {
-        Car* car = cars[t];
-        //car->resetStartZ();
-        //car->translate();
+    for (size_t t = 0; t < this->getCars().size(); t++) {
+        Car* car = this->getCars()[t];
+        car->translatePhysics(vector);
     }
 }
 
@@ -92,6 +92,9 @@ std::vector<Object*> Road::getLinkedObjects()
 {
     return this->linkedObjects;
 }
+std::vector<Car*> Road::getCars() {
+    return this->cars;
+}
 
 
 
@@ -99,13 +102,7 @@ void Road::translateBarriers(glm::vec3 vector)
 {
     for (size_t t = 0; t < otherBodies.size(); t++) {
         btRigidBody* body = this->otherBodies[t];
-        btTransform transform = body->getWorldTransform();
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));
-        modelMatrix = glm::translate(modelMatrix, vector);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 0)); // TODO: TEMPORARY HEIGHT ADD
-        transform.setFromOpenGLMatrix(glm::value_ptr(modelMatrix));
-        body->setWorldTransform(transform);
+        body->translate(btVector3(vector.x, vector.y, vector.z));
     }
 }
 
@@ -113,7 +110,7 @@ btRigidBody* Road::createGroundRigidBodyFromShape(btCollisionShape* groundShape)
 {
     btTransform groundTransform;
     groundTransform.setIdentity();
-    groundTransform.setOrigin(btVector3(0, -1, 0));
+    groundTransform.setOrigin(btVector3(0, 0, 0));
 
     {
         //The ground is not dynamic, we set its mass to 0

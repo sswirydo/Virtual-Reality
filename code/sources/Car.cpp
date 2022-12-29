@@ -11,7 +11,7 @@ Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Ob
     btRigidBody::btRigidBodyConstructionInfo carRigidBodyCI(carMass, carMotionState, this->collisionShape, carInertia);
     this->rigidBody = new btRigidBody(carRigidBodyCI);
 
-    this->rigidBody->setFriction(0.9);
+    //this->rigidBody->setFriction(0.9);
     this->rigidBody->setAngularFactor(btVector3(1, 0, 1)); // disables Y-axis rotation
 
     physics->getWorld()->addRigidBody(this->rigidBody);
@@ -19,7 +19,23 @@ Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Ob
 
 void Car::move(float deltaTime) 
 {   
-    /* TODO */
+    btTransform transform;
+    btVector3 position;
+    btVector3 velocity;
+    btVector3 acceleration(0, 0, 0);
+    const int accelerationFactor = 2;
+    acceleration += btVector3(0, 0, -accelerationFactor); 
+    // Update the car's velocity based on the acceleration
+    velocity = this->getRigidBody()->getLinearVelocity();
+    velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
+    this->getRigidBody()->setLinearVelocity(velocity);
+    //Update the car's position based on the velocity
+    transform = this->getRigidBody()->getWorldTransform();
+    position = transform.getOrigin();
+    position += velocity * deltaTime;
+    transform.setOrigin(position);
+    this->getRigidBody()->setWorldTransform(transform);
+    this->getRigidBody()->activate(true);
 }
 
 
@@ -89,6 +105,13 @@ std::vector<Mesh> Car::getCarosserieMesh()
     return carosserie;
 }
 
+void Car::render(Camera* camera) {
+    this->updateModelFromPhysics();
+    this->translateModel(glm::vec3(0, -1, 0));
+    this->rotateModel(180.0f, glm::vec3(0, 1, 0));
+    this->Object::render(camera);
+}
+ 
 // void Car::render(Camera* camera, LightSource &light)
 // {
 //     glm::mat4 projection = camera->getProjectionMatrix();
