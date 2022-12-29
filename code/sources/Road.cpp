@@ -14,10 +14,11 @@ Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) :
     btRigidBody::btRigidBodyConstructionInfo borne_r_RigidBodyCI(0, borneShape_r_ms, borneShape_r);
     btRigidBody* rigidBody_l = new btRigidBody(borne_l_RigidBodyCI);
     btRigidBody* rigidBody_r = new btRigidBody(borne_r_RigidBodyCI);
+    
     //Stores on an array for reusing
-    //collisionShapes.push_back(groundShape);
-    //collisionShapes.push_back(borneShape_l);
-    //collisionShapes.push_back(borneShape_r);
+    this->physics->addShape(groundShape);
+    this->physics->addShape(borneShape_l);
+    this->physics->addShape(borneShape_r);
     //Creates the ground rigidbody
     btRigidBody* groundRigidBody = createGroundRigidBodyFromShape(groundShape);
 

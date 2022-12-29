@@ -8,6 +8,7 @@ class Physics {
 public:
 	Physics();
 	btDiscreteDynamicsWorld* getWorld();
+	void addShape(btCollisionShape* collisionShape);
 	~Physics();
 protected:
 	btDefaultCollisionConfiguration* collisionConfiguration;

@@ -1,4 +1,5 @@
 #include "../headers/Physics.hpp"
+#include "Physics.hpp"
 
 btRigidBody* createGroundRigidBodyFromShape(btCollisionShape* groundShape);
 
@@ -23,6 +24,10 @@ btDiscreteDynamicsWorld* Physics::getWorld()
     return this->world;
 }
 
+void Physics::addShape(btCollisionShape *collisionShape)
+{
+    this->collisionShapes.push_back(collisionShape);
+}
 Physics::~Physics()
 {
     for (int j = 0; j < collisionShapes.size(); j++)
