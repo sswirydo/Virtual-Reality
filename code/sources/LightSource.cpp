@@ -1,6 +1,8 @@
 #include "../headers/LightSource.hpp"
-
-LightSource::LightSource(glm::vec3 lightPosition, glm::vec3 lightColor)
+LightSource::LightSource()
+{
+}
+LightSource::LightSource(glm::vec3 lightPosition, glm::vec4 lightColor)
 {
     this->lightShader = Shader("code/shaders/lightShader.vert","code/shaders/lightShader.frag");
     this->setColor(lightColor);
@@ -31,9 +33,9 @@ void LightSource::setPosition(glm::vec3 newPosition)
     this->position = newPosition;
 }
 
-void LightSource::setColor(glm::vec3 newColor)
+void LightSource::setColor(glm::vec4 newColor)
 {
-    this->color = glm::vec4(newColor,0.4f);
+    this->color = newColor;
 }
 
 void LightSource::show(Camera * camera)

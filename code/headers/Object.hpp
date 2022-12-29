@@ -14,6 +14,7 @@
 #include "Model.hpp"
 #include "Camera.hpp"
 #include "Physics.hpp"
+#include "LightSource.hpp"
 
 #include <string>
 #include <iostream>
@@ -27,13 +28,13 @@ class Object
 {
 public:
     Object();
-    Object(Model &model, Shader &shader, Physics* physics, bool createRigidBody = true);
+    Object(Model &model, Shader &shader, Physics* physics, LightSource &light,bool createRigidBody = true);
     void render(Camera* camera);
     void setModel(Model &model);
     void setShader(Shader &shader);
     void setModelMatrix(glm::mat4 model);
     glm::mat4 getModelMatrix();
-
+    virtual void Draw();
     btRigidBody* getRigidBody();
     btCollisionShape* getCollisionShape();
     glm::vec3 getWorldCoordinates();
@@ -42,6 +43,7 @@ public:
 protected:
     Model model;
     glm::mat4 modelMatrix;
+    LightSource light;
     Shader shader;
     Physics* physics;
 

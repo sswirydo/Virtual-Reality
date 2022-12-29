@@ -21,6 +21,7 @@ class Skybox
 {
 public:
 	Skybox();
+	Skybox(LightSource light);
 	void render(Camera* camera);
 	
 private:

@@ -3,18 +3,16 @@
 
 #include "Object.hpp"
 #include "Camera.hpp"
-#include "LightSource.hpp"
 
 class Object;
 
 class Car : public Object
 {
 public:
-    Car(Model &model,Shader &shader, Physics* physics);
+    Car(Model &model,Shader &shader, Physics* physics,LightSource &light);
     void move(float deltaTime, glm::vec4 direction);
-    void render(Camera* camera, LightSource &light);
+    // void render(Camera* camera);
     void Draw();
-
     std::vector<Mesh> getWheelsMesh();
     std::vector<Mesh> getWindowsMesh();
     std::vector<Mesh> getCarosserieMesh();
