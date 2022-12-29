@@ -21,7 +21,7 @@
 #include "../headers/Object.hpp"
 #include "../headers/Car.hpp"
 #include "../headers/Road.hpp"
-// #include "../headers/Player.hpp"
+#include "../headers/Player.hpp"
 #include "../headers/LightSource.hpp"
 #include "../headers/Physics.hpp"
 #include "../headers/Debug.hpp"
@@ -85,7 +85,7 @@ int main()
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/car/car.obj");
-    Car *car = new Car(carModel, carShader, physics,&light);
+    Player *playerCar = new Player(carModel, carShader, physics,&light);
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
@@ -97,7 +97,7 @@ int main()
     road2.move(1);
     road3.move(2);
 
-    PlayerCamera playerCamera = PlayerCamera(car);
+    PlayerCamera playerCamera = PlayerCamera(playerCar);
 
 
 
@@ -148,7 +148,7 @@ int main()
 
         if (!pauseGame) 
         {
-            car->move(deltaTime, movementDirection);
+            playerCar->move(deltaTime, movementDirection);
         }
         
 
@@ -166,7 +166,7 @@ int main()
         
         */
 
-        float distance = car->getWorldCoordinates().z;
+        float distance = playerCar->getWorldCoordinates().z;
         std::cout << "XOXO " << distance << " " << -200 * (roadDisplacement - 2) << std::endl;
         if (distance < -200 * (roadDisplacement - 2)) // TODO check if correct
         {
@@ -185,8 +185,8 @@ int main()
 
         if (!pauseGame) 
         {
-            car->setModelMatrix(glm::translate(car->getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
-            car->setModelMatrix(glm::rotate(car->getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
+            playerCar->setModelMatrix(glm::translate(playerCar->getModelMatrix(), glm::vec3(0.0f, -1.0f, 0.0f))); // TODO: TEMPORARY
+            playerCar->setModelMatrix(glm::rotate(playerCar->getModelMatrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f))); // TODO: TEMPORARY
         }
        
         if (renderDebug) 
@@ -196,7 +196,7 @@ int main()
         }
         if (renderModel)
         {
-            glm::vec3 newLightPosition = glm::vec3(car->getModelMatrix()[3])+glm::vec3(-100.0f, 100.0f, -100.0f);
+            glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3])+glm::vec3(-100.0f, 100.0f, -100.0f);
             light.setPosition(newLightPosition);
             light.show(camera);
 
@@ -204,7 +204,7 @@ int main()
             road2.render(camera);
             road3.render(camera);
 
-            car->render(camera);
+            playerCar->render(camera);
         }
         
         glDepthFunc(GL_LESS);
@@ -223,7 +223,7 @@ int main()
         
     }
     game.terminate();
-    delete car;
+    delete playerCar;
     return 0;
 }
 

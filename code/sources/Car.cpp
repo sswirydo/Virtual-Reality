@@ -3,7 +3,7 @@
 Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Object(model, shader, physics,light) 
 {
     // TODO: below is provisory (testing)
-    this->collisionShape = new btBoxShape(btVector3(1, 1, 2));
+    this->collisionShape = new btBoxShape(btVector3(1, 1, 1.8));
     btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2, 0)));
     btScalar carMass = 1000;
     btVector3 carInertia(0, 0, 0);
@@ -11,62 +11,15 @@ Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Ob
     btRigidBody::btRigidBodyConstructionInfo carRigidBodyCI(carMass, carMotionState, this->collisionShape, carInertia);
     this->rigidBody = new btRigidBody(carRigidBodyCI);
 
+    this->rigidBody->setFriction(0.9);
+    this->rigidBody->setAngularFactor(btVector3(1, 0, 1)); // disables Y-axis rotation
+
     physics->getWorld()->addRigidBody(this->rigidBody);
 }
 
-void Car::move(float deltaTime, glm::vec4 direction) 
+void Car::move(float deltaTime) 
 {   
-    btTransform transform;
-    btVector3 position;
-    btVector3 velocity;
-
-    btVector3 acceleration(0, 0, 0);
-    
-    const int accelerationFactor = 5;
-
-    if (direction.x) // FORWARD 
-    {
-        acceleration += btVector3(0, 0, -accelerationFactor);
-    }
-    if (direction.y) // BACKWARDS
-    {
-        acceleration += btVector3(0, 0, +accelerationFactor);
-    }
-    if (direction.z) // LEFT
-    {
-        acceleration += btVector3(-accelerationFactor, 0, 0);
-    }
-    if (direction.w) // RIGHT
-    {
-        acceleration += btVector3(+accelerationFactor, 0, 0);
-    }
-
-    // TODO : TEMPORARY FIX: making sure the car do not drift due to collision with the ground
-    transform = rigidBody->getWorldTransform();
-    transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
-    this->getRigidBody()->setWorldTransform(transform);
-
-
-    // Update the car's velocity based on the acceleration
-    velocity = this->getRigidBody()->getLinearVelocity();
-    velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
-    this->getRigidBody()->setLinearVelocity(velocity);
-
-    //Update the car's position based on the velocity
-    transform = this->getRigidBody()->getWorldTransform();
-    position = transform.getOrigin();
-    position += velocity * deltaTime;
-    transform.setOrigin(position);
-    this->getRigidBody()->setWorldTransform(transform);
-    
-    this->getRigidBody()->activate(true);
-
-    transform = this->getRigidBody()->getWorldTransform();
-    // Create a GLM model matrix from the world transform
-    
-    glm::mat4 modelMatrix;
-    transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));
-    this->setModelMatrix(modelMatrix);
+    /* TODO */
 }
 
 

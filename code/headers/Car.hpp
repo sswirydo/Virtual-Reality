@@ -10,7 +10,7 @@ class Car : public Object
 {
 public:
     Car(Model &model,Shader &shader, Physics* physics,LightSource *light);
-    void move(float deltaTime, glm::vec4 direction);
+    void move(float deltaTime);
     // void render(Camera* camera);
     void Draw();
     std::vector<Mesh> getWheelsMesh();
