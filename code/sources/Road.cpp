@@ -33,26 +33,80 @@ Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) :
 
 }
 
-void Road::move(int pos) 
+
+
+void Road::move(int nbOfRoads, int pos)
 {
-    this->translateFrom(glm::vec3(0, 0, -200 * pos), glm::mat4(1.0f));
-    this->translateBarriers(pos);
+    
+    glm::vec3 vector;
+    if (pos == -1) {
+        vector = glm::vec3(0.f, 0.f, -200 * nbOfRoads);
+    }
+    else { // init
+        vector = glm::vec3(0, 0, -200 * pos);
+    }
+
+    this->translate(vector);
+    this->translateBarriers(vector);
+    this->moveLinkedCars(vector);
+    this->moveLinkedObjects(vector);
 }
 
-void Road::translateBarriers(int pos)
+
+void Road::moveLinkedObjects(glm::vec3 vector) // NOTE: simple objects without rigidbodies
 {
-    btTransform transformL;
-    btTransform transformR;
-    btRigidBody* barrierL = this->otherBodies[0];
-    btRigidBody* barrierR = this->otherBodies[1];
-    glm::mat4 transfL = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -200 * pos));
-    glm::mat4 transfR = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -200 * pos));
-    transfL = glm::translate(transfL, glm::vec3(-7, 1, 0)); // TODO: fix translate
-    transfR = glm::translate(transfR, glm::vec3(7, 1, 0));
-    transformL.setFromOpenGLMatrix((btScalar*)glm::value_ptr(transfL));
-    transformR.setFromOpenGLMatrix((btScalar*)glm::value_ptr(transfR));
-    barrierL->setWorldTransform(transformL);
-    barrierR->setWorldTransform(transformR);
+    for (size_t t = 0; t < linkedObjects.size(); t++) {
+        Object* obj = linkedObjects[t];
+        obj->setModelMatrix(glm::translate(obj->getModelMatrix(), vector));
+    }
+}
+
+
+void Road::moveLinkedCars(glm::vec3 vector)
+{
+    // as the obstacle cars move, we do not simly translate them
+    // but position them at a certain position of the road
+    // from which they will move forward
+
+    /* ... */
+
+    for (size_t t = 0; t < cars.size(); t++) {
+        Car* car = cars[t];
+        //car->resetStartZ();
+        //car->translate();
+    }
+}
+
+
+void Road::addCars(std::vector<Car*> cars) 
+{
+    this->cars = cars;
+}
+
+void Road::linkObject(Object* obj)
+{
+    this->linkedObjects.push_back(obj);
+}
+
+std::vector<Object*> Road::getLinkedObjects()
+{
+    return this->linkedObjects;
+}
+
+
+
+void Road::translateBarriers(glm::vec3 vector)
+{
+    for (size_t t = 0; t < otherBodies.size(); t++) {
+        btRigidBody* body = this->otherBodies[t];
+        btTransform transform = body->getWorldTransform();
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        transform.getOpenGLMatrix(glm::value_ptr(modelMatrix));
+        modelMatrix = glm::translate(modelMatrix, vector);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 0)); // TODO: TEMPORARY HEIGHT ADD
+        transform.setFromOpenGLMatrix(glm::value_ptr(modelMatrix));
+        body->setWorldTransform(transform);
+    }
 }
 
 btRigidBody* Road::createGroundRigidBodyFromShape(btCollisionShape* groundShape)
