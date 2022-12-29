@@ -30,7 +30,7 @@ public:
 
 	Object* player = NULL;
 
-	float distanceFromPlayer = 20;
+	float distanceFromPlayer = 8;
 	float angleAroundPlayer = 180;
 
 protected:

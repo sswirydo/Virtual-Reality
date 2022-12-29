@@ -20,7 +20,7 @@ glm::mat4 PlayerCamera::getViewMatrix()
 
 glm::mat4 PlayerCamera::getProjectionMatrix(float fov, float near, float far)
 {
-	return glm::perspective(fov, 4.0f/3.0f, near, far);
+	return glm::perspective(fov, this->ScreenRatio, near, far);
 }
 
 void PlayerCamera::move()
@@ -109,8 +109,8 @@ void PlayerCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean 
 void PlayerCamera::ProcessMouseScroll(float yoffset)
 {
 	distanceFromPlayer -= (float)yoffset;
-	if (distanceFromPlayer < 5.0f)
-		distanceFromPlayer = 5.0f;
+	if (distanceFromPlayer < 3.0f)
+		distanceFromPlayer = 3.0f;
 	if (distanceFromPlayer > 45.0f)
 		distanceFromPlayer = 45.0f;
 }

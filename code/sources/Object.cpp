@@ -8,33 +8,27 @@ Object::Object(Model &model,Shader &shader, Physics* physics,LightSource *light)
     this->physics = physics;
     this->setModel(model);
     this->setShader(shader);
-    this->modelMatrix = glm::mat4(1.0f);
+}
 
-    //if (false) 
-    //{
-    //    btTriangleMesh* meshInterface = new btTriangleMesh();
-    //    std::vector<Mesh> meshes = model.getMeshes();
-    //    for (size_t i = 0; i < meshes.size(); i++) {
-    //        Mesh mesh = meshes[i];
-    //        std::vector<glm::vec3> positionTriangles = mesh.positionTriangles;
-    //        for (size_t j = 0; j < mesh.positionTriangles.size(); j += 3) {
-    //            glm::vec3 pos1 = mesh.positionTriangles[j];
-    //            glm::vec3 pos2 = mesh.positionTriangles[j+1];
-    //            glm::vec3 pos3 = mesh.positionTriangles[j+2];
-    //            meshInterface->addTriangle(
-    //                btVector3(pos1.x, pos1.y, pos1.z),
-    //                btVector3(pos2.x, pos2.y, pos2.z),
-    //                btVector3(pos3.x, pos3.y, pos3.z)
-    //            );
-    //        }            
-    //    }
-    //    this->collisionShape = new btBvhTriangleMeshShape(meshInterface, false, true);
-    //    btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
-    //    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0, motionState, collisionShape, btVector3(0, 0, 0));
-    //    this->rigidBody = new btRigidBody(rigidBodyCI);
-    //    this->rigidBody->setContactProcessingThreshold(0.f);
-    //    physics->getWorld()->addRigidBody(rigidBody);
-    //} 
+void Object::translateFrom(glm::vec3 vector, glm::mat4 fromModel)
+{
+    this->setModelMatrix(glm::translate(fromModel, vector));
+    this->forceUpdatePhysics();
+}
+void Object::translate(glm::vec3 vector)
+{
+    this->setModelMatrix(glm::translate(this->getModelMatrix(), vector));
+    this->forceUpdatePhysics();
+}
+void Object::rotate(float degrees, glm::vec3 axis)
+{
+    this->setModelMatrix(glm::rotate(this->getModelMatrix(), glm::radians(degrees), axis));
+    this->forceUpdatePhysics();
+}
+void Object::forceUpdatePhysics() {
+    btTransform transform;
+    transform.setFromOpenGLMatrix((btScalar*)glm::value_ptr(this->getModelMatrix()));
+    this->getRigidBody()->setWorldTransform(transform);
 }
 
 void Object::setModel(Model &model){
@@ -98,3 +92,31 @@ btCollisionShape* Object::getCollisionShape()
 {
     return this->collisionShape;
 }
+
+
+
+//if (false) 
+//{
+//    btTriangleMesh* meshInterface = new btTriangleMesh();
+//    std::vector<Mesh> meshes = model.getMeshes();
+//    for (size_t i = 0; i < meshes.size(); i++) {
+//        Mesh mesh = meshes[i];
+//        std::vector<glm::vec3> positionTriangles = mesh.positionTriangles;
+//        for (size_t j = 0; j < mesh.positionTriangles.size(); j += 3) {
+//            glm::vec3 pos1 = mesh.positionTriangles[j];
+//            glm::vec3 pos2 = mesh.positionTriangles[j+1];
+//            glm::vec3 pos3 = mesh.positionTriangles[j+2];
+//            meshInterface->addTriangle(
+//                btVector3(pos1.x, pos1.y, pos1.z),
+//                btVector3(pos2.x, pos2.y, pos2.z),
+//                btVector3(pos3.x, pos3.y, pos3.z)
+//            );
+//        }            
+//    }
+//    this->collisionShape = new btBvhTriangleMeshShape(meshInterface, false, true);
+//    btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+//    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0, motionState, collisionShape, btVector3(0, 0, 0));
+//    this->rigidBody = new btRigidBody(rigidBodyCI);
+//    this->rigidBody->setContactProcessingThreshold(0.f);
+//    physics->getWorld()->addRigidBody(rigidBody);
+//} 

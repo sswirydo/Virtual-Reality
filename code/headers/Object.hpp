@@ -40,15 +40,21 @@ public:
     glm::vec3 getWorldCoordinates();
     glm::vec3 getRotation();
 
+    void translateFrom(glm::vec3 vector, glm::mat4 fromModel);
+    void translate(glm::vec3 vector);
+    void rotate(float degrees, glm::vec3 axis);
+
 protected:
     Model model;
-    glm::mat4 modelMatrix;
+    glm::mat4 modelMatrix = glm::mat4(1.0f);;
     LightSource *light;
     Shader shader;
     Physics* physics;
     glm::vec3 cameraPos;
     btRigidBody* rigidBody = NULL;
     btCollisionShape* collisionShape = NULL;
+
+    void forceUpdatePhysics();
     
 };
 

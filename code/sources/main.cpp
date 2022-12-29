@@ -89,7 +89,13 @@ int main()
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Road road = Road(roadModel, roadShader, physics,&light);
+    Road road = Road(roadModel, roadShader, physics, &light);
+    Road road2 = Road(roadModel, roadShader, physics, &light);
+    Road road3 = Road(roadModel, roadShader, physics,&light);
+
+    road.move(0);
+    road2.move(1);
+    road3.move(2);
 
     PlayerCamera playerCamera = PlayerCamera(car);
 
@@ -111,6 +117,7 @@ int main()
     //    }
     //};
 
+    int roadDisplacement = 3;
     DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
 
@@ -132,7 +139,7 @@ int main()
             camera = &playerCamera;
         }
 
-
+ 
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -150,6 +157,30 @@ int main()
 
         glDepthFunc(GL_LEQUAL);
         skybox.render(camera);
+
+        /*
+        
+        -100 -> 100 : 150
+        100->300 : 350
+        300->500 : 550
+        
+        */
+
+        float distance = car->getWorldCoordinates().z;
+        std::cout << "XOXO " << distance << " " << -200 * (roadDisplacement - 2) << std::endl;
+        if (distance < -200 * (roadDisplacement - 2)) // TODO check if correct
+        {
+            if (roadDisplacement % 3 == 0) {
+                road.move(roadDisplacement);
+            }
+            else if (roadDisplacement % 3 == 1) {
+                road2.move(roadDisplacement);
+            }
+            else {
+                road3.move(roadDisplacement);
+            }
+            roadDisplacement++;
+        }
 
 
         if (!pauseGame) 
@@ -170,6 +201,9 @@ int main()
             light.show(camera);
 
             road.render(camera);
+            road2.render(camera);
+            road3.render(camera);
+
             car->render(camera);
         }
         
