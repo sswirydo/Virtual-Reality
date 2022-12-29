@@ -20,13 +20,13 @@ void main()
 {    
 
     // ambient light
-    vec4 ambient = vec4(material_ambient,1.0) * lightColor * 0.3;
+    vec4 ambient = vec4(material_ambient,1.0) * lightColor * 0.18;
 
     // diffuse light 
     vec3 normalizedNormal = normalize(Normal);
     vec3 lightDirection = normalize(lightVector);  
     float diff = max(dot(normalizedNormal, lightDirection), 0.0);
-    vec4 diffuse = (diff * vec4(material_diffuse,1.0))* lightColor * 0.5 ;
+    vec4 diffuse = (diff * vec4(material_diffuse,1.0))* lightColor * 1.0 ;
     
     // specular light 
     vec3 viewDir = normalize(viewPos - FragPos);
