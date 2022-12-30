@@ -28,10 +28,11 @@ class Object
 {
 public:
     Object();
-    Object(Model &model, Shader &shader, Physics* physics, LightSource *light);
+    Object(Model* model, Shader* shader, Physics* physics, LightSource* light);
+    ~Object();
     virtual void render(Camera* camera);
-    void setModel(Model &model);
-    void setShader(Shader &shader);
+    void setModel(Model* model);
+    void setShader(Shader* shader);
     void setModelMatrix(glm::mat4 model);
     glm::mat4 getModelMatrix();
     virtual void Draw();
@@ -56,14 +57,14 @@ public:
     void rotatePhysics(float degrees, glm::vec3 axis);
 
 protected:
-    Model model;
+    Model* model = nullptr;
     glm::mat4 modelMatrix = glm::mat4(1.0f);;
-    LightSource *light;
-    Shader shader;
-    Physics* physics;
+    LightSource* light = nullptr;
+    Shader* shader = nullptr;
+    Physics* physics = nullptr;
     glm::vec3 cameraPos;
-    btRigidBody* rigidBody = NULL;
-    btCollisionShape* collisionShape = NULL;
+    btRigidBody* rigidBody = nullptr;
+    btCollisionShape* collisionShape = nullptr;
 };
 
 

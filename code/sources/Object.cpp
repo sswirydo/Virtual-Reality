@@ -2,12 +2,27 @@
 
 Object::Object() {}
 
-Object::Object(Model &model,Shader &shader, Physics* physics,LightSource *light)
+Object::Object(Model* model,Shader* shader, Physics* physics, LightSource *light)
 {
+    //std::cout << "Constructor: " << typeid(this).name() << std::endl;
     this->light = light;
     this->physics = physics;
     this->setModel(model);
     this->setShader(shader);
+}
+
+Object::~Object() 
+{
+    //std::cout << "Destructor: " << typeid(this).name() << std::endl;
+    if (this->rigidBody != nullptr) 
+    {
+        this->physics->getWorld()->removeRigidBody(this->getRigidBody());
+        delete this->rigidBody;
+        this->rigidBody = nullptr;
+
+        delete this->collisionShape;
+        this->collisionShape = nullptr;
+    }
 }
 
 
@@ -55,11 +70,11 @@ void Object::updateModelFromPhysics()
 
 
 
-void Object::setModel(Model &model){
+void Object::setModel(Model* model){
     this->model = model;
 }
 
-void Object::setShader(Shader &shader){
+void Object::setShader(Shader* shader){
     this->shader = shader;
 }
 
@@ -74,7 +89,7 @@ glm::mat4 Object::getModelMatrix()
 }
 
 void Object::Draw(){
-    this->model.Draw(this->shader);
+    this->model->Draw(this->shader);
 }
 
 void Object::render(Camera* camera)
@@ -82,12 +97,12 @@ void Object::render(Camera* camera)
     this->cameraPos = camera->position;
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
-    this->shader.use();
-    this->shader.setVec3("lightPos", this->light->getPosition());
-    this->shader.setVec4("lightColor", this->light->getColor());
-    this->shader.setMat4("projection", projection);
-    this->shader.setMat4("view", view);
-    this->shader.setMat4("model", this->modelMatrix);
+    this->shader->use();
+    this->shader->setVec3("lightPos", this->light->getPosition());
+    this->shader->setVec4("lightColor", this->light->getColor());
+    this->shader->setMat4("projection", projection);
+    this->shader->setMat4("view", view);
+    this->shader->setMat4("model", this->modelMatrix);
     this->Draw();
 }
 

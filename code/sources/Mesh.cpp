@@ -69,7 +69,7 @@ void Mesh::setupMesh()
     glBindVertexArray(0);
 } 
 
-void Mesh::Draw(Shader &shader) 
+void Mesh::Draw(Shader* shader) 
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
@@ -92,17 +92,17 @@ void Mesh::Draw(Shader &shader)
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
     // send material
-    shader.setVec3("material.diffuse",this->material.Diffuse);
-    shader.setVec3("material.ambient",this->material.Ambient);
-    shader.setVec3("material.specular",this->material.Specular);
-    shader.setFloat("material.shininess",this->material.Shininess);
-    shader.setFloat("material.transparency",this->material.Reflectivity);
+    shader->setVec3("material.diffuse",this->material.Diffuse);
+    shader->setVec3("material.ambient",this->material.Ambient);
+    shader->setVec3("material.specular",this->material.Specular);
+    shader->setFloat("material.shininess",this->material.Shininess);
+    shader->setFloat("material.transparency",this->material.Reflectivity);
 
     glActiveTexture(GL_TEXTURE0);
     
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 } 

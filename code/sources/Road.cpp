@@ -1,7 +1,9 @@
 #include "../headers/Road.hpp"
 
-Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light) 
+Road::Road(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light) 
 {
+    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ROAD " << std::endl;
+
     //Creates the ground shape
     btCollisionShape* groundShape = new btBoxShape(btVector3(107, 0, 100)); // TODO: set Y to 0 or 1?
     btCollisionShape* borneShape_l = new btBoxShape(btVector3(0.5, 1, 100));
@@ -27,11 +29,42 @@ Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) :
     this->otherBodies.push_back(rigidBody_r);
 
     //Adds it to the world
-    physics->addBody(this->rigidBody, ROAD);
-    physics->addBody(rigidBody_l, BARRIER);
-    physics->addBody(rigidBody_r, BARRIER);
+    this->physics->addBody(this->rigidBody, ROAD);
+    this->physics->addBody(rigidBody_l, BARRIER);
+    this->physics->addBody(rigidBody_r, BARRIER);
 
     this->generateLamps();
+}
+
+// Note: Road rigidbody should be destroyed in the Object.
+Road::~Road() 
+{
+    for (size_t t = 0; t < otherBodies.size(); t++)
+    {
+        if (otherBodies[t] != nullptr) 
+        {
+            this->physics->getWorld()->removeRigidBody(otherBodies[t]);
+            delete otherBodies[t];
+            otherBodies[t] = nullptr;
+        }
+        
+    }
+    for (size_t t = 0; t < linkedObjects.size(); t++)
+    {
+        if (linkedObjects[t] != nullptr) 
+        {
+            delete linkedObjects[t];
+            linkedObjects[t] = nullptr;
+        }
+    }
+    for (size_t t = 0; t < cars.size(); t++)
+    {
+        if (cars[t] != nullptr) 
+        {
+            delete cars[t];
+            cars[t] = nullptr;
+        }
+    }
 }
 
 
@@ -69,7 +102,7 @@ void Road::moveLinkedObjects(glm::vec3 vector) // NOTE: simple objects without r
     }
 }
 
-void Road::addCarInfo(Model& model, Shader& shader, LightSource* light) {
+void Road::addCarInfo(Model* model, Shader* shader, LightSource* light) {
     this->carModel = model;
     this->carShader = shader;
     this->carLight = light;
@@ -107,17 +140,11 @@ void Road::checkCarsState()
     for (size_t t = 0; t < this->cars.size(); t++) {
         Car* car = this->cars[t];
         if (car->getWorldCoordinates().y < -1) {
-            std::cout << "CAAAAAR ISSSSS OUUUUUUT " << t << std::endl;
-            this->removeCar(car);
+            delete car;
             this->cars.at(t) = nullptr;
         }
     }
     this->cars.erase( remove(this->cars.begin(), this->cars.end(), nullptr ), this->cars.end() );
-}
-void Road::removeCar(Car* car)
-{
-    this->physics->getWorld()->removeRigidBody(car->getRigidBody());
-    delete car;
 }
 
 
@@ -141,9 +168,9 @@ std::vector<Car*> Road::getCars() {
 
 constexpr int NUMBER_OF_LAMPS = 5;
 void Road::generateLamps() {
-    Model lampModel = Model("assets/meshes/lamp/lamp.obj");
-    Model lampModelReversed = Model("assets/meshes/lamp/lamp-reversed.obj");
-    Shader lampShader = Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    Model* lampModel = new Model("assets/meshes/lamp/lamp.obj");
+    Model* lampModelReversed = new Model("assets/meshes/lamp/lamp-reversed.obj");
+    Shader* lampShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
         Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, this->light, false, i);
         linkedObjects.push_back(lamp);

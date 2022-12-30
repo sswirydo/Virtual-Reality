@@ -1,7 +1,7 @@
 #include "../headers/StreetLamp.hpp"
 
 constexpr int LAMP_SPACING = 40;
-StreetLamp::StreetLamp(Model& model, Shader& shader, Physics* physics, LightSource* sun, bool isAtRight, int position) : Object(model, shader, physics, sun) 
+StreetLamp::StreetLamp(Model* model, Shader* shader, Physics* physics, LightSource* sun, bool isAtRight, int position) : Object(model, shader, physics, sun) 
 {
     //this->setModelMatrix(glm::scale(this->getModelMatrix(),glm::vec3(6.0f)));
     this->isAtRight = isAtRight;
@@ -20,7 +20,7 @@ StreetLamp::StreetLamp(Model& model, Shader& shader, Physics* physics, LightSour
     
 }
 
-void StreetLamp::render(Camera *camera)
+void StreetLamp::render(Camera* camera)
 {
     this->Object::render(camera);
     glm::vec3 myLightPosition; 

@@ -2,9 +2,9 @@
 Skybox::Skybox(){}
 Skybox::Skybox(LightSource *light) 
 {
-    cubeMapModel = Model("assets/objects/cube.obj");
-    cubeMapShader = Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    cubeMap = Object(cubeMapModel, cubeMapShader, NULL, light);
+    cubeMapModel = new Model("assets/objects/cube.obj");
+    cubeMapShader = new Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
+    cubeMap = new Object(cubeMapModel, cubeMapShader, nullptr, light);
     // cubeMapTexture;
     glGenTextures(1, &cubeMapTexture);
     glActiveTexture(GL_TEXTURE0);
@@ -32,13 +32,13 @@ Skybox::Skybox(LightSource *light)
 
 void Skybox::render(Camera* camera)
 {
-    cubeMapShader.use();
-    cubeMapShader.setMat4("V", camera->getViewMatrix());
-    cubeMapShader.setMat4("P", camera->getProjectionMatrix());
-    cubeMapShader.setInt("cubemapTexture", 0);
+    cubeMapShader->use();
+    cubeMapShader->setMat4("V", camera->getViewMatrix());
+    cubeMapShader->setMat4("P", camera->getProjectionMatrix());
+    cubeMapShader->setInt("cubemapTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-    cubeMap.render(camera);
+    cubeMap->render(camera);
 }
 
 

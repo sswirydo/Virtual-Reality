@@ -9,7 +9,7 @@ class Object;
 class Car : public Object
 {
 public:
-    Car(Model &model,Shader &shader, Physics* physics,LightSource *light);
+    Car(Model* model,Shader* shader, Physics* physics,LightSource* light);
     void move(float deltaTime);
     void render(Camera* camera);
     void Draw();

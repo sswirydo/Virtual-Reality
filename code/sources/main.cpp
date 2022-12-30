@@ -45,7 +45,7 @@ bool pauseGame = false;
 glm::vec4 movementDirection = glm::vec4(false,false,false,false);
 
 // camera
-Camera* camera = NULL;
+Camera* camera = nullptr;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -97,34 +97,36 @@ int main()
     glfwSetKeyCallback(game.getWindow(), key_callback);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // tell GLFW to capture our mouse
 
-    WorldCamera worldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
+    WorldCamera* worldCamera = new WorldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
     LightSource* sun = new LightSource();
 
-    Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
+    Shader* lightShader = new Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
-    Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
-    Model carModel = Model("assets/meshes/car/car.obj");
+    Shader* carShader = new Shader("code/shaders/car.vert","code/shaders/car.frag");
+    Model* carModel = new Model("assets/meshes/car/car.obj");
     Player* playerCar = new Player(carModel, carShader, physics, sun);
 
-    Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
-    Model roadModel = Model("assets/meshes/road/road.obj");
-    Road road = Road(roadModel, roadShader, physics, sun);
-    Road road2 = Road(roadModel, roadShader, physics, sun);
-    Road road3 = Road(roadModel, roadShader, physics, sun);
-    std::vector<Road> roads;
+    Shader* roadShader = new Shader("code/shaders/road.vert","code/shaders/road.frag");
+    Model* roadModel = new Model("assets/meshes/road/road.obj");
+
+    Road* road = new Road(roadModel, roadShader, physics, sun);
+    Road* road2 = new Road(roadModel, roadShader, physics, sun);
+    Road* road3 = new Road(roadModel, roadShader, physics, sun);
+
+    std::vector<Road*> roads;
     roads.push_back(road);
     roads.push_back(road2);
     roads.push_back(road3);
     for (size_t t = 0; t < roads.size(); t++) {
-        roads[t].addCarInfo(carModel, carShader, sun);
+        roads[t]->addCarInfo(carModel, carShader, sun);
     }
 
 
     // TODO: temp tree add test
-    Shader treeShader = Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
-    Model treeModel = Model("assets/meshes/tree/tree.obj");
+    Shader* treeShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    Model* treeModel = new Model("assets/meshes/tree/tree.obj");
     for (int i = 0; i < 1000; i++) { 
         int minZ = 0;
         int maxZ = 99;
@@ -145,16 +147,16 @@ int main()
         glm::vec3 vector = glm::vec3(numX, 0, numZ);
         tree->setModelMatrix(glm::translate(tree->getModelMatrix(), vector));
 
-        roads[i % roads.size()].linkObject(tree);
+        roads[i % roads.size()]->linkObject(tree);
     }
 
     for (size_t t = 0; t < roads.size(); t++) {
-        roads[t].move(roads.size(), t);
+        roads[t]->move((int)roads.size(), t);
     }
 
     
 
-    PlayerCamera playerCamera = PlayerCamera(playerCar);
+    PlayerCamera* playerCamera = new PlayerCamera(playerCar);
 
     
 
@@ -184,18 +186,18 @@ int main()
     {
         if (cameraChanged) 
         {
-            worldCamera.position = playerCamera.position;
-            worldCamera.pitch = playerCamera.pitch;
-            worldCamera.yaw = playerCamera.yaw;
+            worldCamera->position = playerCamera->position;
+            worldCamera->pitch = playerCamera->pitch;
+            worldCamera->yaw = playerCamera->yaw;
             cameraChanged = false;
         }
         if (cameraNum == 1) 
         {
-            camera = &playerCamera;
+            camera = playerCamera;
         }
         else if (cameraNum == 2)
         {
-            camera = &worldCamera;
+            camera = worldCamera;
         }
 
  
@@ -223,7 +225,7 @@ int main()
         {
             for (size_t t = 0; t < roads.size(); t++) {
                 if (roadDisplacement % roads.size() == t) {
-                    roads[t].move(roads.size());
+                    roads[t]->move((int)roads.size());
                 }
             }
             roadDisplacement++;
@@ -245,8 +247,8 @@ int main()
 
             // rendering the roads and objects 1st for transparent windows
             for (size_t t = 0; t < roads.size(); t++) {
-                roads[t].render(camera);
-                std::vector<Object*> linkedObjects = roads[t].getLinkedObjects();
+                roads[t]->render(camera);
+                std::vector<Object*> linkedObjects = roads[t]->getLinkedObjects();
                 for (size_t l = 0; l < linkedObjects.size(); l++) {
                     linkedObjects[l]->render(camera);
                 }
@@ -254,7 +256,7 @@ int main()
 
             // rendering the cars later
             for (size_t t = 0; t < roads.size(); t++) {
-                std::vector<Car*> linkedCars = roads[t].getCars();
+                std::vector<Car*> linkedCars = roads[t]->getCars();
                 for (size_t l = 0; l < linkedCars.size(); l++) {
                     if (!pauseGame) {
                         linkedCars[l]->move(deltaTime);

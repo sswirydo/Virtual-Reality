@@ -28,7 +28,7 @@ public:
 	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 	void ProcessMouseScroll(float yoffset);
 
-	Object* player = NULL;
+	Object* player = nullptr;
 
 	float distanceFromPlayer = 8;
 	float angleAroundPlayer = 180;

@@ -12,9 +12,10 @@ class Car;
 class Road : public Object
 {
 public:
-    Road(Model& model, Shader& shader, Physics* physics, LightSource* light);
+    Road(Model* model, Shader* shader, Physics* physics, LightSource* light);
+    ~Road();
 
-    void addCarInfo(Model& model, Shader& shader, LightSource* light);
+    void addCarInfo(Model* model, Shader* shader, LightSource* light);
 
     void move(int nbOfRoads, int pos = -1);
 
@@ -43,8 +44,8 @@ private:
     std::vector<btRigidBody*> otherBodies;
     void translateBarriers(glm::vec3 vector);
 
-    Model carModel;
-    Shader carShader;
+    Model* carModel = nullptr;
+    Shader* carShader = nullptr;
     LightSource* carLight = nullptr;
 
 };
