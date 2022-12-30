@@ -21,14 +21,14 @@ class Skybox
 {
 public:
 	Skybox();
-	Skybox(LightSource *light);
+	Skybox(LightSource* light);
 	void render(Camera* camera);
 	
 private:
 	void loadCubemapFace(const char* path, const GLenum & targetFace);
-	Model cubeMapModel;
-	Shader cubeMapShader;
-	Object cubeMap;
+	Model* cubeMapModel;
+	Shader* cubeMapShader;
+	Object* cubeMap;
 	GLuint cubeMapTexture;
 };
 

@@ -1,9 +1,9 @@
 #include "../headers/Car.hpp"
 
-Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Object(model, shader, physics,light)
+Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics,light)
 {
     // TODO: below is provisory (testing)
-    this->collisionShape = new btBoxShape(btVector3(1, 1, 1.8));
+    this->collisionShape = new btBoxShape(btVector3(1, 1, (btScalar)1.8));
     btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
     btScalar carMass = 1000;
     btVector3 carInertia(0, 0, -10);
@@ -78,30 +78,30 @@ void Car::Draw()
 std::vector<Mesh> Car::getWheelsMesh()
 {
     std::vector<Mesh> wheels;
-    wheels.push_back(this->model.getMeshes()[7]);
-    wheels.push_back(this->model.getMeshes()[6]);
-    wheels.push_back(this->model.getMeshes()[5]);
-    wheels.push_back(this->model.getMeshes()[4]);
+    wheels.push_back(this->model->getMeshes()[7]);
+    wheels.push_back(this->model->getMeshes()[6]);
+    wheels.push_back(this->model->getMeshes()[5]);
+    wheels.push_back(this->model->getMeshes()[4]);
     return wheels;
 }
 
 std::vector<Mesh> Car::getWindowsMesh()
 {
     std::vector<Mesh> windows;
-    windows.push_back(this->model.getMeshes()[8]);
-    windows.push_back(this->model.getMeshes()[9]);
-    windows.push_back(this->model.getMeshes()[10]);
+    windows.push_back(this->model->getMeshes()[8]);
+    windows.push_back(this->model->getMeshes()[9]);
+    windows.push_back(this->model->getMeshes()[10]);
     return windows;
 }
 
 std::vector<Mesh> Car::getCarosserieMesh()
 {
     std::vector<Mesh> carosserie;
-    carosserie.push_back(this->model.getMeshes()[0]);
-    carosserie.push_back(this->model.getMeshes()[1]);
-    carosserie.push_back(this->model.getMeshes()[2]);
-    carosserie.push_back(this->model.getMeshes()[3]);
-    carosserie.push_back(this->model.getMeshes()[11]);
+    carosserie.push_back(this->model->getMeshes()[0]);
+    carosserie.push_back(this->model->getMeshes()[1]);
+    carosserie.push_back(this->model->getMeshes()[2]);
+    carosserie.push_back(this->model->getMeshes()[3]);
+    carosserie.push_back(this->model->getMeshes()[11]);
     return carosserie;
 }
 

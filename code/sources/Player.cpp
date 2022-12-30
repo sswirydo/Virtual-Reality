@@ -1,6 +1,6 @@
 #include "../headers/Player.hpp"
 
-Player::Player(Model& model, Shader& shader, Physics* physics,LightSource *light) : Car(model, shader, physics, light)
+Player::Player(Model* model, Shader* shader, Physics* physics, LightSource* light) : Car(model, shader, physics, light)
 {
     btRigidBody* body = this->getRigidBody();
     body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);

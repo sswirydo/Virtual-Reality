@@ -57,19 +57,19 @@ const float vertices[] = {
 class LightSource
 {
 private:
-    unsigned int frameNumber=0;
+    unsigned int frameNumber = 0;
     glm::vec3 position;
     glm::vec4 color;
     GLuint lightCubeVAO, VBO;
     Shader lightShader;
 public:
-    LightSource(glm::vec3 lightPosition = glm::vec3(-250.0f, 250.0f, -250.0f), glm::vec4 lightColor  = glm::vec4(1.0f, 1.0f, 1.0f,1.0f));
+    LightSource(glm::vec3 lightPosition = glm::vec3(-250.0f, 250.0f, -250.0f), glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f,1.0f));
     glm::vec3 getPosition();
     glm::vec4 getColor();
     void setPosition(glm::vec3 newPosition);
     void setColor(glm::vec4 newColor);
     void rotate(glm::vec3 carPos);
-    void show(Camera * camera);
+    void show(Camera* camera);
     ~LightSource();
 };
 

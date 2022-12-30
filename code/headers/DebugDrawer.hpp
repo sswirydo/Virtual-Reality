@@ -11,10 +11,9 @@ public:
 	DebugDrawer()
 	{
 		shader = new Shader("code/shaders/bulletDebug.vert", "code/shaders/bulletDebug.frag");
-
 	}
-	Camera* camera = NULL;
-	Shader* shader;
+	Camera* camera = nullptr;
+	Shader* shader = nullptr;
 
 	~DebugDrawer() 
 	{

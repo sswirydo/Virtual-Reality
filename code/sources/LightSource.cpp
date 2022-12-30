@@ -48,7 +48,7 @@ void LightSource::rotate(glm::vec3 carPos){
         this->color = glm::vec4(0.0f);
 }
 
-void LightSource::show(Camera * camera)
+void LightSource::show(Camera* camera)
 {
     glm::mat4 model(1.0f);
     this->lightShader.use();

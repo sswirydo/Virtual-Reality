@@ -30,18 +30,18 @@ btDiscreteDynamicsWorld* Physics::getWorld()
     return this->world;
 }
 
-void Physics::addShape(btCollisionShape *collisionShape)
+void Physics::addShape(btCollisionShape* collisionShape)
 {
-    this->collisionShapes.push_back(collisionShape);
+    //this->collisionShapes.push_back(collisionShape);
 }
 Physics::~Physics()
 {
-    for (int j = 0; j < collisionShapes.size(); j++)
-    {
-        btCollisionShape* shape = collisionShapes[j];
-        collisionShapes[j] = 0;
-        delete shape;
-    }
+    //for (int j = 0; j < collisionShapes.size(); j++)
+    //{
+    //    btCollisionShape* shape = collisionShapes[j];
+    //    collisionShapes[j] = 0;
+    //    delete shape;
+    //}
 
     delete this->collisionConfiguration;
     delete this->dispatcher;
