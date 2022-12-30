@@ -31,11 +31,12 @@ public:
     Object(Model* model, Shader* shader, Physics* physics, LightSource* light);
     ~Object();
     virtual void render(Camera* camera);
+    virtual void Draw();
+
     void setModel(Model* model);
     void setShader(Shader* shader);
     void setModelMatrix(glm::mat4 model);
     glm::mat4 getModelMatrix();
-    virtual void Draw();
     void setRigidBody(btRigidBody* rigidBody);
     btRigidBody* getRigidBody();
     btCollisionShape* getCollisionShape();

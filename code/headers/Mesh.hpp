@@ -58,6 +58,7 @@ class Mesh {
 
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures,Material material);
         void Draw(Shader* shader);
+        void InstancedDraw(Shader* shader);
 
         void printMaterial();
     private:

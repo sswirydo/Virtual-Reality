@@ -23,6 +23,7 @@
 #include "../headers/Game.hpp"
 #include "../headers/Camera.hpp"
 #include "../headers/Object.hpp"
+#include "../headers/InstancedObject.hpp"
 #include "../headers/Car.hpp"
 #include "../headers/Road.hpp"
 #include "../headers/Player.hpp"

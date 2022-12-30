@@ -22,7 +22,7 @@ Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : O
     
 }
 
-void Car::move(float deltaTime) 
+void Car::move(float deltaTime) // TODO redo
 {   
     btVector3 velocity = btVector3(0, 0, -15);
     // this->getRigidBody()->setLinearVelocity(velocity);

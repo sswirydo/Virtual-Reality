@@ -182,7 +182,7 @@ void Road::generateLamps() {
     }
 }
 
-constexpr int NUMBER_OF_TREES = 50;
+const int NUMBER_OF_TREES = 50;
 void Road::generateTrees() {
     Shader* treeShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");
@@ -196,7 +196,7 @@ void Road::generateTrees() {
         int numZ = rand() % rangeZ + minZ;
         int numX = rand() % rangeX + minX;
 
-        Object* tree = new Object(treeModel, treeShader, this->physics, this->light);
+        InstancedObject* tree = new InstancedObject(treeModel, treeShader, this->physics, this->light);
         if (i % 4 == 0) { numZ = -numZ; }
         if (i % 4 == 1) { numX = -numX; }
         if (i % 4 == 2) { numZ = -numZ; numX = -numX; }

@@ -20,7 +20,12 @@ void Model::Draw(Shader* shader)
 {
     for(unsigned int i = 0; i < this->meshes.size(); i++)
         this->meshes[i].Draw(shader);
-}  
+}
+
+void Model::InstancedDraw(Shader* shader) {
+    for (size_t i = 0; i < this->meshes.size(); i++)
+        this->meshes[i].InstancedDraw(shader);
+}
 
 void Model::loadModel(std::string path){
     Assimp::Importer importer;

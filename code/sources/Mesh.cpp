@@ -105,3 +105,9 @@ void Mesh::Draw(Shader* shader)
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 } 
+
+
+void Mesh::InstancedDraw(Shader* shader)
+{
+    /* TODO */
+}
