@@ -29,7 +29,7 @@ class Object
 public:
     Object();
     Object(Model &model, Shader &shader, Physics* physics, LightSource *light);
-    void render(Camera* camera);
+    virtual void render(Camera* camera);
     void setModel(Model &model);
     void setShader(Shader &shader);
     void setModelMatrix(glm::mat4 model);
