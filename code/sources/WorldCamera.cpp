@@ -28,6 +28,11 @@ void WorldCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
         this->position -= Right * velocity;
     if (direction == RIGHT)
         this->position += Right * velocity;
+    if (direction == FAST)
+        this->MovementSpeed = SPEED * 10;
+    else if (direction == SLOW)
+        this->MovementSpeed = SPEED;
+
 }
 
 void WorldCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

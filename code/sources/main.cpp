@@ -265,21 +265,24 @@ int main()
             }
             sun.show(camera);
 
+            // rendering the roads and objects 1st for transparent windows
             for (size_t t = 0; t < roads.size(); t++) {
                 roads[t].render(camera);
-
-                std::vector<Car*> linkedCars = roads[t].getCars();
-                for (size_t l = 0; l < linkedCars.size(); l++) {
-                    if (!pauseGame) {
-                        // linkedCars[l]->move(deltaTime);
-                    }
-                    linkedCars[l]->render(camera);
-                }
-
                 std::vector<Object*> linkedObjects = roads[t].getLinkedObjects();
                 for (size_t l = 0; l < linkedObjects.size(); l++) {
                     linkedObjects[l]->render(camera);
                 }
+            }
+
+            // rendering the cars later
+            for (size_t t = 0; t < roads.size(); t++) {
+                std::vector<Car*> linkedCars = roads[t].getCars();
+                for (size_t l = 0; l < linkedCars.size(); l++) {
+                    if (!pauseGame) {
+                        linkedCars[l]->move(deltaTime);
+                    }
+                    linkedCars[l]->render(camera);
+                } 
             }
 
             playerCar->render(camera);
@@ -323,6 +326,10 @@ void processInput(GLFWwindow *window)
         camera->ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera->ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera->ProcessKeyboard(FAST, deltaTime);
+    else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+        camera->ProcessKeyboard(SLOW, deltaTime);
     
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // forward
         movementDirection.x = true;
