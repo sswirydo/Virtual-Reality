@@ -43,7 +43,7 @@ public:
 	float MovementSpeed = SPEED;
 	float MouseSensitivity = SENSITIVITY;
 	float Zoom = ZOOM;
-	float ScreenRatio = SCR_WIDTH/SCR_HEIGHT;
+	float ScreenRatio = ((float)SCR_WIDTH) / ((float)SCR_HEIGHT);
 };
 
 #endif // !CAMERA_HPP

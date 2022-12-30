@@ -121,46 +121,10 @@ int main()
     roads.push_back(road3);
     for (size_t t = 0; t < roads.size(); t++) {
         roads[t]->addCarInfo(carModel, carShader, sun);
+        roads[t]->move((int)roads.size(), (int)t);
     }
-
-
-    // TODO: temp tree add test
-    Shader* treeShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
-    Model* treeModel = new Model("assets/meshes/tree/tree.obj");
-    for (int i = 0; i < 1000; i++) { 
-        int minZ = 0;
-        int maxZ = 99;
-        int minX = 9;
-        int maxX = 100;
-
-        int rangeZ = maxZ - minZ + 1;
-        int rangeX = maxX - minX + 1;
-        int numZ = rand() % rangeZ + minZ;
-        int numX = rand() % rangeX + minX;
-
-        Object* tree = new Object(treeModel, treeShader, physics, sun);
-
-        if (i % 4 == 0) { numZ = -numZ; }
-        if (i % 4 == 1) { numX = -numX; }
-        if (i % 4 == 2) { numZ = -numZ; numX = -numX; }
-
-        glm::vec3 vector = glm::vec3(numX, 0, numZ);
-        tree->setModelMatrix(glm::translate(tree->getModelMatrix(), vector));
-
-        roads[i % roads.size()]->linkObject(tree);
-    }
-
-    for (size_t t = 0; t < roads.size(); t++) {
-        roads[t]->move((int)roads.size(), t);
-    }
-
-    
 
     PlayerCamera* playerCamera = new PlayerCamera(playerCar);
-
-    
-
-
 
     Skybox skybox = Skybox(sun);
 
@@ -178,7 +142,7 @@ int main()
     //    }
     //};
 
-    int roadDisplacement = 3;
+    int roadDisplacement = (int) roads.size();
     DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
 
@@ -221,7 +185,7 @@ int main()
 
 
         float distance = playerCar->getWorldCoordinates().z;
-        if (distance < -200 * (roadDisplacement - 2))
+        if (distance < -200 * (roadDisplacement - 2)) // todo check if it is still -2 for more than 3 roads
         {
             for (size_t t = 0; t < roads.size(); t++) {
                 if (roadDisplacement % roads.size() == t) {
