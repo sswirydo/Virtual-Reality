@@ -46,9 +46,15 @@ void Road::move(int nbOfRoads, int pos)
         vector = glm::vec3(0, 0, -200 * pos);
     }
 
+    this->checkCarsState();
     this->forceTranslate(vector);
+
+    btTransform transf = this->getRigidBody()->getWorldTransform();
+    btVector3 btPos = transf.getOrigin();
+    glm::vec3 vectorFromOrigin(btPos.getX(), btPos.getY(), btPos.getZ());
+
+    this->addNewCars(vectorFromOrigin);
     this->translateBarriers(vector);
-    this->moveLinkedCars(vector);
     this->moveLinkedObjects(vector);
 }
 
@@ -61,19 +67,55 @@ void Road::moveLinkedObjects(glm::vec3 vector) // NOTE: simple objects without r
     }
 }
 
+void Road::addCarInfo(Model& model, Shader& shader, LightSource* light) {
+    this->carModel = model;
+    this->carShader = shader;
+    this->carLight = light;
+}
 
-void Road::moveLinkedCars(glm::vec3 vector)
+
+constexpr int NUMBER_OF_CARS = 4;
+void Road::addNewCars(glm::vec3 currentRoadTranslate)
 {
-    // as the obstacle cars move, we do not simly translate them
-    // but position them at a certain position of the road
-    // from which they will move forward
+    int min = 0;
+    int max = 3;
+    int range = max - min + 1;
+    int value = rand() % range + min;
 
-    /* ... */
+    for (int i = 0; i < NUMBER_OF_CARS; i++) {
 
-    for (size_t t = 0; t < this->getCars().size(); t++) {
-        Car* car = this->getCars()[t];
-        car->translatePhysics(vector);
+        if (i == value) continue;
+
+        Car* car = new Car(this->carModel, this->carShader, this->physics, this->carLight);
+        glm::vec3 carVector = glm::vec3(0, 1, 75) + currentRoadTranslate;
+
+        if (i % NUMBER_OF_CARS == 0) { carVector = carVector + glm::vec3(-5.25, 0, 0); }
+        else if (i % NUMBER_OF_CARS == 1) { carVector = carVector + glm::vec3(5.25, 0, 0); }
+        else if (i % NUMBER_OF_CARS == 2) { carVector = carVector + glm::vec3(-1.75, 0, 0); }
+        else if (i % NUMBER_OF_CARS == 3) { carVector = carVector + glm::vec3(1.75, 0, 0); }
+
+        car->translatePhysics(carVector);
+        cars.push_back(car);
     }
+}
+
+// Checks if cars can be considered out of the game and if yes deletes them.
+void Road::checkCarsState()
+{
+    for (size_t t = 0; t < this->cars.size(); t++) {
+        Car* car = this->cars[t];
+        if (car->getWorldCoordinates().y < -1) {
+            std::cout << "CAAAAAR ISSSSS OUUUUUUT " << t << std::endl;
+            this->removeCar(car);
+            this->cars.at(t) = nullptr;
+        }
+    }
+    this->cars.erase( remove(this->cars.begin(), this->cars.end(), nullptr ), this->cars.end() );
+}
+void Road::removeCar(Car* car)
+{
+    this->physics->getWorld()->removeRigidBody(car->getRigidBody());
+    delete car;
 }
 
 
