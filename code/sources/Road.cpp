@@ -30,6 +30,8 @@ Road::Road(Model& model, Shader& shader, Physics* physics, LightSource* light) :
     physics->addBody(this->rigidBody, ROAD);
     physics->addBody(rigidBody_l, BARRIER);
     physics->addBody(rigidBody_r, BARRIER);
+
+    this->generateLamps();
 }
 
 

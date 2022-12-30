@@ -100,7 +100,7 @@ int main()
     WorldCamera worldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
-    LightSource sun;
+    LightSource sun = LightSource();
 
     Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
