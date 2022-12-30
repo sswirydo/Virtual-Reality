@@ -11,7 +11,7 @@ public:
     StreetLamp();
     void renderDuplicate(int n,Camera *camera);
     void drawLampLight(Camera *camera);
-    void Draw();
+    //void Draw();
     ~StreetLamp();
 };
 
