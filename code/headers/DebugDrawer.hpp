@@ -15,6 +15,8 @@ public:
 	Camera* camera = nullptr;
 	Shader* shader = nullptr;
 
+	GLuint VBO, VAO;
+
 	~DebugDrawer() 
 	{
 		delete shader;
@@ -46,7 +48,6 @@ public:
 		points[10] = color.y();
 		points[11] = color.z();
 
-		GLuint VBO, VAO;
 		glDeleteBuffers(1, &VBO);
 		glDeleteVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
