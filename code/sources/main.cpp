@@ -171,7 +171,7 @@ int main()
 
         processInput(game.getWindow());
 
-        if (!pauseGame && !playerCar->wasHit()) 
+        if (!pauseGame)// && !playerCar->wasHit()) 
         {
             playerCar->move(deltaTime, movementDirection);
         }
@@ -195,7 +195,11 @@ int main()
             roadDisplacement++;
         }
 
-       
+        glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
+        if (!pauseGame) {
+            sun->rotate(newLightPosition);
+        }
+      
         if (renderDebug) 
         {
             debugDrawer.setCamera(camera);
@@ -203,10 +207,7 @@ int main()
         }
         if (renderModel)
         {
-            glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
-            if (!pauseGame) {
-                sun->rotate(newLightPosition);
-            }
+            
             sun->show(camera);
 
             // rendering the roads and objects 1st for transparent windows
