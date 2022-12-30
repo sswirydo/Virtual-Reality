@@ -4,9 +4,9 @@ Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Ob
 {
     // TODO: below is provisory (testing)
     this->collisionShape = new btBoxShape(btVector3(1, 1, 1.8));
-    btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2, 0)));
+    btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
     btScalar carMass = 1000;
-    btVector3 carInertia(0, 0, 0);
+    btVector3 carInertia(0, 0, -10);
     this->collisionShape->calculateLocalInertia(carMass, carInertia);
     btRigidBody::btRigidBodyConstructionInfo carRigidBodyCI(carMass, carMotionState, this->collisionShape, carInertia);
     this->rigidBody = new btRigidBody(carRigidBodyCI);
@@ -15,20 +15,20 @@ Car::Car(Model &model, Shader &shader, Physics* physics,LightSource *light) : Ob
     this->rigidBody->setAngularFactor(btVector3(1, 0, 1)); // disables Y-axis rotation
 
     physics->addBody(rigidBody, CAR);
+
+    // small initial motions
+    btVector3 velocity = btVector3(0, 0, -10);
+    this->getRigidBody()->setLinearVelocity(velocity);
+    
 }
 
 void Car::move(float deltaTime) 
 {   
+    btVector3 velocity = btVector3(0, 0, -15);
+    // this->getRigidBody()->setLinearVelocity(velocity);
     btTransform transform;
     btVector3 position;
-    btVector3 velocity;
-    btVector3 acceleration(0, 0, 0);
-    const int accelerationFactor = 2;
-    acceleration += btVector3(0, 0, -accelerationFactor); 
-    // Update the car's velocity based on the acceleration
-    velocity = this->getRigidBody()->getLinearVelocity();
-    velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
-    this->getRigidBody()->setLinearVelocity(velocity);
+    /*this->getRigidBody()->setLinearVelocity(velocity);*/
     //Update the car's position based on the velocity
     transform = this->getRigidBody()->getWorldTransform();
     position = transform.getOrigin();
