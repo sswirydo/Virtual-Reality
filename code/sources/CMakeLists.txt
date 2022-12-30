@@ -10,4 +10,5 @@ target_link_libraries(racing_game PUBLIC
 									glm 
 									assimp 
 									${BULLET_LIBS}
+									${OTHER_LIBS}
 )

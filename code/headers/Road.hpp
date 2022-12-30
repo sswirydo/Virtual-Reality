@@ -31,6 +31,7 @@ public:
 protected:
 
     void generateLamps();
+    void generateTrees();
     void moveLinkedObjects(glm::vec3 vector);
     //void moveLinkedCars(glm::vec3 vector);
 

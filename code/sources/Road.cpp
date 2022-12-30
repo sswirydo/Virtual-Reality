@@ -34,6 +34,7 @@ Road::Road(Model* model, Shader* shader, Physics* physics, LightSource* light) :
     this->physics->addBody(rigidBody_r, BARRIER);
 
     this->generateLamps();
+    this->generateTrees();
 }
 
 // Note: Road rigidbody should be destroyed in the Object.
@@ -178,6 +179,29 @@ void Road::generateLamps() {
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
         Object* lamp = new StreetLamp(lampModelReversed, lampShader, this->physics, this->light, true, i);
         linkedObjects.push_back(lamp);
+    }
+}
+
+constexpr int NUMBER_OF_TREES = 50;
+void Road::generateTrees() {
+    Shader* treeShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    Model* treeModel = new Model("assets/meshes/tree/tree.obj");
+    for (int i = 0; i < NUMBER_OF_TREES; i++) {
+        int minZ = 0;
+        int maxZ = 99;
+        int minX = 9;
+        int maxX = 99;
+        int rangeZ = maxZ - minZ + 1;
+        int rangeX = maxX - minX + 1;
+        int numZ = rand() % rangeZ + minZ;
+        int numX = rand() % rangeX + minX;
+
+        Object* tree = new Object(treeModel, treeShader, this->physics, this->light);
+        if (i % 4 == 0) { numZ = -numZ; }
+        if (i % 4 == 1) { numX = -numX; }
+        if (i % 4 == 2) { numZ = -numZ; numX = -numX; }
+        tree->translateModel(glm::vec3(numX, 0, numZ));
+        this->linkObject(tree);
     }
 }
 
