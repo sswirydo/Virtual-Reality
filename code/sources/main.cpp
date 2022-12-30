@@ -100,25 +100,25 @@ int main()
     WorldCamera worldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
-    LightSource sun;
+    LightSource* sun = new LightSource();
 
     Shader lightShader = Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader carShader= Shader("code/shaders/car.vert","code/shaders/car.frag");
     Model carModel = Model("assets/meshes/car/car.obj");
-    Player* playerCar = new Player(carModel, carShader, physics,&sun);
+    Player* playerCar = new Player(carModel, carShader, physics, sun);
 
     Shader roadShader= Shader("code/shaders/road.vert","code/shaders/road.frag");
     Model roadModel = Model("assets/meshes/road/road.obj");
-    Road road = Road(roadModel, roadShader, physics, &sun);
-    Road road2 = Road(roadModel, roadShader, physics, &sun);
-    Road road3 = Road(roadModel, roadShader, physics,&sun);
+    Road road = Road(roadModel, roadShader, physics, sun);
+    Road road2 = Road(roadModel, roadShader, physics, sun);
+    Road road3 = Road(roadModel, roadShader, physics, sun);
     std::vector<Road> roads;
     roads.push_back(road);
     roads.push_back(road2);
     roads.push_back(road3);
     for (size_t t = 0; t < roads.size(); t++) {
-        roads[t].addCarInfo(carModel, carShader, &sun);
+        roads[t].addCarInfo(carModel, carShader, sun);
     }
 
 
@@ -136,7 +136,7 @@ int main()
         int numZ = rand() % rangeZ + minZ;
         int numX = rand() % rangeX + minX;
 
-        Object* tree = new Object(treeModel, treeShader, physics, &sun);
+        Object* tree = new Object(treeModel, treeShader, physics, sun);
 
         if (i % 4 == 0) { numZ = -numZ; }
         if (i % 4 == 1) { numX = -numX; }
@@ -160,7 +160,7 @@ int main()
 
 
 
-    Skybox skybox = Skybox(&sun);
+    Skybox skybox = Skybox(sun);
 
     //double prev = 0;
     //int deltaFrame = 0;
@@ -239,9 +239,9 @@ int main()
         {
             glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
             if (!pauseGame) {
-                sun.rotate(newLightPosition);
+                sun->rotate(newLightPosition);
             }
-            sun.show(camera);
+            sun->show(camera);
 
             // rendering the roads and objects 1st for transparent windows
             for (size_t t = 0; t < roads.size(); t++) {

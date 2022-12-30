@@ -1,6 +1,6 @@
 #include "../headers/StreetLamp.hpp"
 
-StreetLamp::StreetLamp(Model& model, Shader& shader, Physics* physics, LightSource* sun, bool isAtRight, int position) : Object(model, shader, physics, light) 
+StreetLamp::StreetLamp(Model& model, Shader& shader, Physics* physics, LightSource* sun, bool isAtRight, int position) : Object(model, shader, physics, sun) 
 {
     this->isAtRight = isAtRight;
     this->my_light = LightSource(glm::vec3(0.0f),glm::vec4(232.0/255.0,144.0/255.0,240.0/5.0,1.0f));
