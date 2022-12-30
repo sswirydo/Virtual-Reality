@@ -1,4 +1,5 @@
 #include "../headers/LightSource.hpp"
+#include "LightSource.hpp"
 
 LightSource::LightSource(glm::vec3 lightPosition, glm::vec4 lightColor)
 {
@@ -20,17 +21,39 @@ glm::vec3 LightSource::getPosition()
 {
     return this->position;
 }
+glm::vec3 LightSource::getAmbient()
+{
+    return this->ambient;
+}
+glm::vec3 LightSource::getDiffuse()
+{
+    return this->diffuse;
+}
+glm::vec3 LightSource::getSpecular()
+{
+    return this->specular;
+}
 
 glm::vec4 LightSource::getColor()
 {
     return this->color;
 }
-
 void LightSource::setPosition(glm::vec3 newPosition)
 {
     this->position = newPosition;
 }
-
+void LightSource::setSpecular(glm::vec3 specular)
+{
+    this->specular = specular;
+}
+void LightSource::setDiffuse(glm::vec3 diffuse)
+{
+    this->diffuse = diffuse;
+}
+void LightSource::setAmbient(glm::vec3 ambient)
+{   
+    this->ambient = ambient;
+}
 void LightSource::setColor(glm::vec4 newColor)
 {
     this->color = newColor;
