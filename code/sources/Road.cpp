@@ -184,7 +184,7 @@ void Road::generateLamps() {
 
 constexpr int NUMBER_OF_TREES = 50;
 void Road::generateTrees() {
-    Shader* treeShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    Shader* treeShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");
     for (int i = 0; i < NUMBER_OF_TREES; i++) {
         int minZ = 0;
