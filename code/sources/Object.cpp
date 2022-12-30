@@ -98,11 +98,19 @@ void Object::render(Camera* camera)
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
     this->shader->use();
-    this->shader->setVec3("lightPos", this->light->getPosition());
+    this->shader->setVec3("sun.direction",((Sun*)this->light)->getDirection());
+    this->shader->setVec3("sun.ambient",this->light->getAmbient());
+    this->shader->setVec3("sun.diffuse",this->light->getDiffuse());
+    this->shader->setVec3("sun.specular",this->light->getSpecular());
+    
+    this->shader->setVec3("viewPos", this->cameraPos);
     this->shader->setVec4("lightColor", this->light->getColor());
     this->shader->setMat4("projection", projection);
     this->shader->setMat4("view", view);
     this->shader->setMat4("model", this->modelMatrix);
+
+    // set object opaque by default
+    shader->setFloat("material.transparency",1.0);
     this->Draw();
 }
 

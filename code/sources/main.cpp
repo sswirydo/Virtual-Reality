@@ -22,7 +22,7 @@
 #include "../headers/Car.hpp"
 #include "../headers/Road.hpp"
 #include "../headers/Player.hpp"
-#include "../headers/LightSource.hpp"
+#include "../headers/Sun.hpp"
 #include "../headers/Physics.hpp"
 #include "../headers/Debug.hpp"
 #include "../headers/Skybox.hpp"
@@ -100,7 +100,7 @@ int main()
     WorldCamera* worldCamera = new WorldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
-    LightSource* sun = new LightSource();
+    Sun* sun = new Sun();
 
     Shader* lightShader = new Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
@@ -108,7 +108,7 @@ int main()
     Model* carModel = new Model("assets/meshes/car/car.obj");
     Player* playerCar = new Player(carModel, carShader, physics, sun);
 
-    Shader* roadShader = new Shader("code/shaders/road.vert","code/shaders/road.frag");
+    Shader* roadShader = new Shader("code/shaders/textureLessShader.vert","code/shaders/textureLessShader.frag");
     Model* roadModel = new Model("assets/meshes/road/road.obj");
 
     Road* road = new Road(roadModel, roadShader, physics, sun);
@@ -125,7 +125,7 @@ int main()
 
 
     // TODO: temp tree add test
-    Shader* treeShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    Shader* treeShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");
     for (int i = 0; i < 1000; i++) { 
         int minZ = 0;

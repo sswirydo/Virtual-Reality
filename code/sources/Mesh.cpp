@@ -96,7 +96,6 @@ void Mesh::Draw(Shader* shader)
     shader->setVec3("material.ambient",this->material.Ambient);
     shader->setVec3("material.specular",this->material.Specular);
     shader->setFloat("material.shininess",this->material.Shininess);
-    shader->setFloat("material.transparency",this->material.Reflectivity);
 
     glActiveTexture(GL_TEXTURE0);
     

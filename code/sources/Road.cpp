@@ -170,7 +170,7 @@ constexpr int NUMBER_OF_LAMPS = 5;
 void Road::generateLamps() {
     Model* lampModel = new Model("assets/meshes/lamp/lamp.obj");
     Model* lampModelReversed = new Model("assets/meshes/lamp/lamp-reversed.obj");
-    Shader* lampShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    Shader* lampShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
         Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, this->light, false, i);
         linkedObjects.push_back(lamp);

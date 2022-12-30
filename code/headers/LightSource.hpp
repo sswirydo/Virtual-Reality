@@ -11,53 +11,124 @@
 #include "Camera.hpp"
 
 const float vertices[] = {
-    -0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f, -0.5f,  
-     0.5f,  0.5f, -0.5f,  
-     0.5f,  0.5f, -0.5f,  
-    -0.5f,  0.5f, -0.5f, 
-    -0.5f, -0.5f, -0.5f, 
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
 
-    -0.5f, -0.5f,  0.5f, 
-     0.5f, -0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-    -0.5f,  0.5f,  0.5f, 
-    -0.5f, -0.5f,  0.5f, 
+    -0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
 
-    -0.5f,  0.5f,  0.5f, 
-    -0.5f,  0.5f, -0.5f, 
-    -0.5f, -0.5f, -0.5f, 
-    -0.5f, -0.5f, -0.5f, 
-    -0.5f, -0.5f,  0.5f, 
-    -0.5f,  0.5f,  0.5f, 
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
 
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f, -0.5f,  
-     0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
 
-    -0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f,  0.5f,  
-     0.5f, -0.5f,  0.5f,  
-    -0.5f, -0.5f,  0.5f, 
-    -0.5f, -0.5f, -0.5f, 
+    -0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    -0.5f,
 
-    -0.5f,  0.5f, -0.5f, 
-     0.5f,  0.5f, -0.5f,  
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-    -0.5f,  0.5f,  0.5f, 
-    -0.5f,  0.5f, -0.5f, 
+    -0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f,
 };
 
 class LightSource
 {
-private:
-    unsigned int frameNumber = 0;
+protected:
     glm::vec3 position;
     glm::vec4 color;
     GLuint lightCubeVAO, VBO;
@@ -65,20 +136,21 @@ private:
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
+
 public:
-    LightSource(glm::vec3 lightPosition = glm::vec3(-250.0f, 250.0f, -250.0f), glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f,1.0f));
-    glm::vec3 getPosition();
+    LightSource(glm::vec3 lightPosition, glm::vec4 lightColor);
+    LightSource();
     glm::vec4 getColor();
+    glm::vec3 getPosition();
     void setPosition(glm::vec3 newPosition);
-    void setAmbient(glm::vec3 ambient);
-    void setDiffuse(glm::vec3 diffuse);
-    void setSpecular(glm::vec3 specular);
+    void setAmbient(float ambient);
+    void setDiffuse(float diffuse);
+    void setSpecular(float specular);
     glm::vec3 getAmbient();
     glm::vec3 getDiffuse();
     glm::vec3 getSpecular();
     void setColor(glm::vec4 newColor);
-    void rotate(glm::vec3 carPos);
-    void show(Camera* camera);
+    void show(Camera *camera);
     ~LightSource();
 };
 

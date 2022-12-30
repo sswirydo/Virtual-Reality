@@ -1,5 +1,4 @@
 #include "../headers/LightSource.hpp"
-#include "LightSource.hpp"
 
 LightSource::LightSource(glm::vec3 lightPosition, glm::vec4 lightColor)
 {
@@ -42,33 +41,21 @@ void LightSource::setPosition(glm::vec3 newPosition)
 {
     this->position = newPosition;
 }
-void LightSource::setSpecular(glm::vec3 specular)
+void LightSource::setSpecular(float specular)
 {
-    this->specular = specular;
+    this->specular = glm::vec3(specular);
 }
-void LightSource::setDiffuse(glm::vec3 diffuse)
+void LightSource::setDiffuse(float diffuse)
 {
-    this->diffuse = diffuse;
+    this->diffuse = glm::vec3(diffuse);
 }
-void LightSource::setAmbient(glm::vec3 ambient)
+void LightSource::setAmbient(float ambient)
 {   
-    this->ambient = ambient;
+    this->ambient = glm::vec3(ambient);
 }
 void LightSource::setColor(glm::vec4 newColor)
 {
     this->color = newColor;
-}
-
-void LightSource::rotate(glm::vec3 carPos){
-    // implementation of day and night: we set a rotation radius of 250
-    float framePerDegree = 10;
-    double degree = (((this->frameNumber++)/framePerDegree) + 10);
-    double angle = glm::radians(degree);
-    this->position = glm::vec3(-250.0f,250.0f,-250.0f) * glm::vec3(glm::cos(angle),glm::sin(angle),glm::cos(angle)) + carPos;
-    if(this->position.y >=0 )
-        this->color = glm::vec4(glm::abs(glm::sin(angle)));
-    else
-        this->color = glm::vec4(0.0f);
 }
 
 void LightSource::show(Camera* camera)
@@ -88,5 +75,9 @@ void LightSource::show(Camera* camera)
 }
 
 LightSource::~LightSource()
+{
+}
+
+LightSource::LightSource()
 {
 }

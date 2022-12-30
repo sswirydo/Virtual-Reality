@@ -14,7 +14,7 @@
 #include "Model.hpp"
 #include "Camera.hpp"
 #include "Physics.hpp"
-#include "LightSource.hpp"
+#include "Sun.hpp"
 
 #include <string>
 #include <iostream>
