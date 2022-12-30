@@ -95,6 +95,19 @@ std::vector<Car*> Road::getCars() {
     return this->cars;
 }
 
+constexpr int NUMBER_OF_LAMPS = 10;
+void Road::generateLamps() {
+    Model lampModel = Model("assets/meshes/source/street_light.obj");
+    Shader lampShader = Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
+    for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
+        Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, this->light, true, i);
+        linkedObjects.push_back(lamp);
+    }
+    for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
+        Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, this->light, false, i);
+        linkedObjects.push_back(lamp);
+    }
+}
 
 
 void Road::translateBarriers(glm::vec3 vector)

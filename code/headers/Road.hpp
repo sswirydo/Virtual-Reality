@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "Car.hpp"
 #include "Camera.hpp"
+#include "StreetLamp.hpp"
 
 class Object;
 class Car;
@@ -21,6 +22,7 @@ public:
 
 protected:
 
+    void generateLamps();
     void moveLinkedObjects(glm::vec3 vector);
     void moveLinkedCars(glm::vec3 vector);
 

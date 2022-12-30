@@ -7,10 +7,10 @@ private:
     bool isAtRight;
     LightSource my_light;
 public:
-    StreetLamp(Model& model, Shader& shader, Physics* physics, LightSource* light,bool isAtRight);
+    StreetLamp(Model& model, Shader& shader, Physics* physics, LightSource* light,bool isAtRight, int position);
     StreetLamp();
     void renderDuplicate(int n,Camera *camera);
-
+    void drawLampLight(Camera *camera);
     ~StreetLamp();
 };
 
