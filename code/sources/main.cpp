@@ -113,29 +113,12 @@ int main()
     Road road = Road(roadModel, roadShader, physics, &sun);
     Road road2 = Road(roadModel, roadShader, physics, &sun);
     Road road3 = Road(roadModel, roadShader, physics,&sun);
-
     std::vector<Road> roads;
     roads.push_back(road);
     roads.push_back(road2);
     roads.push_back(road3);
-
-    // TODO: temp car add test
-    const int nbOfCars = 4;
     for (size_t t = 0; t < roads.size(); t++) {
-        std::vector<Car*> tempCars;
-        for (int i = 0; i < nbOfCars; i++) {
-            Car* car = new Car(carModel, carShader, physics, &sun);
-            glm::vec3 vector = glm::vec3(0, 2, 50);
-            
-            if (i % nbOfCars == 0) { vector = vector + glm::vec3(-5.25, 0, 0); }
-            else if (i % nbOfCars == 1) { vector = vector + glm::vec3(5.25, 0, 0); }
-            else if (i % nbOfCars == 2) { vector = vector + glm::vec3(-1.75, 0, 0); }
-            else if (i % nbOfCars == 3) { vector = vector + glm::vec3(1.75, 0, 0); }
-            
-            car->translatePhysics(vector);
-            tempCars.push_back(car);
-        }
-        roads[t].addCars(tempCars);
+        roads[t].addCarInfo(carModel, carShader, &sun);
     }
 
 
