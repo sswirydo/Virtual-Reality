@@ -3,6 +3,7 @@
 StreetLamp::StreetLamp(Model& model, Shader& shader, Physics* physics, LightSource* light, bool isAtRight) : Object(model, shader, physics, light) 
 {
     this->isAtRight = isAtRight;
+    this->my_light = LightSource(glm::vec3(0.0f),glm::vec4(232.0/255.0,144.0/255.0,240.0/5.0,1.0f));
 }
 
 void StreetLamp::renderDuplicate(int n, Camera *camera)
@@ -26,6 +27,15 @@ void StreetLamp::renderDuplicate(int n, Camera *camera)
 
         }
         this->setModelMatrix(model);
+        glm::vec3 myLightPosition; 
+        if(this->isAtRight){
+            myLightPosition = glm::vec3(model[3]) + glm::vec3(-1.8,5.3,0);
+        }
+        else{
+            myLightPosition = glm::vec3(model[3]) + glm::vec3(1.8,5.3,0);
+        }
+        this->my_light.setPosition(myLightPosition);
+        this->my_light.show(camera);
         this->render(camera);
     }
     
