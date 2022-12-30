@@ -28,6 +28,7 @@
 #include "../headers/Skybox.hpp"
 #include "../headers/PlayerCamera.hpp"
 #include "../headers/WorldCamera.hpp"
+#include "../headers/StreetLamp.hpp"
 
 #include "../headers/DebugDrawer.hpp"   
 
@@ -155,6 +156,10 @@ int main()
 
     PlayerCamera playerCamera = PlayerCamera(playerCar);
 
+    Model lampModel = Model("assets/meshes/source/street_light.obj");
+    StreetLamp lamp1 = StreetLamp(lampModel, treeShader, physics, &sun,true);
+    StreetLamp lamp2 = StreetLamp(lampModel, treeShader, physics, &sun,false);
+
 
 
     Skybox skybox = Skybox(&sun);
@@ -234,6 +239,9 @@ int main()
         }
         if (renderModel)
         {
+            lamp1.renderDuplicate(10,camera);
+            lamp2.renderDuplicate(10,camera);
+
             glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
             if (!pauseGame) {
                 sun.rotate(newLightPosition);
