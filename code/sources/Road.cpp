@@ -182,7 +182,7 @@ void Road::generateLamps() {
     }
 }
 
-constexpr int NUMBER_OF_TREES = 500;
+constexpr int NUMBER_OF_TREES = 50;
 void Road::generateTrees() {
     Shader* treeShader = new Shader("code/shaders/tree.vert", "code/shaders/tree.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");
