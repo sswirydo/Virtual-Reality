@@ -9,6 +9,7 @@ private:
 public:
     void rotate(glm::vec3 carPos);
     glm::vec3 getDirection();
+    bool isNight();
     void setDirection(glm::vec3 newDirection);
     Sun(glm::vec3 lightPosition = glm::vec3(-250.0f, 250.0f, -250.0f), glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.3f));
     ~Sun();

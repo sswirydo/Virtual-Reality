@@ -106,7 +106,7 @@ void Object::render(Camera* camera, std::vector<StreetLamp*> lamps)
     this->shader->setMat4("projection", projection);
     this->shader->setMat4("view", view);
     this->shader->setMat4("model", this->modelMatrix);
-
+    this->shader->setBool("isNight", ((Sun*)this->light)->isNight());
     for(size_t i = 0; i < lamps.size();i++){
         StreetLamp *lamp = lamps[i];
         LightSource source = lamp->getLightSource();
@@ -115,7 +115,7 @@ void Object::render(Camera* camera, std::vector<StreetLamp*> lamps)
         this->shader->setVec4(std::string("streetLight[")+std::to_string(i)+std::string("].lightColor"),source.getColor() );
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].position"), source.getPosition());
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].direction"), glm::vec3(0,-1,0));
-        this->shader->setFloat(std::string("streetLight[")+std::to_string(i)+std::string("].cutOff"), glm::cos(glm::radians(30.f)));
+        this->shader->setFloat(std::string("streetLight[")+std::to_string(i)+std::string("].cutOff"), glm::cos(glm::radians(36.f)));
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].ambient"), source.getAmbient());
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].diffuse"), source.getDiffuse());
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].specular"), source.getSpecular());

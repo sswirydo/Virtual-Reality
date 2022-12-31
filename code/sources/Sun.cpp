@@ -3,7 +3,7 @@
 void Sun::rotate(glm::vec3 carPos){
     // implementation of day and night: we set a rotation radius of 250
     float framePerDegree = 10;
-    double degree = (((this->frameNumber++)/framePerDegree) + 90);
+    double degree = (((this->frameNumber++)/framePerDegree) + 30);
     double angle = glm::radians(degree);
     this->position = glm::vec3(-250.0f,250.0f,-250.0f) * glm::vec3(glm::cos(angle),glm::sin(angle),glm::cos(angle)) + carPos;
     if(this->position.y >=0 )
@@ -28,6 +28,10 @@ glm::vec3 Sun::getDirection(){
     return this->direction;
 }
 
+bool Sun::isNight()
+{
+    return this->position.y <= 85;
+}
 Sun::~Sun()
 {
 }
