@@ -3,7 +3,7 @@
 Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics,light)
 {
     // TODO: below is provisory (testing)
-    this->collisionShape = new btBoxShape(btVector3(1, 1, (btScalar)1.8));
+    this->collisionShape = new btBoxShape(btVector3((btScalar)1, (btScalar)0.85, (btScalar)1.75));
     btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
     btScalar carMass = 1000;
     btVector3 carInertia(0, 0, -10);
@@ -22,7 +22,7 @@ Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : O
     
 }
 
-void Car::move(float deltaTime) 
+void Car::move(float deltaTime) // TODO redo
 {   
     btVector3 velocity = btVector3(0, 0, -15);
     // this->getRigidBody()->setLinearVelocity(velocity);
@@ -108,7 +108,7 @@ std::vector<Mesh> Car::getCarosserieMesh()
 
 void Car::render(Camera* camera) {
     this->updateModelFromPhysics();
-    this->translateModel(glm::vec3(0, -1, 0));
+    this->translateModel(glm::vec3(0, -0.85, -0.05));
     this->rotateModel(180.0f, glm::vec3(0, 1, 0));
     this->Object::render(camera);
 }

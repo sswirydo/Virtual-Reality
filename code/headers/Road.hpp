@@ -2,6 +2,7 @@
 #define ROAD_HPP
 
 #include "Object.hpp"
+#include "InstancedObject.hpp"
 #include "Car.hpp"
 #include "Camera.hpp"
 #include "StreetLamp.hpp"

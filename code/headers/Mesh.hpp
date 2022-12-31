@@ -58,11 +58,15 @@ class Mesh {
 
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures,Material material);
         void Draw(Shader* shader);
+        void InstancedDraw(Shader* shader, std::vector<glm::vec3> translations);
 
         void printMaterial();
+    protected:
+        void setUpMaterials(Shader* shader);
     private:
         //  render data
-        unsigned int VAO, VBO, EBO;
+        unsigned int VAO, VBO, EBO, instanceVBO;
+        bool instancedSetUp = false;
         
         void setupMesh();
         void createTriangles();

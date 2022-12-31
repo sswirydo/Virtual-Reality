@@ -2,8 +2,6 @@
 
 Road::Road(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light) 
 {
-    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ROAD " << std::endl;
-
     //Creates the ground shape
     btCollisionShape* groundShape = new btBoxShape(btVector3(107, 0, 100)); // TODO: set Y to 0 or 1?
     btCollisionShape* borneShape_l = new btBoxShape(btVector3(0.5, 1, 100));
@@ -182,27 +180,28 @@ void Road::generateLamps() {
     }
 }
 
-constexpr int NUMBER_OF_TREES = 50;
+const int NUMBER_OF_TREES = 5000; // per road segment
 void Road::generateTrees() {
-    Shader* treeShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
+    Shader* treeShader = new Shader("code/shaders/instancedObject.vert", "code/shaders/textureLessShader.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");
+    std::vector<glm::vec3> translations;
     for (int i = 0; i < NUMBER_OF_TREES; i++) {
-        int minZ = 0;
-        int maxZ = 99;
-        int minX = 9;
-        int maxX = 99;
+        int minZ = 0; int maxZ = 99;
+        int minX = 9; int maxX = 99;
         int rangeZ = maxZ - minZ + 1;
         int rangeX = maxX - minX + 1;
         int numZ = rand() % rangeZ + minZ;
         int numX = rand() % rangeX + minX;
 
-        Object* tree = new Object(treeModel, treeShader, this->physics, this->light);
         if (i % 4 == 0) { numZ = -numZ; }
         if (i % 4 == 1) { numX = -numX; }
         if (i % 4 == 2) { numZ = -numZ; numX = -numX; }
-        tree->translateModel(glm::vec3(numX, 0, numZ));
-        this->linkObject(tree);
+        //glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(numX, 0, numZ));
+        glm::vec3 translation = glm::vec3(numX, 0, numZ);
+        translations.push_back(translation);
     }
+    InstancedObject* tree = new InstancedObject(treeModel, treeShader, this->physics, this->light, translations);
+    this->linkObject(tree);
 }
 
 

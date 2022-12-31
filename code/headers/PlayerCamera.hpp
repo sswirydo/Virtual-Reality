@@ -1,6 +1,11 @@
 #ifndef PLAYERCAMERA_HPP
 #define PLAYERCAMERA_HPP
 
+/*
+	Implementation based on the following OpenGL 3D Game Tutorial in Java series
+	https://www.youtube.com/playlist?list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP
+*/
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
