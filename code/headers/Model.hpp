@@ -40,7 +40,7 @@ public:
     std::vector<Mesh> getMeshes();
     // draws the model, and thus all its meshes
     void Draw(Shader* shader);
-    void InstancedDraw(Shader* shader);
+    void InstancedDraw(Shader* shader, std::vector<glm::vec3> translations);
 
 protected:
     Material loadMaterial(aiMaterial* mat);

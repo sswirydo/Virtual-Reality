@@ -69,22 +69,21 @@ void Mesh::setupMesh()
     glBindVertexArray(0);
 } 
 
-void Mesh::Draw(Shader* shader) 
+void Mesh::setUpMaterials(Shader* shader) 
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     // std::cout << "size of textures vector " << textures.size() << std::endl;
-    for(unsigned int i = 0; i < textures.size(); i++)
+    for (unsigned int i = 0; i < textures.size(); i++)
     {
-
         glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;
         std::string name = textures[i].type;
 
-        if(name == "texture_diffuse")
+        if (name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
+        else if (name == "texture_specular")
             number = std::to_string(specularNr++);
 
         // std::cout << ("material." + name + number).c_str() << std::endl;
@@ -92,14 +91,16 @@ void Mesh::Draw(Shader* shader)
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
     // send material
-    shader->setVec3("material.diffuse",this->material.Diffuse);
-    shader->setVec3("material.ambient",this->material.Ambient);
-    shader->setVec3("material.specular",this->material.Specular);
-    shader->setFloat("material.shininess",this->material.Shininess);
-
+    shader->setVec3("material.diffuse", this->material.Diffuse);
+    shader->setVec3("material.ambient", this->material.Ambient);
+    shader->setVec3("material.specular", this->material.Specular);
+    shader->setFloat("material.shininess", this->material.Shininess);
     glActiveTexture(GL_TEXTURE0);
-    
+}
 
+void Mesh::Draw(Shader* shader) 
+{
+    this->setUpMaterials(shader);
     // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
@@ -107,7 +108,28 @@ void Mesh::Draw(Shader* shader)
 } 
 
 
-void Mesh::InstancedDraw(Shader* shader)
+void Mesh::InstancedDraw(Shader* shader, std::vector<glm::vec3> translations)
 {
-    /* TODO */
+    if (!instancedSetUp) 
+    {
+        glGenBuffers(1, &instanceVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * translations.size(), &translations[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(VAO);
+        glEnableVertexAttribArray(3);
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 3, (void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribDivisor(3, 1); // setting to 1 means "we want to update the content of the vertex attribute when we start to render a new instance"
+        glBindVertexArray(0);
+        instancedSetUp = true;
+    }
+    
+    this->setUpMaterials(shader);
+
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0, (int)translations.size());
+    glBindVertexArray(0);
 }
