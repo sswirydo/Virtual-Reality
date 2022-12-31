@@ -36,10 +36,10 @@ in vec3 Normal;
 in vec3 FragPos;  
 in vec2 TexCoords;
 
-#define NR_SPOTLIGHTS 30
+#define NR_SPOTLIGHTS 30 
 uniform Material material;
 uniform DirectionalLight sun;
-uniform SpotLight streetLights[NR_SPOTLIGHTS];
+uniform SpotLight streetLight[NR_SPOTLIGHTS];
 
 uniform vec4 lightColor;
 uniform vec3 viewPos;   
@@ -78,18 +78,21 @@ vec4 computeSpotLight(SpotLight streetLight, vec3 lightDirection, Material mater
         return (specular+ambient+diffuse);
     }
     else  // else, use ambient light so scene isn't completely dark outside the spotlight.
-        return vec4(0.0,0.0,0.0,1.0);
+        return vec4(0.0,0.0,0.0,0.4);
 }
 
 void main()
 {    
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
+    // vec4 result = computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor;
     vec4 result = computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor;
-    for(int i = 0; i < NR_SPOTLIGHTS; i++){
-        vec3 lightDir = normalize(streetLights[i].position - FragPos); // the vector pointing from the fragment to the light source.
-        result += computeSpotLight(streetLights[i], lightDir, material, normal, viewDir)*streetLights[i].lightColor;
+    // vec4 result = vec4(0.0);
 
+    for(int i = 0; i < NR_SPOTLIGHTS; i++){
+        vec3 lightDir = normalize(streetLight[i].position - FragPos); // the vector pointing from the fragment to the light source.
+        result += computeSpotLight(streetLight[i],lightDir,material,normal,viewDir)*streetLight[i].lightColor;
+    
     }
     FragColor = result;
 }

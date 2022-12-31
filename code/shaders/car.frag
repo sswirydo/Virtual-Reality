@@ -80,7 +80,7 @@ vec4 computeSpotLight(SpotLight streetLight, vec3 lightDirection, Material mater
         return (specular+ambient+diffuse);
     }
     else  // else, use ambient light so scene isn't completely dark outside the spotlight.
-        return vec4(0.0,0.0,0.0,1.0);
+        return vec4(0.0,0.0,0.0,0.4);
 }
 
 void main()
@@ -89,6 +89,8 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos); // the vector pointing from the fragment to the camera.
 
     vec4 result = computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor;
+    // vec4 result = vec4(0.0);
+
     for(int i = 0; i < NR_SPOTLIGHTS; i++){
         vec3 lightDir = normalize(streetLight[i].position - FragPos); // the vector pointing from the fragment to the light source.
         result += computeSpotLight(streetLight[i],lightDir,material,normal,viewDir)*streetLight[i].lightColor;
