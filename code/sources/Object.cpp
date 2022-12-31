@@ -21,8 +21,10 @@ Object::~Object()
         delete this->rigidBody;
         this->rigidBody = nullptr;
 
-        delete this->collisionShape;
-        this->collisionShape = nullptr;
+        if (this->collisionShape != nullptr) {
+            delete this->collisionShape;
+            this->collisionShape = nullptr;
+        }
     }
 }
 

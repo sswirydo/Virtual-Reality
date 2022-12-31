@@ -1,12 +1,17 @@
 #include "../headers/Car.hpp"
 
+btCollisionShape* Car::carCollisionShape = nullptr;
+
 Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics,light)
 {
     // TODO: below is provisory (testing)
-    this->collisionShape = new btBoxShape(btVector3((btScalar)1, (btScalar)0.85, (btScalar)1.75));
+    if (Car::carCollisionShape == nullptr) {
+        Car::carCollisionShape = new btBoxShape(btVector3((btScalar)1, (btScalar)0.85, (btScalar)1.75));
+    }
+    this->collisionShape = Car::carCollisionShape;
     btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
     btScalar carMass = 1000;
-    btVector3 carInertia(0, 0, -10);
+    btVector3 carInertia(0, 0, 0);
     this->collisionShape->calculateLocalInertia(carMass, carInertia);
     btRigidBody::btRigidBodyConstructionInfo carRigidBodyCI(carMass, carMotionState, this->collisionShape, carInertia);
     this->rigidBody = new btRigidBody(carRigidBodyCI);
@@ -20,6 +25,10 @@ Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : O
     btVector3 velocity = btVector3(0, 0, -10);
     this->getRigidBody()->setLinearVelocity(velocity);
     
+}
+
+Car::~Car() {
+    this->collisionShape = nullptr;
 }
 
 void Car::move(float deltaTime) // TODO redo

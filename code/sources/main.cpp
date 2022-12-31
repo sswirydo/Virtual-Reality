@@ -75,6 +75,7 @@ bool contactAddedCallbackBullet(
 {    
     BulletObject* bo0 = (BulletObject*)colObj0->getCollisionObject()->getUserPointer(); // PLAYER
     BulletObject* bo1 = (BulletObject*)colObj1->getCollisionObject()->getUserPointer(); // OTHER
+    // std::cout << "Collision of id " << bo0->id << " with id " << bo1->id << std::endl;
     if (bo1->id == CAR) {
         bo0->hit = true; // PLAYER WAS HIT :(
     }

@@ -10,6 +10,7 @@ class Car : public Object
 {
 public:
     Car(Model* model,Shader* shader, Physics* physics,LightSource* light);
+    ~Car();
     void move(float deltaTime);
     void render(Camera* camera, std::vector<StreetLamp*> lamps);
     void Draw();
@@ -18,6 +19,7 @@ public:
     std::vector<Mesh> getCarosserieMesh();
 
 private:
+    static btCollisionShape* carCollisionShape;
 
 };
 
