@@ -102,12 +102,20 @@ void Object::render(Camera* camera)
     this->shader->setVec3("sun.ambient",this->light->getAmbient());
     this->shader->setVec3("sun.diffuse",this->light->getDiffuse());
     this->shader->setVec3("sun.specular",this->light->getSpecular());
+    this->shader->setVec4("sun.lightColor", this->light->getColor());
     
     this->shader->setVec3("viewPos", this->cameraPos);
-    this->shader->setVec4("lightColor", this->light->getColor());
     this->shader->setMat4("projection", projection);
     this->shader->setMat4("view", view);
     this->shader->setMat4("model", this->modelMatrix);
+
+    this->shader->setVec4("streetLight.lightColor", 0.9f,0.7f,0.1f,0.4f);
+    this->shader->setVec3("streetLight.position", glm::vec3(0,5,-40));
+    this->shader->setVec3("streetLight.direction", glm::vec3(0,-1,0));
+    this->shader->setFloat("streetLight.cutOff",   glm::cos(glm::radians(12.5f)));
+    this->shader->setVec3("streetLight.ambient",glm::vec3(1.f));
+    this->shader->setVec3("streetLight.diffuse",glm::vec3(1.f));
+    this->shader->setVec3("streetLight.specular",glm::vec3(1.0f));
 
     // set object opaque by default
     shader->setFloat("material.transparency",1.0);

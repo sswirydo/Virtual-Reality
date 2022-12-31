@@ -48,7 +48,6 @@ private:
     Model* carModel = nullptr;
     Shader* carShader = nullptr;
     LightSource* carLight = nullptr;
-
 };
 
 #endif //! ROAD
