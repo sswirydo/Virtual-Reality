@@ -35,6 +35,8 @@
 #include "../headers/WorldCamera.hpp"
 #include "../headers/StreetLamp.hpp"
 
+#include "../headers/Sound.hpp"
+
 #include "../headers/DebugDrawer.hpp"   
 
 
