@@ -173,14 +173,16 @@ void Road::generateLamps() {
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
         Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, this->light, false, i);
         linkedObjects.push_back(lamp);
+        lamps.push_back((StreetLamp*)lamp);
     }
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
         Object* lamp = new StreetLamp(lampModelReversed, lampShader, this->physics, this->light, true, i);
         linkedObjects.push_back(lamp);
+        lamps.push_back((StreetLamp*)lamp);
     }
 }
 
-const int NUMBER_OF_TREES = 5000; // per road segment
+const int NUMBER_OF_TREES = 50; // per road segment
 void Road::generateTrees() {
     Shader* treeShader = new Shader("code/shaders/instancedObject.vert", "code/shaders/textureLessShader.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");
@@ -231,5 +233,12 @@ btRigidBody* Road::createGroundRigidBodyFromShape(btCollisionShape* groundShape)
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, groundMotionState, groundShape, localInertia);
 
         return new btRigidBody(rbInfo);
+
+       
     }
+}
+
+std::vector<StreetLamp *> Road::getLamps()
+{
+    return this->lamps;
 }

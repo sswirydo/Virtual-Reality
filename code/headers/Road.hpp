@@ -28,6 +28,7 @@ public:
     void addNewCars(glm::vec3 currentRoadTranslate);
     void checkCarsState();
     void removeCar(Car* car);
+    std::vector<StreetLamp*> getLamps();
 
 protected:
 
@@ -37,6 +38,7 @@ protected:
     //void moveLinkedCars(glm::vec3 vector);
 
     std::vector<Object*> linkedObjects;
+    std::vector<StreetLamp*> lamps;
     std::vector<Car*> cars;
 
 

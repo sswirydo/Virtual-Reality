@@ -1,4 +1,5 @@
 #include "../headers/Object.hpp"
+#include "../headers/StreetLamp.hpp"
 
 Object::Object() {}
 
@@ -67,9 +68,6 @@ void Object::updateModelFromPhysics()
     this->setModelMatrix(modelMatrix);
 }
 
-
-
-
 void Object::setModel(Model* model){
     this->model = model;
 }
@@ -92,7 +90,7 @@ void Object::Draw(){
     this->model->Draw(this->shader);
 }
 
-void Object::render(Camera* camera)
+void Object::render(Camera* camera, std::vector<StreetLamp*> lamps)
 {
     this->cameraPos = camera->position;
     glm::mat4 projection = camera->getProjectionMatrix();
@@ -109,14 +107,19 @@ void Object::render(Camera* camera)
     this->shader->setMat4("view", view);
     this->shader->setMat4("model", this->modelMatrix);
 
-    this->shader->setVec4("streetLight.lightColor", 0.9f,0.7f,0.1f,0.4f);
-    this->shader->setVec3("streetLight.position", glm::vec3(0,5,-40));
-    this->shader->setVec3("streetLight.direction", glm::vec3(0,-1,0));
-    this->shader->setFloat("streetLight.cutOff",   glm::cos(glm::radians(12.5f)));
-    this->shader->setVec3("streetLight.ambient",glm::vec3(1.f));
-    this->shader->setVec3("streetLight.diffuse",glm::vec3(1.f));
-    this->shader->setVec3("streetLight.specular",glm::vec3(1.0f));
-
+    for(size_t i = 0; i < lamps.size();i++){
+        StreetLamp *lamp = lamps[i];
+        LightSource source = lamp->getLightSource();
+        // std::cout << (std::string("streetLight[")+std::to_string(i)+std::string("].cutOff")).c_str() << std::endl;
+        // std::cout << lamps.size() << std::endl;
+        this->shader->setVec4(std::string("streetLight[")+std::to_string(i)+std::string("].lightColor"),source.getColor() );
+        this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].position"), source.getPosition());
+        this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].direction"), glm::vec3(0,-1,0));
+        this->shader->setFloat(std::string("streetLight[")+std::to_string(i)+std::string("].cutOff").c_str(), glm::cos(glm::radians(30.f)));
+        this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].ambient"), source.getAmbient());
+        this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].diffuse"), source.getDiffuse());
+        this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].specular"), source.getSpecular());
+    }
     // set object opaque by default
     shader->setFloat("material.transparency",1.0);
     this->Draw();

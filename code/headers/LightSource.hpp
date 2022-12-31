@@ -133,9 +133,9 @@ protected:
     glm::vec4 color;
     GLuint lightCubeVAO, VBO;
     Shader lightShader;
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    glm::vec3 ambient = glm::vec3(1.0f);
+    glm::vec3 diffuse = glm::vec3(1.0f);
+    glm::vec3 specular = glm::vec3(1.0f);
 
 public:
     LightSource(glm::vec3 lightPosition, glm::vec4 lightColor);

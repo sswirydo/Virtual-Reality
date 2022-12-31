@@ -12,7 +12,6 @@ public:
     InstancedObject(Model* model, Shader* shader, Physics* physics, LightSource* light, std::vector<glm::vec3> translations);
     //~Object();
 
-    void render(Camera* camera);
     void Draw();
 
 protected:

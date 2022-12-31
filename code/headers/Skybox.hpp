@@ -15,6 +15,7 @@
 #include "Shader.hpp"
 #include "Object.hpp"
 #include "Camera.hpp"
+#include "StreetLamp.hpp"
 
 
 class Skybox
@@ -22,7 +23,7 @@ class Skybox
 public:
 	Skybox();
 	Skybox(LightSource* light);
-	void render(Camera* camera);
+	void render(Camera* camera, std::vector<StreetLamp*> lamps);
 	
 private:
 	void loadCubemapFace(const char* path, const GLenum & targetFace);

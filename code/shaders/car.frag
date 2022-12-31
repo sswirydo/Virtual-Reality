@@ -37,9 +37,10 @@ in vec3 Normal;
 in vec3 FragPos;  
 in vec2 TexCoords;
 
+#define NR_SPOTLIGHTS 30
 uniform Material material;
 uniform DirectionalLight sun;
-uniform SpotLight streetLight;
+uniform SpotLight streetLight[NR_SPOTLIGHTS];
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal;
@@ -61,34 +62,39 @@ vec4 computeDirectionalLight(DirectionalLight sun, Material material, vec3 norma
     return (specular+ambient+diffuse);
 }
 
-vec4 computeSpotLight(SpotLight streetlight, vec3 lightDirection, Material material, vec3 normal, vec3 viewDir){
-    float theta = dot(lightDirection, normalize(-streetlight.direction));
-    vec4 ambient = vec4(material.ambient,material.transparency) * vec4(streetLight.ambient,1.0)*(texture(texture_diffuse1, TexCoords));
+vec4 computeSpotLight(SpotLight streetLight, vec3 lightDirection, Material material, vec3 normal, vec3 viewDir){
+    float theta = dot(lightDirection, normalize(-streetLight.direction));
     if(theta > streetLight.cutOff) 
     {       
-      // ambient light
+        // ambient light
+        vec4 ambient = vec4(material.ambient,material.transparency) * vec4(streetLight.ambient,1.0)*(texture(texture_diffuse1, TexCoords));
 
-      // diffuse light 
-      float diff = max(dot(normal, lightDirection), 0.0);
-      vec4 diffuse = (diff * vec4(material.diffuse,material.transparency))* vec4(streetLight.diffuse,1.0)*(texture(texture_diffuse1, TexCoords));
+        // diffuse light 
+        float diff = max(dot(normal, lightDirection), 0.0);
+        vec4 diffuse = (diff * vec4(material.diffuse,material.transparency))* vec4(streetLight.diffuse,1.0)*(texture(texture_diffuse1, TexCoords));
 
-      // specular light 
-      vec3 reflectDir = reflect(-lightDirection, normal);
-      float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-      vec4 specular = (vec4(material.specular,material.transparency) * spec) * vec4(streetLight.specular,1.0)*(texture(texture_specular1, TexCoords));
-      return (specular+ambient+diffuse);
+        // specular light 
+        vec3 reflectDir = reflect(-lightDirection, normal);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+        vec4 specular = (vec4(material.specular,material.transparency) * spec) * vec4(streetLight.specular,1.0)*(texture(texture_specular1, TexCoords));
+        return (specular+ambient+diffuse);
     }
     else  // else, use ambient light so scene isn't completely dark outside the spotlight.
-      return ambient;
+        return vec4(0.0,0.0,0.0,1.0);
 }
 
 void main()
 {    
     vec3 normal = normalize(Normal); 
     vec3 viewDir = normalize(viewPos - FragPos); // the vector pointing from the fragment to the camera.
-    vec3 lightDir = normalize(streetLight.position - FragPos); // the vector pointing from the fragment to the light source.
 
-    vec4 result = (computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor +
-                    computeSpotLight(streetLight,lightDir,material,normal,viewDir)*streetLight.lightColor);
+    vec4 result = computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor;
+    for(int i = 0; i < NR_SPOTLIGHTS; i++){
+        vec3 lightDir = normalize(streetLight[i].position - FragPos); // the vector pointing from the fragment to the light source.
+        result += computeSpotLight(streetLight[i],lightDir,material,normal,viewDir)*streetLight[i].lightColor;
+    
+    }
+
+        
     FragColor = result;
 }

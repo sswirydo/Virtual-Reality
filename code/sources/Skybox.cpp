@@ -30,7 +30,7 @@ Skybox::Skybox(LightSource *light)
     }
 }
 
-void Skybox::render(Camera* camera)
+void Skybox::render(Camera* camera, std::vector<StreetLamp*> lamps)
 {
     cubeMapShader->use();
     cubeMapShader->setMat4("V", camera->getViewMatrix());
@@ -38,7 +38,7 @@ void Skybox::render(Camera* camera)
     cubeMapShader->setInt("cubemapTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-    cubeMap->render(camera);
+    cubeMap->render(camera, lamps);
 }
 
 

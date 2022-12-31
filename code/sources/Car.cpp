@@ -106,11 +106,11 @@ std::vector<Mesh> Car::getCarosserieMesh()
     return carosserie;
 }
 
-void Car::render(Camera* camera) {
+void Car::render(Camera* camera, std::vector<StreetLamp*> lamps) {
     this->updateModelFromPhysics();
     this->translateModel(glm::vec3(0, -0.85, -0.05));
     this->rotateModel(180.0f, glm::vec3(0, 1, 0));
-    this->Object::render(camera);
+    this->Object::render(camera, lamps);
 }
  
 // void Car::render(Camera* camera, LightSource &light)

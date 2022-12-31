@@ -11,7 +11,7 @@ class Car : public Object
 public:
     Car(Model* model,Shader* shader, Physics* physics,LightSource* light);
     void move(float deltaTime);
-    void render(Camera* camera);
+    void render(Camera* camera, std::vector<StreetLamp*> lamps);
     void Draw();
     std::vector<Mesh> getWheelsMesh();
     std::vector<Mesh> getWindowsMesh();

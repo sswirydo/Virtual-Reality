@@ -20,9 +20,9 @@ StreetLamp::StreetLamp(Model* model, Shader* shader, Physics* physics, LightSour
     
 }
 
-void StreetLamp::render(Camera* camera)
+void StreetLamp::render(Camera* camera, std::vector<StreetLamp*> lamps)
 {
-    this->Object::render(camera);
+    this->Object::render(camera,lamps);
     glm::vec3 myLightPosition; 
     if(this->isAtRight)
         myLightPosition = glm::vec3(this->getModelMatrix()[3]) + glm::vec3(-3.8,8.3,0);
@@ -37,4 +37,9 @@ StreetLamp::~StreetLamp()
 }
 StreetLamp::StreetLamp()
 {
+}
+
+LightSource StreetLamp::getLightSource()
+{
+    return this->my_light;
 }

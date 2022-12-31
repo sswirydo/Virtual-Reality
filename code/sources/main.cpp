@@ -134,9 +134,12 @@ int main()
     roads.push_back(road);
     roads.push_back(road2);
     roads.push_back(road3);
+    std::vector<StreetLamp*> lamps;
     for (size_t t = 0; t < roads.size(); t++) {
         roads[t]->addCarInfo(carModel, carShader, sun);
         roads[t]->move((int)roads.size(), (int)t);
+        for(size_t i = 0; i < roads[t]->getLamps().size(); i++)
+            lamps.push_back(roads[t]->getLamps()[i]);
     }
 
     PlayerCamera* playerCamera = new PlayerCamera(playerCar);
@@ -196,7 +199,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glDepthFunc(GL_LEQUAL);
-        skybox.render(camera);
+        skybox.render(camera,lamps);
 
 
         float distance = playerCar->getWorldCoordinates().z;
@@ -227,10 +230,10 @@ int main()
 
             // rendering the roads and objects 1st for transparent windows
             for (size_t t = 0; t < roads.size(); t++) {
-                roads[t]->render(camera);
+                roads[t]->render(camera, lamps);
                 std::vector<Object*> linkedObjects = roads[t]->getLinkedObjects();
                 for (size_t l = 0; l < linkedObjects.size(); l++) {
-                    linkedObjects[l]->render(camera);
+                    linkedObjects[l]->render(camera, lamps);
                 }
             }
 
@@ -241,11 +244,11 @@ int main()
                     if (!pauseGame) {
                         linkedCars[l]->move(deltaTime);
                     }
-                    linkedCars[l]->render(camera);
+                    linkedCars[l]->render(camera, lamps);
                 } 
             }
 
-            playerCar->render(camera);
+            playerCar->render(camera, lamps);
         }
         
         glDepthFunc(GL_LESS);

@@ -20,9 +20,9 @@
 #include <iostream>
 #include <vector>
 
-
 class Car;
 class Camera;
+class StreetLamp;
 
 class Object
 {
@@ -30,7 +30,7 @@ public:
     Object();
     Object(Model* model, Shader* shader, Physics* physics, LightSource* light);
     ~Object();
-    virtual void render(Camera* camera);
+    virtual void render(Camera* camera, std::vector<StreetLamp*> lamps);
     virtual void Draw();
 
     void setModel(Model* model);

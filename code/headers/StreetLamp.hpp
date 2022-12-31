@@ -1,6 +1,8 @@
 #ifndef STREETLAMP_HPP
 #define STREETLAMP_HPP
 #include "Object.hpp"
+
+class Object;
 class StreetLamp : public Object
 {
 private:
@@ -9,7 +11,8 @@ private:
 public:
     StreetLamp(Model* model, Shader* shader, Physics* physics, LightSource* light, bool isAtRight, int position);
     StreetLamp();
-    void render(Camera* camera);
+    LightSource getLightSource();
+    void render(Camera* camera, std::vector<StreetLamp*> lamps);
     ~StreetLamp();
 };
 
