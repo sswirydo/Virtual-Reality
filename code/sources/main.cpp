@@ -14,10 +14,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <AL/al.h>
-#include <AL/alc.h>
-//#include <AL/alut.h>
-
 #include "../headers/Settings.hpp"
 
 #include "../headers/Game.hpp"
@@ -103,15 +99,6 @@ int main()
     glfwSetScrollCallback(game.getWindow(), scroll_callback);
     glfwSetKeyCallback(game.getWindow(), key_callback);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // tell GLFW to capture our mouse
-
-    //----------------------
-    // AUDIO (test)
-
-    /* ... */
-
-
-    //_______________________
-
 
 
     WorldCamera* worldCamera = new WorldCamera(glm::vec3(0.0f, 3.0f, 7.0f));

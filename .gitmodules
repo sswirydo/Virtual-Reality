@@ -15,9 +15,3 @@
 [submodule "libs/bullet3"]
 	path = libs/bullet3
 	url = https://github.com/bulletphysics/bullet3
-[submodule "libs/openal-soft"]
-	path = libs/openal-soft
-	url = https://github.com/kcat/openal-soft
-[submodule "libs/libsndfile"]
-	path = libs/libsndfile
-	url = https://github.com/libsndfile/libsndfile

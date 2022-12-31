@@ -42,14 +42,14 @@ LIST(APPEND BULLET_LIBS BulletDynamics BulletCollision LinearMath)
 # add_definitions(-DBT_USE_DOUBLE_PRECISION)
 
 # CONFIGURE OPEN AL
-add_subdirectory(libs/openal-soft)
-include_directories(libs/openal-soft/include)
-LIST(APPEND OTHER_LIBS OpenAL)
+# add_subdirectory(libs/openal-soft)
+# include_directories(libs/openal-soft/include)
+# LIST(APPEND OTHER_LIBS OpenAL)
 
 # CONFIGURE LIBSNDFILE
-add_subdirectory(libs/libsndfile)
-include_directories(libs/libsndfile/include)
-LIST(APPEND OTHER_LIBS sndfile)
+# add_subdirectory(libs/libsndfile)
+# include_directories(libs/libsndfile/include)
+# LIST(APPEND OTHER_LIBS sndfile)
 
 
 ## Out
