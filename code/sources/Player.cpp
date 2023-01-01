@@ -17,7 +17,7 @@ bool Player::wasHit()
     return bo->hit;
 }
 
-void Player::move(float deltaTime, glm::vec4 direction, int speedIncrease)
+void Player::move(float deltaTime, glm::vec4 direction, int speedIncrease, bool enableSpeed)
 {
     btTransform transform;
     btVector3 position;
@@ -49,13 +49,17 @@ void Player::move(float deltaTime, glm::vec4 direction, int speedIncrease)
     // Update the car's velocity based on the acceleration
     velocity += acceleration * deltaTime;
 
-    // Velocity cap 
-    float zSpeed = -velocity.getZ();
-    int minSpeed = (20 + speedIncrease);
-    if (zSpeed < (float)minSpeed)
+    // Velocity cap  (i.e. game difficulty)
+    if (enableSpeed) 
     {
-        velocity.setZ(-minSpeed);
+        float zSpeed = -velocity.getZ();
+        int minSpeed = (20 + speedIncrease);
+        if (zSpeed < (float)minSpeed)
+        {
+            velocity.setZ(-minSpeed);
+        }
     }
+    
 
     this->getRigidBody()->setLinearVelocity(velocity);
 

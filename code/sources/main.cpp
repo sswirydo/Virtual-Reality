@@ -50,6 +50,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 bool processMouseInput = true;
 bool pauseGame = false;
 glm::vec4 movementDirection = glm::vec4(false,false,false,false);
+bool enableFog = true;
+bool enableSpeed = true;
 
 // camera
 Camera* camera = nullptr;
@@ -185,7 +187,7 @@ int main()
         // Input handling.
         processInput(game.getWindow());
         if (!pauseGame && !playerCar->wasHit()) 
-        { playerCar->move(deltaTime, movementDirection, roadDisplacement);}
+        { playerCar->move(deltaTime, movementDirection, roadDisplacement, enableSpeed);}
 
         // Moving road segments as player advances in game.
         float distance = playerCar->getWorldCoordinates().z;
@@ -350,6 +352,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_2 && action == GLFW_PRESS)
     {
         cameraNum = 2; cameraChanged = true;
+    }
+
+    if (key == GLFW_KEY_F && action == GLFW_PRESS)
+    {
+        if (enableFog) { enableFog = false; std::cout << ">> FOG OFF" << std::endl; }
+        else { enableFog = true; std::cout << ">> FOG ON" << std::endl; }
+    }
+
+    if (key == GLFW_KEY_V && action == GLFW_PRESS)
+    {
+        if (enableSpeed) { enableSpeed = false; std::cout << ">> INCREASING SPEED OFF" << std::endl; }
+        else { enableSpeed = true; std::cout << ">> INCREASING SPEED ON" << std::endl; }
     }
 
 

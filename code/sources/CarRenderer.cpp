@@ -43,8 +43,6 @@ void CarRenderer::render(std::vector<glm::mat4> modelMatrices, Camera* camera, s
     // set object opaque by default
     shader->setFloat("material.transparency", 1.0);
 
-    std::cout << this->carosserie.size() << std::endl;
-        
     for (size_t i = 0; i < this->carosserie.size(); i++) { this->carosserie[i].InstancedDraw(this->shader, modelMatrices); }
     for (size_t i = 0; i < this->wheels.size(); i++) { this->wheels[i].InstancedDraw(this->shader, modelMatrices); }
 
