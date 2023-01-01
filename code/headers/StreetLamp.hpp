@@ -12,7 +12,7 @@ public:
     StreetLamp(Model* model, Shader* shader, Physics* physics, LightSource* light, bool isAtRight, int position);
     StreetLamp();
     LightSource getLightSource();
-    void render(Camera* camera, std::vector<StreetLamp*> lamps);
+    void render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog);
     ~StreetLamp();
 };
 

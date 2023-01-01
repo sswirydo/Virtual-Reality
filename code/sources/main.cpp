@@ -211,7 +211,7 @@ int main()
         glDepthFunc(GL_LEQUAL);
 
         // Skybox rendering.
-        skybox->render(camera,lamps);
+        skybox->render(camera,lamps, enableFog);
         //glDepthFunc(GL_LESS);
 
         // Moving the sun.
@@ -246,17 +246,17 @@ int main()
             sun->show(camera);
             // Rendering the roads and objects 1st for transparent windows.
             for (size_t t = 0; t < roads.size(); t++) {
-                roads[t]->render(camera, lamps);
+                roads[t]->render(camera, lamps, enableFog);
                 std::vector<Object*> linkedObjects = roads[t]->getLinkedObjects();
                 for (size_t l = 0; l < linkedObjects.size(); l++) {
-                    linkedObjects[l]->render(camera, lamps);
+                    linkedObjects[l]->render(camera, lamps, enableFog);
                 }
             }
 
             carModelMatrices.push_back(playerCar->getModelMatrix());
 
             // Rendering the cars.
-            carRenderer->render(carModelMatrices, camera, lamps);
+            carRenderer->render(carModelMatrices, camera, lamps, enableFog);
 
             // Rendering the player's car.
             //playerCar->render(camera, lamps);

@@ -31,7 +31,7 @@ public:
     Object();
     Object(Model* model, Shader* shader, Physics* physics, LightSource* light);
     ~Object();
-    virtual void render(Camera* camera, std::vector<StreetLamp*> lamps);
+    virtual void render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog);
     virtual void Draw();
 
     virtual glm::mat4 getModelMatrix();

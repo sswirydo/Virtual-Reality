@@ -46,6 +46,7 @@ uniform SpotLight streetLight[NR_SPOTLIGHTS];
 uniform vec4 lightColor;
 uniform vec3 viewPos;   
 uniform bool isNight;  
+uniform bool enableFog;  
 
 const vec4 fogColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
@@ -95,13 +96,16 @@ void main()
     vec4 result = computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor;
     // vec4 result = vec4(0.0);
 
-    for(int i = 0; i < NR_SPOTLIGHTS; i++){
-        if(isNight){
+    if(isNight)
+    {
+        for(int i = 0; i < NR_SPOTLIGHTS; i++){
             vec3 lightDir = normalize(streetLight[i].position - FragPos); // the vector pointing from the fragment to the light source.
             result += computeSpotLight(streetLight[i],lightDir,material,normal,viewDir)*streetLight[i].lightColor;
         }
-    
     }
-    result = mix(fogColor, result, visibility); // fog effect
+
+    if (enableFog) {
+        result = mix(fogColor, result, visibility); // fog effect 
+    }
     FragColor = result;
 }

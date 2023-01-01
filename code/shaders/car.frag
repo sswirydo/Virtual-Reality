@@ -47,6 +47,7 @@ uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal;
 uniform vec3 viewPos;   
 uniform bool isNight;  
+uniform bool enableFog;
 
 const vec4 fogColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
@@ -95,15 +96,20 @@ void main()
     vec4 result = computeDirectionalLight(sun, material,normal, viewDir) * sun.lightColor;
     // vec4 result = vec4(0.0);
 
-    for(int i = 0; i < NR_SPOTLIGHTS; i++){
-        if (isNight){
+    if (isNight)
+    {
+        for(int i = 0; i < NR_SPOTLIGHTS; i++)
+        {
             vec3 lightDir = normalize(streetLight[i].position - FragPos); // the vector pointing from the fragment to the light source.
             result += computeSpotLight(streetLight[i],lightDir,material,normal,viewDir)*streetLight[i].lightColor;
         }
-    
     }
 
+    
     FragColor = vec4(result.xyz,material.transparency);
 
-    FragColor = mix(fogColor, FragColor, visibility); // fog effect
+    if (enableFog) {
+        FragColor = mix(fogColor, FragColor, visibility); // fog effect
+    }
+    
 }

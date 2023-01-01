@@ -5,6 +5,7 @@ uniform samplerCube cubemapSampler;
 in vec3 texCoord_v;
 
 uniform bool isNight;  
+uniform bool enableFog;
 
 const vec4 fogColor = vec4(0.5f,0.5f,0.5f, 1.0f);
 const float darkerFactor = 4.0f;
@@ -19,7 +20,9 @@ void main() {
 	}
 
 	// fog effect
-	float visibility = texCoord_v.y;
-	visibility = clamp(visibility, 0.0f, 1.0f);
-	FragColor = mix(fogColor, FragColor, visibility);
+	if (enableFog) {
+        float visibility = texCoord_v.y;
+		visibility = clamp(visibility, 0.0f, 1.0f);
+		FragColor = mix(fogColor, FragColor, visibility);
+    }
 }
