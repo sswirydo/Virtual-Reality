@@ -1,10 +1,11 @@
 #include "../headers/Skybox.hpp"
 Skybox::Skybox(){}
-Skybox::Skybox(LightSource *light) 
+Skybox::Skybox(Sun* sun) 
 {
     cubeMapModel = new Model("assets/objects/cube.obj");
     cubeMapShader = new Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
-    cubeMap = new Object(cubeMapModel, cubeMapShader, nullptr, light);
+    this->sun = sun;
+    cubeMap = new Object(cubeMapModel, cubeMapShader, nullptr, sun);
     // cubeMapTexture;
     glGenTextures(1, &cubeMapTexture);
     glActiveTexture(GL_TEXTURE0);
@@ -36,6 +37,7 @@ void Skybox::render(Camera* camera, std::vector<StreetLamp*> lamps)
     cubeMapShader->setMat4("V", camera->getViewMatrix());
     cubeMapShader->setMat4("P", camera->getProjectionMatrix());
     cubeMapShader->setInt("cubemapTexture", 0);
+    cubeMapShader->setBool("isNight", (this->sun)->isNight());
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
     cubeMap->render(camera, lamps);

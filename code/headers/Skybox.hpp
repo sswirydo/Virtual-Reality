@@ -22,7 +22,7 @@ class Skybox
 {
 public:
 	Skybox();
-	Skybox(LightSource* light);
+	Skybox(Sun* sun);
 	void render(Camera* camera, std::vector<StreetLamp*> lamps);
 	
 private:
@@ -31,6 +31,7 @@ private:
 	Shader* cubeMapShader;
 	Object* cubeMap;
 	GLuint cubeMapTexture;
+	Sun* sun = nullptr;
 };
 
 #endif // !SKYBOX_HPP
