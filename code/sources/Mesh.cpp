@@ -144,33 +144,29 @@ void Mesh::InstancedDraw(Shader* shader, std::vector<glm::mat4> modelMatrices) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     
+    // // One matrix row per VAA line
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
 
-    // One matrix row per VAA line
-    if (!instancedSetUp) {
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0); // should be sizeof() of GL_FLOAT, glm::vec4, or glm::mat4 ?
+    glVertexAttribDivisor(3, 1);
 
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+    glVertexAttribDivisor(4, 1);
 
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0); // should be sizeof() of GL_FLOAT, glm::vec4, or glm::mat4 ?
-        glVertexAttribDivisor(3, 1);
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 2));
+    glVertexAttribDivisor(5, 1);
 
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
-        glVertexAttribDivisor(4, 1);
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 3));
+    glVertexAttribDivisor(6, 1);
 
-        glEnableVertexAttribArray(5);
-        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 2));
-        glVertexAttribDivisor(5, 1);
-
-        glEnableVertexAttribArray(6);
-        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 3));
-        glVertexAttribDivisor(6, 1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-        instancedSetUp = true;
-    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+   
    
     this->setUpMaterials(shader);
 

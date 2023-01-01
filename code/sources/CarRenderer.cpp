@@ -4,7 +4,11 @@ CarRenderer::CarRenderer() {}
 
 CarRenderer::CarRenderer(Model* model, Shader* shader, LightSource* light) 
 	: model(model), shader(shader), light(light) 
-{}
+{
+    this->getWheelsMesh();
+    this->getWindowsMesh();
+    this->getCarosserieMesh();
+}
 
 void CarRenderer::render(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps) {
     glm::vec3 cameraPos = camera->position;
@@ -38,61 +42,40 @@ void CarRenderer::render(std::vector<glm::mat4> modelMatrices, Camera* camera, s
     }
     // set object opaque by default
     shader->setFloat("material.transparency", 1.0);
-    
-    /** Draw top*/
-    std::vector<Mesh> carosserie = this->getCarosserieMesh();
-    for (unsigned int i = 0; i < carosserie.size(); i++)
-    {
-        carosserie[i].InstancedDraw(this->shader, modelMatrices);
 
-    }
-    /** Draw wheels*/
-    std::vector<Mesh> wheels = this->getWheelsMesh();
-    for (unsigned int i = 0; i < wheels.size(); i++) 
-    {
-        wheels[i].InstancedDraw(this->shader, modelMatrices);
-    }
-    /** Draw The windows*/
+    std::cout << this->carosserie.size() << std::endl;
+        
+    for (size_t i = 0; i < this->carosserie.size(); i++) { this->carosserie[i].InstancedDraw(this->shader, modelMatrices); }
+    for (size_t i = 0; i < this->wheels.size(); i++) { this->wheels[i].InstancedDraw(this->shader, modelMatrices); }
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     shader->setFloat("material.transparency", 0.4);
-    std::vector<Mesh> windows = this->getWindowsMesh();
-    for (unsigned int i = 0; i < windows.size(); i++) 
-    {
-        windows[i].InstancedDraw(this->shader, modelMatrices);
-    }
+    for (size_t i = 0; i < this->windows.size(); i++) { this->windows[i].InstancedDraw(this->shader, modelMatrices); }
     glDisable(GL_BLEND);
 }
 
 
-
-
-std::vector<Mesh> CarRenderer::getWheelsMesh()
+void CarRenderer::getWheelsMesh()
 {
-    std::vector<Mesh> wheels;
-    wheels.push_back(this->model->getMeshes()[7]);
-    wheels.push_back(this->model->getMeshes()[6]);
-    wheels.push_back(this->model->getMeshes()[5]);
-    wheels.push_back(this->model->getMeshes()[4]);
-    return wheels;
+    this->wheels.push_back(this->model->getMeshes()[7]);
+    this->wheels.push_back(this->model->getMeshes()[6]);
+    this->wheels.push_back(this->model->getMeshes()[5]);
+    this->wheels.push_back(this->model->getMeshes()[4]);
 }
 
-std::vector<Mesh> CarRenderer::getWindowsMesh()
+void CarRenderer::getWindowsMesh()
 {
-    std::vector<Mesh> windows;
-    windows.push_back(this->model->getMeshes()[8]);
-    windows.push_back(this->model->getMeshes()[9]);
-    windows.push_back(this->model->getMeshes()[10]);
-    return windows;
+    this->windows.push_back(this->model->getMeshes()[8]);
+    this->windows.push_back(this->model->getMeshes()[9]);
+    this->windows.push_back(this->model->getMeshes()[10]);
 }
 
-std::vector<Mesh> CarRenderer::getCarosserieMesh()
+void CarRenderer::getCarosserieMesh()
 {
-    std::vector<Mesh> carosserie;
-    carosserie.push_back(this->model->getMeshes()[0]);
-    carosserie.push_back(this->model->getMeshes()[1]);
-    carosserie.push_back(this->model->getMeshes()[2]);
-    carosserie.push_back(this->model->getMeshes()[3]);
-    carosserie.push_back(this->model->getMeshes()[11]);
-    return carosserie;
+    this->carosserie.push_back(this->model->getMeshes()[0]);
+    this->carosserie.push_back(this->model->getMeshes()[1]);
+    this->carosserie.push_back(this->model->getMeshes()[2]);
+    this->carosserie.push_back(this->model->getMeshes()[3]);
+    this->carosserie.push_back(this->model->getMeshes()[11]);
 }

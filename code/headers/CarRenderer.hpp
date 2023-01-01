@@ -26,14 +26,17 @@ public:
 	CarRenderer(Model* model, Shader* shader, LightSource* light);
 	void render(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps);
 protected:
-	std::vector<Mesh> getWheelsMesh();
-	std::vector<Mesh> getWindowsMesh();
-	std::vector<Mesh> getCarosserieMesh();
+	void getWheelsMesh();
+	void getWindowsMesh();
+	void getCarosserieMesh();
 
 	Model* model = nullptr;
 	Shader* shader = nullptr;
 	LightSource* light = nullptr;
-	
+
+	std::vector<Mesh> wheels;
+	std::vector<Mesh> carosserie;
+	std::vector<Mesh> windows;
 };
 
 #endif // !CAR_RENDERER_HPP
