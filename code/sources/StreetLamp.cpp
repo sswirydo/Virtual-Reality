@@ -3,6 +3,7 @@
 constexpr int LAMP_SPACING = 40;
 StreetLamp::StreetLamp(Model* model, Shader* shader, Physics* physics, LightSource* sun, bool isAtRight, int position) : Object(model, shader, physics, sun) 
 {
+    position -= 2;
     //this->setModelMatrix(glm::scale(this->getModelMatrix(),glm::vec3(6.0f)));
     this->isAtRight = isAtRight;
     glm::vec3 myLightPosition; 
