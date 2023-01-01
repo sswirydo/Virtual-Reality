@@ -41,6 +41,7 @@ public:
     // draws the model, and thus all its meshes
     void Draw(Shader* shader);
     void InstancedDraw(Shader* shader, std::vector<glm::vec3> translations);
+    void InstancedDraw(Shader* shader, std::vector<glm::mat4> modelMatrices);
 
 protected:
     Material loadMaterial(aiMaterial* mat);

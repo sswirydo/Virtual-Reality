@@ -27,6 +27,11 @@ void Model::InstancedDraw(Shader* shader, std::vector<glm::vec3> translations) {
         this->meshes[i].InstancedDraw(shader, translations);
 }
 
+void Model::InstancedDraw(Shader* shader, std::vector<glm::mat4> modelMatrices) {
+    for (size_t i = 0; i < this->meshes.size(); i++)
+        this->meshes[i].InstancedDraw(shader, modelMatrices);
+}
+
 void Model::loadModel(std::string path){
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);

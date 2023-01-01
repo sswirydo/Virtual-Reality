@@ -59,6 +59,7 @@ class Mesh {
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures,Material material);
         void Draw(Shader* shader);
         void InstancedDraw(Shader* shader, std::vector<glm::vec3> translations);
+        void InstancedDraw(Shader* shader, std::vector<glm::mat4> modelMatrices);
 
         void printMaterial();
     protected:

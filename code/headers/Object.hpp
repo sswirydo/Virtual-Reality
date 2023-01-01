@@ -1,5 +1,6 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -33,10 +34,11 @@ public:
     virtual void render(Camera* camera, std::vector<StreetLamp*> lamps);
     virtual void Draw();
 
+    virtual glm::mat4 getModelMatrix();
+
     void setModel(Model* model);
     void setShader(Shader* shader);
     void setModelMatrix(glm::mat4 model);
-    glm::mat4 getModelMatrix();
     void setRigidBody(btRigidBody* rigidBody);
     btRigidBody* getRigidBody();
     btCollisionShape* getCollisionShape();

@@ -18,8 +18,14 @@ public:
     std::vector<Mesh> getWindowsMesh();
     std::vector<Mesh> getCarosserieMesh();
 
+    glm::mat4 getModelMatrix();
+
+    static void staticRender(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps);
+
 private:
     static btCollisionShape* carCollisionShape;
+    static Model* carModel;
+
 
 };
 

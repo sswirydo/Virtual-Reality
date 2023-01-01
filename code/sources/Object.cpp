@@ -31,11 +31,11 @@ Object::~Object()
 
 void Object::translateModel(glm::vec3 vector)
 {
-    this->setModelMatrix(glm::translate(this->getModelMatrix(), vector));
+    this->setModelMatrix(glm::translate(this->modelMatrix, vector)); // warning: use this->modelMatrix and NOT this->getModelMatrix() which is VIRTUAL
 }
 void Object::rotateModel(float degrees, glm::vec3 axis)
 {
-    this->setModelMatrix(glm::rotate(this->getModelMatrix(), glm::radians(degrees), axis));
+    this->setModelMatrix(glm::rotate(this->modelMatrix, glm::radians(degrees), axis));
 }
 void Object::forceTranslate(glm::vec3 vector)
 {
@@ -49,7 +49,7 @@ void Object::forceRotate(float degrees, glm::vec3 axis)
 }
 void Object::forceUpdatePhysics() {
     btTransform transform;
-    transform.setFromOpenGLMatrix((btScalar*)glm::value_ptr(this->getModelMatrix()));
+    transform.setFromOpenGLMatrix((btScalar*)glm::value_ptr(this->modelMatrix));
     this->getRigidBody()->setWorldTransform(transform);
 }
 

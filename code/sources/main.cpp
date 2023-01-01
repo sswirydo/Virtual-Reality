@@ -24,6 +24,7 @@
 #include "../headers/Object.hpp"
 #include "../headers/InstancedObject.hpp"
 #include "../headers/Car.hpp"
+#include "../headers/CarRenderer.hpp"
 #include "../headers/Road.hpp"
 #include "../headers/Player.hpp"
 #include "../headers/Sun.hpp"
@@ -85,8 +86,8 @@ bool contactAddedCallbackBullet(
     return false;
 }
 
-const int frameRate = 120;
-const int frameDelay = (int)(1000 / frameRate);
+//const int frameRate = 120;
+//const int frameDelay = (int)(1000 / frameRate);
 
 int main()
 {
@@ -115,6 +116,7 @@ int main()
     Shader* lightShader = new Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader* carShader = new Shader("code/shaders/car.vert","code/shaders/car.frag");
+    Shader* carInstancedShader = new Shader("code/shaders/instancedMatrixObject.vert", "code/shaders/car.frag");
     Model* carModel = new Model("assets/meshes/car/car.obj");
     Player* playerCar = new Player(carModel, carShader, physics, sun);
 
@@ -139,7 +141,9 @@ int main()
 
     PlayerCamera* playerCamera = new PlayerCamera(playerCar);
 
-    Skybox skybox = Skybox(sun);
+    Skybox* skybox = new Skybox(sun);
+
+    CarRenderer* carRenderer = new CarRenderer(carModel, carInstancedShader, sun);
 
     double lastF = 0;
     int deltaF = 0;
@@ -159,7 +163,6 @@ int main()
     DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
 
-    glDepthFunc(GL_LEQUAL);
 
 
     while (!glfwWindowShouldClose(game.getWindow()))
@@ -202,11 +205,12 @@ int main()
         // Graphics cleaning.
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glDepthFunc(GL_LEQUAL);
 
         // Skybox rendering.
-        skybox.render(camera,lamps);
+        skybox->render(camera,lamps);
         //glDepthFunc(GL_LESS);
-
 
         // Moving the sun.
         glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
@@ -223,12 +227,21 @@ int main()
             physics->getWorld()->debugDrawWorld();
         }
 
+        std::vector<glm::mat4> carModelMatrices = std::vector<glm::mat4>();
+        for (size_t t = 0; t < roads.size(); t++) {
+            std::vector<Car*> linkedCars = roads[t]->getCars();
+            for (size_t l = 0; l < linkedCars.size(); l++) {
+                if (!pauseGame) {
+                    linkedCars[l]->move(deltaTime);
+                }
+                carModelMatrices.push_back(linkedCars[l]->getModelMatrix());
+            }
+        }
+
         // Rendering our models.
         if (renderModel)
         {
-            
             sun->show(camera);
-
             // Rendering the roads and objects 1st for transparent windows.
             for (size_t t = 0; t < roads.size(); t++) {
                 roads[t]->render(camera, lamps);
@@ -237,26 +250,22 @@ int main()
                     linkedObjects[l]->render(camera, lamps);
                 }
             }
+
+            carModelMatrices.push_back(playerCar->getModelMatrix());
+
             // Rendering the cars.
-            for (size_t t = 0; t < roads.size(); t++) {
-                std::vector<Car*> linkedCars = roads[t]->getCars();
-                for (size_t l = 0; l < linkedCars.size(); l++) {
-                    if (!pauseGame) {
-                        linkedCars[l]->move(deltaTime);
-                    }
-                    linkedCars[l]->render(camera, lamps);
-                } 
-            }
+            carRenderer->render(carModelMatrices, camera, lamps);
+
             // Rendering the player's car.
-            playerCar->render(camera, lamps);
+            //playerCar->render(camera, lamps);
         }
         
         // Framerate capping.
-        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
-        int remainingTime = frameDelay - elapsedTime;
-        if (remainingTime > 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(remainingTime));
-        }
+        //auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
+        //int remainingTime = frameDelay - elapsedTime;
+        //if (remainingTime > 0) {
+        //    std::this_thread::sleep_for(std::chrono::milliseconds(remainingTime));
+        //}
         fps(glfwGetTime());
 
         // Buffer swap and others.

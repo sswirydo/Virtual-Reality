@@ -133,3 +133,48 @@ void Mesh::InstancedDraw(Shader* shader, std::vector<glm::vec3> translations)
     glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0, (int)translations.size());
     glBindVertexArray(0);
 }
+
+void Mesh::InstancedDraw(Shader* shader, std::vector<glm::mat4> modelMatrices) {
+
+    glDeleteBuffers(1, &instanceVBO); // not sure if glGenBuffers replaces/free the buffer, so let's delete just in case
+
+    glGenBuffers(1, &instanceVBO); // TODO: could be buffered 3 times less often (top, wheels and windows regenerate this)
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * modelMatrices.size(), &modelMatrices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    
+
+    // One matrix row per VAA line
+    if (!instancedSetUp) {
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0); // should be sizeof() of GL_FLOAT, glm::vec4, or glm::mat4 ?
+        glVertexAttribDivisor(3, 1);
+
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+        glVertexAttribDivisor(4, 1);
+
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 2));
+        glVertexAttribDivisor(5, 1);
+
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 3));
+        glVertexAttribDivisor(6, 1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        instancedSetUp = true;
+    }
+   
+    this->setUpMaterials(shader);
+
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0, (int)modelMatrices.size());
+    glBindVertexArray(0);
+}

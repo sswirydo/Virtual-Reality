@@ -1,6 +1,7 @@
 #include "../headers/Car.hpp"
 
 btCollisionShape* Car::carCollisionShape = nullptr;
+Model* Car::carModel = nullptr;
 
 Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light)
 {
@@ -42,6 +43,14 @@ void Car::move(float deltaTime) // TODO redo
     this->getRigidBody()->activate(true);
 }
 
+
+glm::mat4 Car::getModelMatrix() 
+{
+    this->updateModelFromPhysics();
+    this->translateModel(glm::vec3(0, -0.85, -0.05));
+    this->rotateModel(180.0f, glm::vec3(0, 1, 0));
+    return Object::getModelMatrix();
+}
 
 
 
@@ -117,17 +126,7 @@ void Car::render(Camera* camera, std::vector<StreetLamp*> lamps) {
     this->Object::render(camera, lamps);
 }
  
-// void Car::render(Camera* camera, LightSource &light)
-// {
-//     glm::mat4 projection = camera->getProjectionMatrix();
-//     glm::mat4 view = camera->getViewMatrix();
-
-//     this->shader.use();
-//     this->shader.setVec3("lightPos", light.getPosition());
-//     this->shader.setVec4("lightColor", light.getColor());
-//     this->shader.setVec3("viewPos", camera->position); 
-//     this->shader.setMat4("projection", projection);
-//     this->shader.setMat4("view", view);
-//     this->shader.setMat4("model", this->modelMatrix);
-//     this->Draw();
-// }
+static void staticRender(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps) 
+{
+    
+}
