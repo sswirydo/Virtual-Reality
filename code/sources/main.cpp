@@ -185,7 +185,7 @@ int main()
         // Input handling.
         processInput(game.getWindow());
         if (!pauseGame && !playerCar->wasHit()) 
-        { playerCar->move(deltaTime, movementDirection);}
+        { playerCar->move(deltaTime, movementDirection, roadDisplacement);}
 
         // Moving road segments as player advances in game.
         float distance = playerCar->getWorldCoordinates().z;

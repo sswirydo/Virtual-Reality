@@ -17,7 +17,7 @@ bool Player::wasHit()
     return bo->hit;
 }
 
-void Player::move(float deltaTime, glm::vec4 direction)
+void Player::move(float deltaTime, glm::vec4 direction, int speedIncrease)
 {
     btTransform transform;
     btVector3 position;
@@ -26,7 +26,7 @@ void Player::move(float deltaTime, glm::vec4 direction)
     btVector3 acceleration(0, 0, 0);
 
     const int accelerationFactor = 5;
-    const int steeringFactor = 2;
+    const int steeringFactor = 2.5;
     const int brakingFactor =  4;
 
     if (direction.x) // FORWARD 
@@ -51,11 +51,11 @@ void Player::move(float deltaTime, glm::vec4 direction)
 
     // Velocity cap 
     float zSpeed = -velocity.getZ();
-    if (zSpeed < 30.0f)
-        zSpeed = 30.0f;
-    else if (zSpeed > 120.0f)
-        zSpeed = 120.0f;
-    velocity.setZ(-zSpeed);
+    int minSpeed = (20 + speedIncrease);
+    if (zSpeed < (float)minSpeed)
+    {
+        velocity.setZ(-minSpeed);
+    }
 
     this->getRigidBody()->setLinearVelocity(velocity);
 
