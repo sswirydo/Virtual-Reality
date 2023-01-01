@@ -2,14 +2,14 @@
 
 btCollisionShape* Car::carCollisionShape = nullptr;
 
-Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics,light)
+Car::Car(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light)
 {
     // TODO: below is provisory (testing)
     if (Car::carCollisionShape == nullptr) {
         Car::carCollisionShape = new btBoxShape(btVector3((btScalar)1, (btScalar)0.85, (btScalar)1.75));
     }
     this->collisionShape = Car::carCollisionShape;
-    btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
+    btDefaultMotionState* carMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
     btScalar carMass = 1000;
     btVector3 carInertia(0, 0, 0);
     this->collisionShape->calculateLocalInertia(carMass, carInertia);
@@ -33,15 +33,10 @@ Car::~Car() {
 
 void Car::move(float deltaTime) // TODO redo
 {   
-    btVector3 velocity = btVector3(0, 0, -15);
-    // this->getRigidBody()->setLinearVelocity(velocity);
-    btTransform transform;
-    btVector3 position;
-    /*this->getRigidBody()->setLinearVelocity(velocity);*/
     //Update the car's position based on the velocity
-    transform = this->getRigidBody()->getWorldTransform();
-    position = transform.getOrigin();
-    position += velocity * deltaTime;
+    btTransform transform = this->getRigidBody()->getWorldTransform();
+    btVector3 position = transform.getOrigin();
+    position += btVector3(0, 0, -15) * deltaTime;
     transform.setOrigin(position);
     this->getRigidBody()->setWorldTransform(transform);
     this->getRigidBody()->activate(true);

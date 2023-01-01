@@ -135,7 +135,7 @@ void Road::addNewCars(glm::vec3 currentRoadTranslate)
 
 // Checks if cars can be considered out of the game and if yes deletes them.
 void Road::checkCarsState()
-{
+{ 
     for (size_t t = 0; t < this->cars.size(); t++) {
         Car* car = this->cars[t];
         if (car->getWorldCoordinates().y < -1) {
@@ -182,7 +182,7 @@ void Road::generateLamps() {
     }
 }
 
-const int NUMBER_OF_TREES = 50; // per road segment
+const int NUMBER_OF_TREES = 2000; // per road segment
 void Road::generateTrees() {
     Shader* treeShader = new Shader("code/shaders/instancedObject.vert", "code/shaders/textureLessShader.frag");
     Model* treeModel = new Model("assets/meshes/tree/tree.obj");

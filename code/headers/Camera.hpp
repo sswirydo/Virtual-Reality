@@ -30,7 +30,7 @@ class Camera // Interface
 public:
 	Camera();
 	virtual glm::mat4 getViewMatrix() = 0;
-	virtual glm::mat4 getProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 8000.0f) = 0;
+	virtual glm::mat4 getProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 800.0f) = 0;
 
 	virtual void ProcessKeyboard(Camera_Movement direction, float deltaTime) = 0 ;
 	virtual void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) = 0;

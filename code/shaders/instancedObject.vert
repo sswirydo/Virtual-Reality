@@ -8,17 +8,28 @@ layout (location = 3) in vec3 aOffset;
 out vec3 FragPos;  
 out vec3 Normal;
 out vec3 lightVector;
+out float visibility;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 lightPos;  
 
+// fog effect
+const float density = 0.007f;
+const float gradient = 2f;
+
 void main()
 {
     Normal = vec3(model * vec4(aNormal,0.0));
     vec4 worldPosition = model * vec4(aPos + aOffset, 1.0);
     FragPos = worldPosition.xyz;
-    gl_Position = projection * view * worldPosition;
+
+    vec4 positionRelativeToCam = view * worldPosition;
+    float distance = length(positionRelativeToCam.xyz);
+    visibility = exp(-pow(distance * density, gradient));
+    visibility = clamp(visibility, 0.0, 1.0);
+
+    gl_Position = projection * positionRelativeToCam;
     lightVector = lightPos - worldPosition.xyz;
 }

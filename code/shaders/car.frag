@@ -36,6 +36,7 @@ struct SpotLight {
 in vec3 Normal;
 in vec3 FragPos;  
 in vec2 TexCoords;
+in float visibility;
 
 #define NR_SPOTLIGHTS 30
 uniform Material material;
@@ -45,7 +46,9 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal;
 uniform vec3 viewPos;   
-uniform bool isNight;   
+uniform bool isNight;  
+
+const vec4 fogColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 vec4 computeDirectionalLight(DirectionalLight sun, Material material, vec3 normal, vec3 viewDir){
     // ambient light
@@ -100,6 +103,7 @@ void main()
     
     }
 
-        
     FragColor = vec4(result.xyz,material.transparency);
+
+    FragColor = mix(fogColor, FragColor, visibility); // fog effect
 }

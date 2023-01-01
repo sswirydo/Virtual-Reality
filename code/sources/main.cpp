@@ -10,6 +10,9 @@
 #include <iostream>
 #include <vector>
 
+#include <chrono>
+#include <thread>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -82,6 +85,8 @@ bool contactAddedCallbackBullet(
     return false;
 }
 
+const int frameRate = 120;
+const int frameDelay = (int)(1000 / frameRate);
 
 int main()
 {
@@ -136,26 +141,34 @@ int main()
 
     Skybox skybox = Skybox(sun);
 
-    //double prev = 0;
-    //int deltaFrame = 0;
-    ////fps function
-    //auto fps = [&](double now) {
-    //    double deltaTime = now - prev;
-    //    deltaFrame++;
-    //    if (deltaTime > 0.5) {
-    //        prev = now;
-    //        const double fpsCount = (double)deltaFrame / deltaTime;
-    //        deltaFrame = 0;
-    //        std::cout << "\r FPS: " << fpsCount;
-    //    }
-    //};
+    double lastF = 0;
+    int deltaF = 0;
+    //fps function
+    auto fps = [&](double now) {
+        double deltaT = now - lastF;
+        deltaF++;
+        if (deltaT > 0.5) {
+            lastF = now;
+            const double fpsCount = (double)deltaF / deltaTime;
+            deltaF = 0;
+            std::cout << "\r FPS: " << fpsCount;
+        }
+    };
 
     int roadDisplacement = (int) roads.size();
     DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
 
+    glDepthFunc(GL_LEQUAL);
+
+
     while (!glfwWindowShouldClose(game.getWindow()))
     {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        //  Camera selection.
         if (cameraChanged) 
         {
             worldCamera->position = playerCamera->position;
@@ -163,35 +176,15 @@ int main()
             worldCamera->yaw = playerCamera->yaw;
             cameraChanged = false;
         }
-        if (cameraNum == 1) 
-        {
-            camera = playerCamera;
-        }
-        else if (cameraNum == 2)
-        {
-            camera = worldCamera;
-        }
+        if (cameraNum == 1) {camera = playerCamera;}
+        else if (cameraNum == 2){camera = worldCamera;}
 
- 
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
+        // Input handling.
         processInput(game.getWindow());
+        if (!pauseGame && !playerCar->wasHit()) 
+        { playerCar->move(deltaTime, movementDirection);}
 
-        if (!pauseGame)// && !playerCar->wasHit()) 
-        {
-            playerCar->move(deltaTime, movementDirection);
-        }
-        
-
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glDepthFunc(GL_LEQUAL);
-        skybox.render(camera,lamps);
-
-
+        // Moving road segments as player advances in game.
         float distance = playerCar->getWorldCoordinates().z;
         if (distance < -200 * (roadDisplacement - 2)) // todo check if it is still -2 for more than 3 roads
         {
@@ -203,22 +196,40 @@ int main()
             roadDisplacement++;
         }
 
+        // Advances physics simulation.
+        if (!pauseGame) { physics->getWorld()->stepSimulation(deltaTime); }
+        
+        // Graphics cleaning.
+        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Skybox rendering.
+        skybox.render(camera,lamps);
+        //glDepthFunc(GL_LESS);
+
+
+        // Moving the sun.
         glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
-        if (!pauseGame) {
-            sun->rotate(newLightPosition);
-        }
+        if (!pauseGame) {sun->rotate(newLightPosition);}
+
+        // Setting up timer for framerate cap.
+        auto startTime = std::chrono::high_resolution_clock::now();
       
+
+        // Rendering collision boxes from Bullet Physics.
         if (renderDebug) 
         {
             debugDrawer.setCamera(camera);
             physics->getWorld()->debugDrawWorld();
         }
+
+        // Rendering our models.
         if (renderModel)
         {
             
             sun->show(camera);
 
-            // rendering the roads and objects 1st for transparent windows
+            // Rendering the roads and objects 1st for transparent windows.
             for (size_t t = 0; t < roads.size(); t++) {
                 roads[t]->render(camera, lamps);
                 std::vector<Object*> linkedObjects = roads[t]->getLinkedObjects();
@@ -226,8 +237,7 @@ int main()
                     linkedObjects[l]->render(camera, lamps);
                 }
             }
-
-            // rendering the cars later
+            // Rendering the cars.
             for (size_t t = 0; t < roads.size(); t++) {
                 std::vector<Car*> linkedCars = roads[t]->getCars();
                 for (size_t l = 0; l < linkedCars.size(); l++) {
@@ -237,26 +247,21 @@ int main()
                     linkedCars[l]->render(camera, lamps);
                 } 
             }
-
+            // Rendering the player's car.
             playerCar->render(camera, lamps);
         }
         
-        glDepthFunc(GL_LESS);
+        // Framerate capping.
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
+        int remainingTime = frameDelay - elapsedTime;
+        if (remainingTime > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(remainingTime));
+        }
+        fps(glfwGetTime());
 
-
-
-
-
-        //fps(glfwGetTime());
+        // Buffer swap and others.
         glfwSwapBuffers(game.getWindow());
         glfwPollEvents();
-
-        if (!pauseGame) 
-        {
-            physics->getWorld()->stepSimulation(deltaTime); // <-- enable this for physics simulation
-        }
-
-        
     }
     game.terminate();
     delete playerCar;

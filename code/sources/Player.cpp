@@ -5,6 +5,10 @@ Player::Player(Model* model, Shader* shader, Physics* physics, LightSource* ligh
     btRigidBody* body = this->getRigidBody();
     body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
     ((BulletObject*)body->getUserPointer())->id = PLAYER;
+    
+    btTransform transform = this->getRigidBody()->getWorldTransform();
+    transform.setOrigin(transform.getOrigin() + btVector3(0, 1, 0));
+    this->getRigidBody()->setWorldTransform(transform);
 }
 
 bool Player::wasHit() 
@@ -17,11 +21,13 @@ void Player::move(float deltaTime, glm::vec4 direction)
 {
     btTransform transform;
     btVector3 position;
-    btVector3 velocity;
+    btVector3 velocity = this->getRigidBody()->getLinearVelocity();;
 
     btVector3 acceleration(0, 0, 0);
 
     const int accelerationFactor = 5;
+    const int steeringFactor = 2;
+    const int brakingFactor =  4;
 
     if (direction.x) // FORWARD 
     {
@@ -29,25 +35,28 @@ void Player::move(float deltaTime, glm::vec4 direction)
     }
     if (direction.y) // BACKWARDS
     {
-        acceleration += btVector3(0, 0, +accelerationFactor);
+        acceleration += btVector3(0, 0, +accelerationFactor * brakingFactor);
     }
     if (direction.z) // LEFT
     {
-        acceleration += btVector3(-accelerationFactor, 0, 0);
+        acceleration += btVector3(-accelerationFactor * steeringFactor, 0, 0);
     }
     if (direction.w) // RIGHT
     {
-        acceleration += btVector3(+accelerationFactor, 0, 0);
+        acceleration += btVector3(+accelerationFactor * steeringFactor, 0, 0);
     }
 
-    // TODO : TEMPORARY FIX: making sure the car do not drift due to collision with the ground
-    //transform = rigidBody->getWorldTransform();
-    //transform.setRotation(btQuaternion(0, 0, 0, 1)); // set rotation to identity quaternion
-    //this->getRigidBody()->setWorldTransform(transform);
-
     // Update the car's velocity based on the acceleration
-    velocity = this->getRigidBody()->getLinearVelocity();
-    velocity += acceleration * deltaTime; // deltaTime is the time elapsed since the last frame
+    velocity += acceleration * deltaTime;
+
+    // Velocity cap 
+    float zSpeed = -velocity.getZ();
+    if (zSpeed < 30.0f)
+        zSpeed = 30.0f;
+    else if (zSpeed > 120.0f)
+        zSpeed = 120.0f;
+    velocity.setZ(-zSpeed);
+
     this->getRigidBody()->setLinearVelocity(velocity);
 
     //Update the car's position based on the velocity
