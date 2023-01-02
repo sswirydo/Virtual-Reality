@@ -1,6 +1,6 @@
-#include "../headers/Game.hpp"
+#include "../headers/Window.hpp"
 
-Game::Game(std::string win_title, unsigned int width, unsigned int height)
+Window::Window(std::string win_title, unsigned int width, unsigned int height)
 {
     try 
     {
@@ -34,27 +34,27 @@ Game::Game(std::string win_title, unsigned int width, unsigned int height)
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
-void Game::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-unsigned int Game::getWidth()
+unsigned int Window::getWidth()
 {
     return this->win_width;
 }
 
-unsigned int Game::getHeight()
+unsigned int Window::getHeight()
 {
     return this->win_height;
 }
 
-GLFWwindow* Game::getWindow()
+GLFWwindow* Window::getWindow()
 {
     return this->window;
 }
 
-void Game::terminate()
+void Window::terminate()
 {
     glfwTerminate();
 }

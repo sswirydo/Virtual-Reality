@@ -1,5 +1,5 @@
-#ifndef Game_HPP
-#define Game_HPP
+#ifndef WINDOW_HPP
+#define WINDOW_HPP
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -7,10 +7,10 @@
 #include <iostream>
 #include <string>
 
-class Game
+class Window
 {
 public:
-    Game(std::string win_title, unsigned int width, unsigned int height);
+    Window(std::string win_title, unsigned int width, unsigned int height);
     GLFWwindow* getWindow();
     unsigned int getWidth();
     unsigned int getHeight();
