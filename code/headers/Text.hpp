@@ -4,6 +4,12 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H  
 
+
+// RESSOURCES
+// https://learnopengl.com/In-Practice/Text-Rendering
+// https://freetype.org/index.html
+// https://gitlab.freedesktop.org/freetype/freetype
+
 class Text
 {
 public:
