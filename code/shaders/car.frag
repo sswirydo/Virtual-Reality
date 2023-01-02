@@ -21,6 +21,7 @@ struct SpotLight {
     vec3  position;
     vec3  direction;
     float cutOff;
+    float outerCutOff;
     vec4 lightColor;
 
     vec3 ambient;
@@ -68,11 +69,13 @@ vec4 computeDirectionalLight(DirectionalLight sun, Material material, vec3 norma
 
 vec4 computeSpotLight(SpotLight streetLight, vec3 lightDirection, Material material, vec3 normal, vec3 viewDir){
     float theta = dot(lightDirection, normalize(-streetLight.direction));
+    float epsilon   = streetLight.cutOff - streetLight.outerCutOff;
+    float intensity = clamp((theta - streetLight.outerCutOff) / epsilon, 0.0, 1.0);
     // ambient light
     vec4 ambient = vec4(material.ambient,material.transparency) * vec4(streetLight.ambient,1.0)*(texture(texture_diffuse1, TexCoords));
     if(theta > streetLight.cutOff) 
     {       
-
+        // ambient*= intensity;
         // diffuse light 
         float diff = max(dot(normal, lightDirection), 0.0);
         vec4 diffuse = (diff * vec4(material.diffuse,material.transparency))* vec4(streetLight.diffuse,1.0)*(texture(texture_diffuse1, TexCoords));
