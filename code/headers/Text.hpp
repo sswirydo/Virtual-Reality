@@ -41,7 +41,7 @@ public:
 	Text(Font* font, glm::vec2 startPosition);
 	~Text();
 	void Update(std::string txt);
-	void Draw(Shader* fontShader);
+	void Draw(Shader* fontShader, bool enableColor = false);
 	glm::vec2 startPosition;
 protected:
 	Font* font;

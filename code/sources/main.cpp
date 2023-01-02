@@ -56,6 +56,7 @@ glm::vec4 movementDirection = glm::vec4(false,false,false,false);
 bool enableFog = true;
 bool enableSpeed = true;
 bool enableText = true;
+const std::string playerName = "PLAYER";
 
 // camera
 Camera* camera = nullptr;
@@ -292,7 +293,7 @@ int main()
         }
 
         
-        if (enableText) 
+        if (enableText)
         {
             if (!playerCar->wasHit()) {
                 // Updating text of distance score
@@ -312,21 +313,28 @@ int main()
             score_text->Draw(fontShader);
             speed_text->Draw(fontShader);
             time_text->Draw(fontShader);
-        }      
 
-        if (playerCar->wasHit()) 
-        {
-            if (!scoresUpdated) {
-                UpdateHighScores("DEVS", score);
-                scoresUpdated = true;
+            // Highscore update system
+            bool k_shifted = false;
+            std::string top_t;
+            int h = FindHighScorePosition(score);
+            if (h < best_scores_textes.size()) 
+            {
+                std::string top_t = playerName + "    " + std::to_string(score);
+                best_scores_textes[h]->Update(top_t);
+                best_scores_textes[h]->Draw(fontShader, true);
             }
+            size_t k = 0;
             for (size_t t = 0; t < best_scores_textes.size(); t++)
             {
-                std::string top_t = highScores[t].name + "    " + std::to_string(highScores[t].score);
-                best_scores_textes[t]->Update(top_t);
-                best_scores_textes[t]->Draw(fontShader);
+                if (h != t) {
+                    top_t = highScores[t].name + "    " + std::to_string(highScores[k++].score);
+                    best_scores_textes[t]->Update(top_t);
+                    best_scores_textes[t]->Draw(fontShader);
+                }
             }
-        }
+        }      
+
 
         
         // Framerate capping.
@@ -341,6 +349,7 @@ int main()
         glfwSwapBuffers(game.getWindow());
         glfwPollEvents();
     }
+    UpdateHighScores(playerName, score);
     WriteHighScores();
 
     game.terminate();

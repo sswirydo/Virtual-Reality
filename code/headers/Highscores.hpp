@@ -64,4 +64,18 @@ void UpdateHighScores(std::string name, int score)
     }
 }
 
+
+int FindHighScorePosition(int score)
+{
+    for (int i = 0; i < NUM_HIGH_SCORES; i++)
+    {
+        if (score > highScores[i].score)
+        {
+            return i;
+        }
+    }
+    return NUM_HIGH_SCORES;
+}
+
+
 #endif //! HIGHSCORES_HPP
