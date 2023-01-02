@@ -47,12 +47,10 @@ void Mesh::setupMesh()
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-  
+    
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
@@ -136,18 +134,18 @@ void Mesh::InstancedDraw(Shader* shader, std::vector<glm::vec3> translations)
 
 void Mesh::InstancedDraw(Shader* shader, std::vector<glm::mat4> modelMatrices) {
 
-    glDeleteBuffers(1, &instanceVBO); // not sure if glGenBuffers replaces/free the buffer, so let's delete just in case
+    //glDeleteBuffers(1, &instanceVBO); // not sure if glGenBuffers replaces/free the buffer, so let's delete just in case
 
-    glGenBuffers(1, &instanceVBO); // TODO: could be buffered 3 times less often (top, wheels and windows regenerate this)
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * modelMatrices.size(), &modelMatrices[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if (!instancedSetUp) {
+        glGenBuffers(1, &instanceVBO); // TODO: could be buffered 3 times less often (top, wheels and windows regenerate this)
+        instancedSetUp = true;
+    }
 
-    
-    // // One matrix row per VAA line
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * modelMatrices.size(), &modelMatrices[0], GL_DYNAMIC_DRAW);
 
+    // One matrix row per VAA line
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0); // should be sizeof() of GL_FLOAT, glm::vec4, or glm::mat4 ?
     glVertexAttribDivisor(3, 1);

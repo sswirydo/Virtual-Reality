@@ -1,36 +1,49 @@
 #ifndef TEXT_HPP
 #define TEXT_HPP
 
-#include <ft2build.h>
-#include FT_FREETYPE_H  
+#include "Font.hpp"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <stb_image.h>
+
+#include <stb_truetype.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <string>
+#include <vector>
+
+// RESSOURCES: 
+// How does Font Rendering Work?
+// https://youtu.be/MvNqNYLhXkY
+// How to draw text opengl c++ ?
+// https://youtu.be/7Coea1c_bnA
 
 
-// RESSOURCES
-// https://learnopengl.com/In-Practice/Text-Rendering
-// https://freetype.org/index.html
-// https://gitlab.freedesktop.org/freetype/freetype
+struct Glyph;
+class Font;
+
+struct CharVertex {
+	glm::vec2 Position;
+	glm::vec2 UV;
+};
+
 
 class Text
 {
 public:
-	Text() 
-	{
-		FT_Library ft;
-		if (FT_Init_FreeType(&ft))
-		{
-			std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-			//return -1;
-		}
-
-		FT_Face face;
-		if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
-		{
-			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-			//return -1;
-		}
-	};
-	
-
+	Text(Font* font, glm::vec2 startPosition);
+	~Text();
+	void Update(std::string txt);
+	void Draw();
+	glm::vec2 startPosition;
+protected:
+	Font* font;
+	std::vector<CharVertex> charVertices;
+	unsigned int VAO;
+	unsigned int VBO;
 };
 
-#endif // !TEXT_HPP
+#endif //! TEXT_HPP

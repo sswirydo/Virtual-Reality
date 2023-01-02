@@ -53,6 +53,7 @@ bool pauseGame = false;
 glm::vec4 movementDirection = glm::vec4(false,false,false,false);
 bool enableFog = true;
 bool enableSpeed = true;
+bool enableText = true;
 
 // camera
 Camera* camera = nullptr;
@@ -110,12 +111,10 @@ int main()
     glfwSetKeyCallback(game.getWindow(), key_callback);
     glfwSetInputMode(game.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // tell GLFW to capture our mouse
 
-
     WorldCamera* worldCamera = new WorldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
     Physics* physics = new Physics();
 
     Sun* sun = new Sun();
-
     Shader* lightShader = new Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
     
     Shader* carShader = new Shader("code/shaders/car.vert","code/shaders/car.frag");
@@ -166,6 +165,24 @@ int main()
     DebugDrawer debugDrawer = DebugDrawer();
     physics->getWorld()->setDebugDrawer(&debugDrawer);
 
+    // Text related initialisations.
+    Shader* fontShader = new Shader("code/shaders/font.vert", "code/shaders/font.frag");
+    Font* font = new Font("assets/fonts/BebasNeue-Regular.ttf");
+    Text* score_text = new Text(font, glm::vec2(10, 50));
+    Text* speed_text = new Text(font, glm::vec2(10, 50*2));
+    Text* time_text = new Text(font, glm::vec2(10, 50*3));
+    int score = 0;
+    int speed = 0;
+    auto score_start_time = std::chrono::high_resolution_clock::now();
+    score_text->Update("score");
+    speed_text->Update("speed");
+    time_text->Update("time");
+   
+
+
+    ////////////////
+    // MAIN LOOP //
+   ////////////////
 
 
     while (!glfwWindowShouldClose(game.getWindow()))
@@ -253,15 +270,38 @@ int main()
                     linkedObjects[l]->render(camera, lamps, enableFog);
                 }
             }
-
+            // Rendering the cars + player.
             carModelMatrices.push_back(playerCar->getModelMatrix());
-
-            // Rendering the cars.
             carRenderer->render(carModelMatrices, camera, lamps, enableFog);
-
-            // Rendering the player's car.
-            //playerCar->render(camera, lamps);
         }
+
+        
+        if (enableText) 
+        {
+            if (!playerCar->wasHit()) {
+                // Updating text of distance score
+                score = int(-distance);
+                std::string score_text_str = "score: " + std::to_string(score);
+                score_text->Update(score_text_str);
+                // Updating text of time elapsed in-game
+                auto score_elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - score_start_time).count();
+                std::string time_text_str = "time: " + std::to_string(score_elapsed_time);
+                time_text->Update(time_text_str);
+            }
+            // Updating text of current speed
+            speed = -(playerCar->getRigidBody()->getLinearVelocity().getZ());
+            std::string speed_text_str = "speed: " + std::to_string(speed);
+            speed_text->Update(speed_text_str);
+            // Drawing texts
+            fontShader->use();
+            fontShader->setMat4("projection", glm::ortho(0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT, 0.0f, 0.0f, 1.0f));
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // <-- makes text show as texts and not rectangles (transparency)
+            score_text->Draw();
+            speed_text->Draw();
+            time_text->Draw();
+            glDisable(GL_BLEND);
+        }       
         
         // Framerate capping.
         //auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
@@ -359,6 +399,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         if (enableFog) { enableFog = false; std::cout << ">> FOG OFF" << std::endl; }
         else { enableFog = true; std::cout << ">> FOG ON" << std::endl; }
+    }
+    if (key == GLFW_KEY_T && action == GLFW_PRESS)
+    {
+        if (enableText) { enableText = false; std::cout << ">> TEXT OFF" << std::endl; }
+        else { enableText = true; std::cout << ">> TEXT ON" << std::endl; }
     }
 
     if (key == GLFW_KEY_V && action == GLFW_PRESS)
