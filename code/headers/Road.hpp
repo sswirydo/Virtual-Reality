@@ -18,7 +18,7 @@ public:
 
     void addCarInfo(Model* model, Shader* shader, LightSource* light);
 
-    void move(int nbOfRoads, int pos = -1);
+    void move(int nbOfRoads, int pos = -1, bool spawnCars = true);
 
     void addCars(std::vector<Car*> cars);
     void linkObject(Object* obj);

@@ -26,12 +26,13 @@ void Player::move(float deltaTime, glm::vec4 direction, int speedIncrease, bool 
     btVector3 acceleration(0, 0, 0);
 
     const int accelerationFactor = 5;
+    const int forwardFactor = 1.5;
     const int steeringFactor = 2.5;
     const int brakingFactor =  4;
 
     if (direction.x) // FORWARD 
     {
-        acceleration += btVector3(0, 0, -accelerationFactor);
+        acceleration += btVector3(0, 0, -accelerationFactor * forwardFactor);
     }
     if (direction.y) // BACKWARDS
     {

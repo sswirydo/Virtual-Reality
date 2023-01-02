@@ -68,7 +68,7 @@ Road::~Road()
 
 
 
-void Road::move(int nbOfRoads, int pos)
+void Road::move(int nbOfRoads, int pos, bool spawnCars)
 {
     if (pos == 0) { return; }
 
@@ -87,7 +87,9 @@ void Road::move(int nbOfRoads, int pos)
     btVector3 btPos = transf.getOrigin();
     glm::vec3 vectorFromOrigin(btPos.getX(), btPos.getY(), btPos.getZ());
 
-    this->addNewCars(vectorFromOrigin);
+    if (spawnCars) {
+        this->addNewCars(vectorFromOrigin);
+    }
     this->translateBarriers(vector);
     this->moveLinkedObjects(vector);
 }

@@ -51,9 +51,14 @@ int main();
 void setCallbacks(GLFWwindow* window);
 void initShaders();
 void initModels();
-void initTexts(Scene scene);
-void init();
+void initText(Scene scene);
+void freeText(Scene scene);
+void init(bool instantCars);
+void freeInit();
+void menu();
 int play();
+void Render();
+void RenderText(Scene scene);
 
 void processInput(GLFWwindow* window);
 void processInput(GLFWwindow* window);
@@ -79,6 +84,7 @@ DebugDrawer* debugDrawer = nullptr;
 Player* playerCar = nullptr;
 std::vector<Road*> roads;
 std::vector<StreetLamp*> lamps;
+std::vector<glm::mat4> carModelMatrices;
 
 // Models //
 Model* carModel = nullptr;
@@ -109,6 +115,7 @@ Text* score_text = nullptr;
 Text* speed_text = nullptr;
 Text* time_text = nullptr;
 Text* highscores_title_text = nullptr;
+Text* press_enter_text = nullptr;
 std::vector<Text*> best_scores_textes;
 
 // Variables //
@@ -124,6 +131,7 @@ glm::vec4 movementDirection = glm::vec4(false, false, false, false);
 bool enableFog = true;
 bool enableSpeed = true;
 bool enableText = true;
+bool playGame = false;
 
 // Camera settings //
 float lastX = SCR_WIDTH / 2.0f;
@@ -141,6 +149,7 @@ const int frameDelay = (int)(1000 / frameRate);
 // Time //
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
+std::chrono::steady_clock::time_point score_start_time;
 
 
 // Based on https://www.youtube.com/watch?v=YweNArzAHs4
@@ -164,6 +173,8 @@ bool contactAddedCallbackBullet(
 
 
 
+
+
     //////////
     // MAIN //
     //////////
@@ -177,22 +188,29 @@ int main()
     gContactAddedCallback = contactAddedCallbackBullet;
     debugDrawer = new DebugDrawer();
 
+    font = new Font("assets/fonts/BebasNeue-Regular.ttf");
     ReadHighScores();
 
     initShaders();
     initModels();
-    initTexts(PLAY);
-    init();
 
-    play();
-
-
+    init(true); 
+    menu();
+    if (playGame) {
+        play(); 
+    }
+    freeInit();
+    
+    std::cout << "SCORE: " << score << ", TOP: " << FindHighScorePosition(score) << std::endl;
+    
 
     std::cout << ">>> PROGRAM END <<<" << std::endl;
 #ifndef NDEBUG
     glDebug();
 #endif // !NDEBUG
 };
+
+
 
 
 
@@ -225,15 +243,16 @@ void initModels()
     roadModel = new Model("assets/meshes/road/road.obj");
 }
 
-void initTexts(Scene scene)
+void initText(Scene scene)
 {
-    if (MENU)
+    if (scene == MENU)
     {
+        press_enter_text = new Text(font, glm::vec2(50, SCR_HEIGHT - 50));
+        press_enter_text->Update("Press enter to play");
 
     }
-    if (PLAY)
+    else if (scene == PLAY)
     {
-        font = new Font("assets/fonts/BebasNeue-Regular.ttf");
         score_text = new Text(font, glm::vec2(10, 50));
         speed_text = new Text(font, glm::vec2(10, 50 * 2));
         time_text = new Text(font, glm::vec2(10, 50 * 3));
@@ -251,13 +270,29 @@ void initTexts(Scene scene)
         best_scores_textes.push_back(highscores_top4_text);
         best_scores_textes.push_back(highscores_top5_text);
     }
-    if (HELP)
-    {
+}
 
+
+void freeText(Scene scene)
+{
+    if (scene == MENU)
+    {
+        delete press_enter_text;
+    }
+    else if (scene == PLAY)
+    {
+        delete score_text;
+        delete speed_text;
+        delete time_text;
+        delete highscores_title_text;
+        for (size_t t = 0; t < best_scores_textes.size(); t++) {
+            delete best_scores_textes[t];
+        }
     }
 }
 
-void init()
+
+void init(bool instantCars)
 {
     physics = new Physics();
     physics->getWorld()->setDebugDrawer(debugDrawer);
@@ -280,13 +315,83 @@ void init()
     lamps = std::vector<StreetLamp*>();
     for (size_t t = 0; t < roads.size(); t++) {
         roads[t]->addCarInfo(carModel, carShader, sun);
-        roads[t]->move((int)roads.size(), (int)t);
+        roads[t]->move((int)roads.size(), (int)t, instantCars); // todo change 2 false
         for (size_t i = 0; i < roads[t]->getLamps().size(); i++)
             lamps.push_back(roads[t]->getLamps()[i]);
     }
     roadDisplacement = (int)roads.size();
     score = 0;
 }
+
+void freeInit()
+{
+    delete sun;
+    delete carRenderer;
+    delete worldCamera;
+    delete skybox;
+    delete playerCar;
+    delete playerCamera;
+    for (size_t t = 0; t < roads.size(); t++) {
+        delete roads[t]; // deletes car rigidbodies, lamps, and other road stuff
+    }
+    if (physics != nullptr)
+        delete physics;
+}
+
+
+
+
+//////////
+// MENU //
+//////////
+
+
+void menu() 
+{
+    initText(MENU);
+    while (!playGame && !glfwWindowShouldClose(window->getWindow())) 
+    {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        //  Camera selection.
+        if (cameraChanged)
+        {
+            worldCamera->position = playerCamera->position;
+            cameraChanged = false;
+        }
+        if (cameraNum == 1) { camera = playerCamera; }
+        else if (cameraNum == 2) { camera = worldCamera; }
+
+        processInput(window->getWindow());
+
+        // Moving the sun.
+        glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
+        if (!pauseGame) { sun->rotate(newLightPosition); }
+
+        carModelMatrices = std::vector<glm::mat4>();
+        for (size_t t = 0; t < roads.size(); t++) {
+            std::vector<Car*> linkedCars = roads[t]->getCars();
+            for (size_t l = 0; l < linkedCars.size(); l++) {
+                if (!pauseGame) {
+                    //linkedCars[l]->move(deltaTime);
+                }
+                carModelMatrices.push_back(linkedCars[l]->getModelMatrix());
+            }
+        }
+        carModelMatrices.push_back(playerCar->getModelMatrix());
+
+        Render();
+        RenderText(MENU);
+
+        glfwSwapBuffers(window->getWindow());
+        glfwPollEvents();
+    }
+    freeText(MENU);
+}
+
+
 
 
 
@@ -297,8 +402,9 @@ void init()
 
 int play()
 {
-    auto score_start_time = std::chrono::high_resolution_clock::now();
-    while (!glfwWindowShouldClose(window->getWindow()))
+    initText(PLAY);
+    score_start_time = std::chrono::high_resolution_clock::now();
+    while (!playerCar->wasHit() && !glfwWindowShouldClose(window->getWindow()))
     {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -308,8 +414,6 @@ int play()
         if (cameraChanged)
         {
             worldCamera->position = playerCamera->position;
-            worldCamera->pitch = playerCamera->pitch;
-            worldCamera->yaw = playerCamera->yaw;
             cameraChanged = false;
         }
         if (cameraNum == 1) { camera = playerCamera; }
@@ -337,33 +441,13 @@ int play()
         // Advances physics simulation.
         if (!pauseGame) { physics->getWorld()->stepSimulation(deltaTime); }
 
-        // Graphics cleaning.
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glDepthFunc(GL_LEQUAL);
-
-        // Skybox rendering.
-        skybox->render(camera, lamps, enableFog);
-        //glDepthFunc(GL_LESS);
 
         // Moving the sun.
         glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
         if (!pauseGame) { sun->rotate(newLightPosition); }
 
-        // Setting up timer for framerate cap.
-        auto startTime = std::chrono::high_resolution_clock::now();
-
-
-        // Rendering collision boxes from Bullet Physics.
-        if (renderDebug)
-        {
-            debugDrawer->setCamera(camera);
-            physics->getWorld()->debugDrawWorld();
-        }
-
         // Getting all model matrices of cars for instancing
-        std::vector<glm::mat4> carModelMatrices = std::vector<glm::mat4>();
+        carModelMatrices = std::vector<glm::mat4>();
         for (size_t t = 0; t < roads.size(); t++) {
             std::vector<Car*> linkedCars = roads[t]->getCars();
             for (size_t l = 0; l < linkedCars.size(); l++) {
@@ -375,27 +459,76 @@ int play()
         }
         carModelMatrices.push_back(playerCar->getModelMatrix());
 
+        Render();
+        RenderText(PLAY);
 
-        // Rendering our models.
-        if (renderModel)
-        {
-            sun->show(camera);
-            // Rendering the roads and objects 1st for transparent windows.
-            for (size_t t = 0; t < roads.size(); t++) {
-                roads[t]->render(camera, lamps, enableFog);
-                std::vector<Object*> linkedObjects = roads[t]->getLinkedObjects();
-                for (size_t l = 0; l < linkedObjects.size(); l++) {
-                    linkedObjects[l]->render(camera, lamps, enableFog);
-                }
+        // Framerate capping.
+        //auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
+        //int remainingTime = frameDelay - elapsedTime;
+        //if (remainingTime > 0) {
+        //    std::this_thread::sleep_for(std::chrono::milliseconds(remainingTime));
+        //}
+        //fps(glfwGetTime());
+
+        // Buffer swap and others.
+        glfwSwapBuffers(window->getWindow());
+        glfwPollEvents();
+    }
+    UpdateHighScores(playerName, score);
+    WriteHighScores();
+    freeText(PLAY);
+    return 0;
+}
+
+
+void Render() 
+{
+    // Setting up timer for framerate cap.
+    std::chrono::steady_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+
+    // Graphics cleaning.
+    //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Skybox rendering.
+    glDepthFunc(GL_LEQUAL);
+    skybox->render(camera, lamps, enableFog);
+    //glDepthFunc(GL_LESS);
+
+    // Rendering collision boxes from Bullet Physics.
+    if (renderDebug)
+    {
+        debugDrawer->setCamera(camera);
+        physics->getWorld()->debugDrawWorld();
+    }
+
+    // Rendering our models.
+    if (renderModel)
+    {
+        sun->show(camera);
+        // Rendering the roads and objects 1st for transparent windows.
+        for (size_t t = 0; t < roads.size(); t++) {
+            roads[t]->render(camera, lamps, enableFog);
+            std::vector<Object*> linkedObjects = roads[t]->getLinkedObjects();
+            for (size_t l = 0; l < linkedObjects.size(); l++) {
+                linkedObjects[l]->render(camera, lamps, enableFog);
             }
-            // Rendering the cars + player.
-            carRenderer->render(carModelMatrices, camera, lamps, enableFog);
         }
+        // Rendering the cars + player.
+        carRenderer->render(carModelMatrices, camera, lamps, enableFog);
+    }
+}
 
-        if (enableText)
+
+void RenderText(Scene scene) 
+{
+    if (enableText)
+    {
+        if (scene == PLAY) 
         {
             if (!playerCar->wasHit()) {
                 // Updating text of distance score
+                float distance = playerCar->getWorldCoordinates().z;
                 score = int(-distance);
                 std::string score_text_str = "score: " + std::to_string(score);
                 score_text->Update(score_text_str);
@@ -412,7 +545,6 @@ int play()
             score_text->Draw(fontShader);
             speed_text->Draw(fontShader);
             time_text->Draw(fontShader);
-
             // Highscore update system
             bool k_shifted = false;
             std::string top_t;
@@ -433,25 +565,13 @@ int play()
                 }
             }
         }
+        else if (scene == MENU)
+        {
+            press_enter_text->Draw(fontShader);
+        }
 
-        // Framerate capping.
-        //auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
-        //int remainingTime = frameDelay - elapsedTime;
-        //if (remainingTime > 0) {
-        //    std::this_thread::sleep_for(std::chrono::milliseconds(remainingTime));
-        //}
-        //fps(glfwGetTime());
-
-        // Buffer swap and others.
-        glfwSwapBuffers(window->getWindow());
-        glfwPollEvents();
     }
-    UpdateHighScores(playerName, score);
-    WriteHighScores();
-
-    return 0;
 }
-
 
 
 //double lastF = 0;
@@ -561,6 +681,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         if (enableSpeed) { enableSpeed = false; std::cout << ">> INCREASING SPEED OFF" << std::endl; }
         else { enableSpeed = true; std::cout << ">> INCREASING SPEED ON" << std::endl; }
+    }
+
+    if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+    {
+        if (playGame) { playGame = false; }
+        else { playGame = true;}
     }
 
 
