@@ -36,6 +36,7 @@
 #include "../headers/StreetLamp.hpp"
 
 #include "../headers/Sound.hpp"
+#include "../headers/Text.hpp"
 
 #include "../headers/DebugDrawer.hpp"   
 
