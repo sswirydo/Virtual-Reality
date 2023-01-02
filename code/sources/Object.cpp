@@ -92,7 +92,7 @@ void Object::Draw(){
     this->model->Draw(this->shader);
 }
 
-void Object::render(Camera* camera, std::vector<StreetLamp*> lamps)
+void Object::render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog)
 {
     this->cameraPos = camera->position;
     glm::mat4 projection = camera->getProjectionMatrix();
@@ -109,6 +109,8 @@ void Object::render(Camera* camera, std::vector<StreetLamp*> lamps)
     this->shader->setMat4("view", view);
     this->shader->setMat4("model", this->modelMatrix);
     this->shader->setBool("isNight", ((Sun*)this->light)->isNight());
+    this->shader->setBool("enableFog", enableFog);
+
     for(size_t i = 0; i < lamps.size();i++){
         StreetLamp *lamp = lamps[i];
         LightSource source = lamp->getLightSource();

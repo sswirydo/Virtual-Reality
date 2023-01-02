@@ -23,7 +23,7 @@ class Skybox
 public:
 	Skybox();
 	Skybox(Sun* sun);
-	void render(Camera* camera, std::vector<StreetLamp*> lamps);
+	void render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog);
 	
 private:
 	void loadCubemapFace(const char* path, const GLenum & targetFace);

@@ -31,16 +31,17 @@ Skybox::Skybox(Sun* sun)
     }
 }
 
-void Skybox::render(Camera* camera, std::vector<StreetLamp*> lamps)
+void Skybox::render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog)
 {
     cubeMapShader->use();
     cubeMapShader->setMat4("V", camera->getViewMatrix());
     cubeMapShader->setMat4("P", camera->getProjectionMatrix());
     cubeMapShader->setInt("cubemapTexture", 0);
     cubeMapShader->setBool("isNight", (this->sun)->isNight());
+    cubeMapShader->setBool("enableFog", enableFog);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-    cubeMap->render(camera, lamps);
+    cubeMap->render(camera, lamps, enableFog);
 }
 
 

@@ -24,7 +24,7 @@ class CarRenderer
 public:
 	CarRenderer();
 	CarRenderer(Model* model, Shader* shader, LightSource* light);
-	void render(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps);
+	void render(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog);
 protected:
 	void getWheelsMesh();
 	void getWindowsMesh();

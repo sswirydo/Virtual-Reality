@@ -10,7 +10,7 @@ CarRenderer::CarRenderer(Model* model, Shader* shader, LightSource* light)
     this->getCarosserieMesh();
 }
 
-void CarRenderer::render(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps) {
+void CarRenderer::render(std::vector<glm::mat4> modelMatrices, Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog) {
     glm::vec3 cameraPos = camera->position;
     glm::mat4 projection = camera->getProjectionMatrix();
     glm::mat4 view = camera->getViewMatrix();
@@ -29,6 +29,8 @@ void CarRenderer::render(std::vector<glm::mat4> modelMatrices, Camera* camera, s
     //this->shader->setMat4("model", this->modelMatrix); // <--- nope
 
     this->shader->setBool("isNight", ((Sun*)this->light)->isNight());
+    this->shader->setBool("enableFog", enableFog);
+
     for (size_t i = 0; i < lamps.size(); i++) {
         StreetLamp* lamp = lamps[i];
         LightSource source = lamp->getLightSource();
