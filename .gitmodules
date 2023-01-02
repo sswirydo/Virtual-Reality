@@ -15,6 +15,3 @@
 [submodule "libs/bullet3"]
 	path = libs/bullet3
 	url = https://github.com/bulletphysics/bullet3
-[submodule "libs/freetype"]
-	path = libs/freetype
-	url = https://gitlab.freedesktop.org/freetype/freetype
