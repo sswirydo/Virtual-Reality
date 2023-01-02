@@ -40,6 +40,8 @@
 
 #include "../headers/DebugDrawer.hpp"   
 
+#include "../headers/Highscores.hpp"
+
 
 void processInput(GLFWwindow* window);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -177,8 +179,22 @@ int main()
     score_text->Update("score");
     speed_text->Update("speed");
     time_text->Update("time");
-   
 
+    ReadHighScores();
+    Text* highscores_title_text = new Text(font, glm::vec2(10, 400 - 50)); // TODO: modify text vec2 with screen resolution
+    highscores_title_text->Update("HIGHSCORES");
+    Text* highscores_top1_text = new Text(font, glm::vec2(10, 400)); // TODO: modify text vec2 with screen resolution
+    Text* highscores_top2_text = new Text(font, glm::vec2(10, 400 + 50));
+    Text* highscores_top3_text = new Text(font, glm::vec2(10, 400 + 50 * 2));
+    Text* highscores_top4_text = new Text(font, glm::vec2(10, 400 + 50 * 3));
+    Text* highscores_top5_text = new Text(font, glm::vec2(10, 400 + 50 * 4));
+    std::vector<Text*> best_scores_textes;
+    best_scores_textes.push_back(highscores_top1_text);
+    best_scores_textes.push_back(highscores_top2_text);
+    best_scores_textes.push_back(highscores_top3_text);
+    best_scores_textes.push_back(highscores_top4_text);
+    best_scores_textes.push_back(highscores_top5_text);
+    bool scoresUpdated = false;
 
     ////////////////
     // MAIN LOOP //
@@ -293,15 +309,25 @@ int main()
             std::string speed_text_str = "speed: " + std::to_string(speed);
             speed_text->Update(speed_text_str);
             // Drawing texts
-            fontShader->use();
-            fontShader->setMat4("projection", glm::ortho(0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT, 0.0f, 0.0f, 1.0f));
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // <-- makes text show as texts and not rectangles (transparency)
-            score_text->Draw();
-            speed_text->Draw();
-            time_text->Draw();
-            glDisable(GL_BLEND);
-        }       
+            score_text->Draw(fontShader);
+            speed_text->Draw(fontShader);
+            time_text->Draw(fontShader);
+        }      
+
+        if (playerCar->wasHit()) 
+        {
+            if (!scoresUpdated) {
+                UpdateHighScores("DEVS", score);
+                scoresUpdated = true;
+            }
+            for (size_t t = 0; t < best_scores_textes.size(); t++)
+            {
+                std::string top_t = highScores[t].name + "    " + std::to_string(highScores[t].score);
+                best_scores_textes[t]->Update(top_t);
+                best_scores_textes[t]->Draw(fontShader);
+            }
+        }
+
         
         // Framerate capping.
         //auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
@@ -315,6 +341,8 @@ int main()
         glfwSwapBuffers(game.getWindow());
         glfwPollEvents();
     }
+    WriteHighScores();
+
     game.terminate();
     delete playerCar;
     delete sun;

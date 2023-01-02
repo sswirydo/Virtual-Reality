@@ -64,9 +64,14 @@ void Text::Update(std::string txt)
 	glBindVertexArray(0);
 }
 
-void Text::Draw()
+void Text::Draw(Shader* fontShader)
 {
+	fontShader->use();
+	fontShader->setMat4("projection", glm::ortho(0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT, 0.0f, 0.0f, 1.0f));
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // <-- makes text show as texts and not rectangles (transparency)
 	glBindTexture(GL_TEXTURE_2D, font->Atlas);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)charVertices.size());
+	glDisable(GL_BLEND);
 }

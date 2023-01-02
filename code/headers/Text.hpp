@@ -2,10 +2,14 @@
 #define TEXT_HPP
 
 #include "Font.hpp"
+#include "Shader.hpp"
+#include "Settings.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <stb_truetype.h>
 
@@ -37,7 +41,7 @@ public:
 	Text(Font* font, glm::vec2 startPosition);
 	~Text();
 	void Update(std::string txt);
-	void Draw();
+	void Draw(Shader* fontShader);
 	glm::vec2 startPosition;
 protected:
 	Font* font;
