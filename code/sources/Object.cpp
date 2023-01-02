@@ -114,7 +114,7 @@ void Object::render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableF
     for(size_t i = 0; i < lamps.size();i++){
         StreetLamp *lamp = lamps[i];
         LightSource source = lamp->getLightSource();
-        std::cout << glm::cos(glm::radians(35.f))  << std::endl;
+        // std::cout << glm::cos(glm::radians(35.f))  << std::endl;
         // std::cout << lamps.size() << std::endl;
         this->shader->setVec4(std::string("streetLight[")+std::to_string(i)+std::string("].lightColor"),source.getColor() );
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].position"), source.getPosition());
