@@ -614,24 +614,37 @@ void RenderText(Scene scene)
             speed_text->Draw(fontShader);
             time_text->Draw(fontShader);
             // Highscore update system
-            bool k_shifted = false;
             std::string top_t;
-            int h = FindHighScorePosition(score);
-            if (h < best_scores_texts.size())
+            if (scene == Scene::GAME) 
             {
-                std::string top_t = playerName + "    " + std::to_string(score);
-                best_scores_texts[h]->Update(top_t);
-                best_scores_texts[h]->Draw(fontShader, true);
+                int h = FindHighScorePosition(score);
+                if (h < best_scores_texts.size())
+                {
+                    std::string top_t = playerName + "    " + std::to_string(score);
+                    best_scores_texts[h]->Update(top_t);
+                    best_scores_texts[h]->Draw(fontShader, true);
+                }
+                size_t k = 0;
+                for (size_t t = 0; t < best_scores_texts.size(); t++)
+                {
+                    if (h != t) {
+                        top_t = highScores[t].name + "    " + std::to_string(highScores[k++].score);
+                        best_scores_texts[t]->Update(top_t);
+                        best_scores_texts[t]->Draw(fontShader);
+                    }
+                }
             }
-            size_t k = 0;
-            for (size_t t = 0; t < best_scores_texts.size(); t++)
+            else 
             {
-                if (h != t) {
-                    top_t = highScores[t].name + "    " + std::to_string(highScores[k++].score);
+                for (size_t t = 0; t < best_scores_texts.size(); t++)
+                {
+                    top_t = highScores[t].name + "    " + std::to_string(highScores[t].score);
                     best_scores_texts[t]->Update(top_t);
                     best_scores_texts[t]->Draw(fontShader);
                 }
             }
+            
+            
         }
         if (scene == MENU)
         {
