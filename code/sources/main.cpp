@@ -160,7 +160,8 @@ const int frameDelay = (int)(1000 / frameRate);
 // Time //
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
-std::chrono::system_clock::time_point score_start_time;
+auto startTime = std::chrono::high_resolution_clock::now();
+auto score_start_time = std::chrono::high_resolution_clock::now();
 
 
 // Based on https://www.youtube.com/watch?v=YweNArzAHs4
@@ -552,7 +553,7 @@ int play()
 void Render() 
 {
     // Setting up timer for framerate cap.
-    std::chrono::system_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+    auto startTime = std::chrono::high_resolution_clock::now();
 
     // Graphics cleaning.
     //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
