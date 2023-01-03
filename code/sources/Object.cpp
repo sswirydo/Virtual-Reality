@@ -5,7 +5,6 @@ Object::Object() {}
 
 Object::Object(Model* model,Shader* shader, Physics* physics, LightSource *light)
 {
-    //std::cout << "Constructor: " << typeid(this).name() << std::endl;
     this->light = light;
     this->physics = physics;
     this->setModel(model);
@@ -14,7 +13,6 @@ Object::Object(Model* model,Shader* shader, Physics* physics, LightSource *light
 
 Object::~Object() 
 {
-    //std::cout << "Destructor: " << typeid(this).name() << std::endl;
     if (this->rigidBody != nullptr) 
     {
         this->physics->getWorld()->removeRigidBody(this->getRigidBody());

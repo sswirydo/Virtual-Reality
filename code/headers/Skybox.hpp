@@ -22,7 +22,7 @@ class Skybox
 {
 public:
 	Skybox();
-	Skybox(Sun* sun);
+	Skybox(Model* cubeMapModel, Shader* cubeMapShader, Sun* sun);
 	void render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableFog);
 	
 private:

@@ -98,6 +98,8 @@ Model* roadModel = nullptr;
 Model* treeModel = nullptr;
 Model* lampModel = nullptr;
 Model* lampReversedModel = nullptr;
+Model* cubeMapModel = nullptr;
+
 
 // Cameras //
 Camera* camera = nullptr;
@@ -112,6 +114,7 @@ Shader* carInstancedShader = nullptr;
 Shader* fontShader = nullptr;
 Shader* treeShader = nullptr;
 Shader* lampShader = nullptr;
+Shader* cubeMapShader = nullptr;;
 
 // Light //
 Sun* sun = nullptr;
@@ -241,7 +244,7 @@ int main()
             play();
             playGame = false;
             alreadyPlayed = true;
-            std::cout << "SCORE: " << score << ", TOP: " << FindHighScorePosition(score) << std::endl;
+            std::cout << "SCORE: " << score << ", TOP: " << FindHighScorePosition(score)+1 << std::endl;
         }
     }
 
@@ -272,6 +275,7 @@ void setCallbacks(GLFWwindow* window)
 void initShaders()
 {
     lightShader = new Shader("code/shaders/lightShader.vert", "code/shaders/lightShader.frag");
+    cubeMapShader = new Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
     carShader = new Shader("code/shaders/car.vert", "code/shaders/car.frag");
     carInstancedShader = new Shader("code/shaders/instancedMatrixObject.vert", "code/shaders/car.frag");
     roadShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
@@ -287,6 +291,7 @@ void initModels()
     treeModel = new Model("assets/meshes/tree/tree.obj");
     lampModel = new Model("assets/meshes/lamp/lamp.obj");
     lampReversedModel = new Model("assets/meshes/lamp/lamp-reversed.obj");
+    cubeMapModel = new Model("assets/objects/cube.obj");
 }
 
 void initText(Scene scene)
@@ -326,13 +331,21 @@ void init(bool instantCars)
 {
     freeInit();
 
-    physics = new Physics();
-    physics->getWorld()->setDebugDrawer(debugDrawer);
+    if (physics == nullptr) {
+        physics = new Physics();
+        physics->getWorld()->setDebugDrawer(debugDrawer);
+    }
 
-    sun = new Sun();
+    if (sun == nullptr) {
+        sun = new Sun();
+    }
+    
     carRenderer = new CarRenderer(carModel, carInstancedShader, sun);
     worldCamera = new WorldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
-    skybox = new Skybox(sun);
+
+    if (skybox == nullptr) {
+        skybox = new Skybox(cubeMapModel, cubeMapShader, sun);
+    }
 
     playerCar = new Player(carModel, carShader, physics, sun);
     playerCamera = new PlayerCamera(playerCar);
@@ -361,30 +374,30 @@ void init(bool instantCars)
 
 void freeInit()
 {
-    if (sun != nullptr){
-        delete sun; sun = nullptr;
-    }
+    //if (sun != nullptr){
+    //    delete sun; sun = nullptr;
+    //}
     if (carRenderer != nullptr) {
         delete carRenderer; carRenderer = nullptr;
     }
     if (worldCamera != nullptr) {
         delete worldCamera; worldCamera = nullptr;
     }
-    if (skybox != nullptr) {
-        delete skybox; skybox = nullptr;
-    }
-    if (playerCar != nullptr) {
-        delete playerCar; playerCar = nullptr;
-    }
     if (playerCamera != nullptr) {
         delete playerCamera; playerCamera = nullptr;
+    }
+    //if (skybox != nullptr) {
+    //    delete skybox; skybox = nullptr;
+    //}
+    if (playerCar != nullptr) {
+        delete playerCar; playerCar = nullptr;
     }
     for (size_t t = 0; t < roads.size(); t++) {
         delete roads[t]; // deletes car rigidbodies
     }
-    if (physics != nullptr) {
-        delete physics; physics = nullptr;
-    }
+    //if (physics != nullptr) {
+    //    delete physics; physics = nullptr;
+    //}
 }
 
 

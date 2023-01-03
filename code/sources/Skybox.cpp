@@ -1,9 +1,9 @@
 #include "../headers/Skybox.hpp"
 Skybox::Skybox(){}
-Skybox::Skybox(Sun* sun) 
+Skybox::Skybox(Model* cubeMapModel, Shader* cubeMapShader, Sun* sun)
 {
-    cubeMapModel = new Model("assets/objects/cube.obj");
-    cubeMapShader = new Shader("code/shaders/skybox.vert", "code/shaders/skybox.frag");
+    this->cubeMapModel = cubeMapModel;
+    this->cubeMapShader = cubeMapShader;
     this->sun = sun;
     cubeMap = new Object(cubeMapModel, cubeMapShader, nullptr, sun);
     // cubeMapTexture;
