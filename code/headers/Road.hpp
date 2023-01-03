@@ -17,6 +17,8 @@ public:
     ~Road();
 
     void addCarInfo(Model* model, Shader* shader, LightSource* light);
+    void addTreeInfo(Model* model, Shader* shader, LightSource* light);
+    void addLampInfo(Model* model, Model* reversedModel, Shader* shader, LightSource* light);
 
     void move(int nbOfRoads, int pos = -1, bool spawnCars = true);
 
@@ -30,10 +32,11 @@ public:
     void removeCar(Car* car);
     std::vector<StreetLamp*> getLamps();
 
-protected:
-
     void generateLamps();
     void generateTrees();
+
+protected:
+
     void moveLinkedObjects(glm::vec3 vector);
     //void moveLinkedCars(glm::vec3 vector);
 
@@ -51,6 +54,17 @@ private:
     Model* carModel = nullptr;
     Shader* carShader = nullptr;
     LightSource* carLight = nullptr;
+
+    Model* treeModel = nullptr;
+    Shader* treeShader = nullptr;
+    LightSource* treeLight = nullptr;
+
+    Model* lampModel = nullptr;
+    Model* lampReversedModel = nullptr;
+    Shader* lampShader = nullptr;
+    LightSource* lampLight = nullptr;
+
+
 };
 
 #endif //! ROAD

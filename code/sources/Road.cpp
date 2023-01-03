@@ -30,9 +30,6 @@ Road::Road(Model* model, Shader* shader, Physics* physics, LightSource* light) :
     this->physics->addBody(this->rigidBody, ROAD);
     this->physics->addBody(rigidBody_l, BARRIER);
     this->physics->addBody(rigidBody_r, BARRIER);
-
-    this->generateLamps();
-    this->generateTrees();
 }
 
 // Note: Road rigidbody should be destroyed in the Object.
@@ -108,6 +105,18 @@ void Road::addCarInfo(Model* model, Shader* shader, LightSource* light) {
     this->carShader = shader;
     this->carLight = light;
 }
+void Road::addTreeInfo(Model* model, Shader* shader, LightSource* light) {
+    this->treeModel = model;
+    this->treeShader = shader;
+    this->treeLight = light;
+}
+void Road::addLampInfo(Model* model, Model* reversedModel, Shader* shader, LightSource* light) {
+    this->lampModel = model;
+    this->lampReversedModel = reversedModel;
+    this->lampShader = shader;
+    this->lampLight = light;
+}
+
 
 
 constexpr int NUMBER_OF_CARS = 4;
@@ -169,16 +178,13 @@ std::vector<Car*> Road::getCars() {
 
 constexpr int NUMBER_OF_LAMPS = 5;
 void Road::generateLamps() {
-    Model* lampModel = new Model("assets/meshes/lamp/lamp.obj");
-    Model* lampModelReversed = new Model("assets/meshes/lamp/lamp-reversed.obj");
-    Shader* lampShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
-        Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, this->light, false, i);
+        Object* lamp = new StreetLamp(lampModel, lampShader, this->physics, lampLight, false, i);
         linkedObjects.push_back(lamp);
         lamps.push_back((StreetLamp*)lamp);
     }
     for (int i = 0; i < NUMBER_OF_LAMPS; i++) {
-        Object* lamp = new StreetLamp(lampModelReversed, lampShader, this->physics, this->light, true, i);
+        Object* lamp = new StreetLamp(lampReversedModel, lampShader, this->physics, lampLight, true, i);
         linkedObjects.push_back(lamp);
         lamps.push_back((StreetLamp*)lamp);
     }
@@ -186,8 +192,6 @@ void Road::generateLamps() {
 
 const int NUMBER_OF_TREES = 2000; // per road segment
 void Road::generateTrees() {
-    Shader* treeShader = new Shader("code/shaders/instancedObject.vert", "code/shaders/textureLessShader.frag");
-    Model* treeModel = new Model("assets/meshes/tree/tree.obj");
     std::vector<glm::vec3> translations;
     for (int i = 0; i < NUMBER_OF_TREES; i++) {
         int minZ = 0; int maxZ = 99;
@@ -204,7 +208,7 @@ void Road::generateTrees() {
         glm::vec3 translation = glm::vec3(numX, 0, numZ);
         translations.push_back(translation);
     }
-    InstancedObject* tree = new InstancedObject(treeModel, treeShader, this->physics, this->light, translations);
+    InstancedObject* tree = new InstancedObject(treeModel, treeShader, this->physics, treeLight, translations);
     this->linkObject(tree);
 }
 

@@ -95,6 +95,9 @@ std::vector<glm::mat4> carModelMatrices;
 // Models //
 Model* carModel = nullptr;
 Model* roadModel = nullptr;
+Model* treeModel = nullptr;
+Model* lampModel = nullptr;
+Model* lampReversedModel = nullptr;
 
 // Cameras //
 Camera* camera = nullptr;
@@ -107,6 +110,8 @@ Shader* roadShader = nullptr;
 Shader* carShader = nullptr;
 Shader* carInstancedShader = nullptr;
 Shader* fontShader = nullptr;
+Shader* treeShader = nullptr;
+Shader* lampShader = nullptr;
 
 // Light //
 Sun* sun = nullptr;
@@ -270,6 +275,8 @@ void initShaders()
     carShader = new Shader("code/shaders/car.vert", "code/shaders/car.frag");
     carInstancedShader = new Shader("code/shaders/instancedMatrixObject.vert", "code/shaders/car.frag");
     roadShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
+    treeShader = new Shader("code/shaders/instancedObject.vert", "code/shaders/textureLessShader.frag");
+    lampShader = new Shader("code/shaders/textureLessShader.vert", "code/shaders/textureLessShader.frag");
     fontShader = new Shader("code/shaders/font.vert", "code/shaders/font.frag");
 }
 
@@ -277,6 +284,9 @@ void initModels()
 {
     carModel = new Model("assets/meshes/car/car.obj");
     roadModel = new Model("assets/meshes/road/road.obj");
+    treeModel = new Model("assets/meshes/tree/tree.obj");
+    lampModel = new Model("assets/meshes/lamp/lamp.obj");
+    lampReversedModel = new Model("assets/meshes/lamp/lamp-reversed.obj");
 }
 
 void initText(Scene scene)
@@ -337,6 +347,10 @@ void init(bool instantCars)
     lamps = std::vector<StreetLamp*>();
     for (size_t t = 0; t < roads.size(); t++) {
         roads[t]->addCarInfo(carModel, carShader, sun);
+        roads[t]->addTreeInfo(treeModel, treeShader, sun);
+        roads[t]->addLampInfo(lampModel, lampReversedModel, lampShader, sun);
+        roads[t]->generateLamps();
+        roads[t]->generateTrees();
         roads[t]->move((int)roads.size(), (int)t, instantCars); // todo change 2 false
         for (size_t i = 0; i < roads[t]->getLamps().size(); i++)
             lamps.push_back(roads[t]->getLamps()[i]);
@@ -366,7 +380,7 @@ void freeInit()
         delete playerCamera; playerCamera = nullptr;
     }
     for (size_t t = 0; t < roads.size(); t++) {
-        delete roads[t]; // deletes car rigidbodies, lamps, and other road stuff
+        delete roads[t]; // deletes car rigidbodies
     }
     if (physics != nullptr) {
         delete physics; physics = nullptr;
