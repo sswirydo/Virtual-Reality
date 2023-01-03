@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Settings.hpp"
+#include "Window.hpp"
 
 // Defines several possible options for camera movement. 
 // Used as abstraction to stay away from window-system specific input methods
@@ -28,13 +29,15 @@ const float ZOOM = 45.0f;
 class Camera // Interface
 {
 public:
-	Camera();
+	Camera(Window* window);
 	virtual glm::mat4 getViewMatrix() = 0;
-	virtual glm::mat4 getProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 800.0f) = 0;
+	glm::mat4 getProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 800.0f);
 
 	virtual void ProcessKeyboard(Camera_Movement direction, float deltaTime) = 0 ;
 	virtual void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) = 0;
 	virtual void ProcessMouseScroll(float yoffset) = 0;
+
+	Window* window = nullptr;
 
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);;
 	float yaw = YAW;
@@ -43,7 +46,7 @@ public:
 	float MovementSpeed = SPEED;
 	float MouseSensitivity = SENSITIVITY;
 	float Zoom = ZOOM;
-	float ScreenRatio = ((float)SCR_WIDTH) / ((float)SCR_HEIGHT);
+	//float ScreenRatio = ((float)SCR_WIDTH) / ((float)SCR_HEIGHT);
 };
 
 #endif // !CAMERA_HPP

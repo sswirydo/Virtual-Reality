@@ -341,14 +341,14 @@ void init(bool instantCars)
     }
     
     carRenderer = new CarRenderer(carModel, carInstancedShader, sun);
-    worldCamera = new WorldCamera(glm::vec3(0.0f, 3.0f, 7.0f));
+    worldCamera = new WorldCamera(window, glm::vec3(0.0f, 3.0f, 7.0f));
 
     if (skybox == nullptr) {
         skybox = new Skybox(cubeMapModel, cubeMapShader, sun);
     }
 
     playerCar = new Player(carModel, carShader, physics, sun);
-    playerCamera = new PlayerCamera(playerCar);
+    playerCamera = new PlayerCamera(window, playerCar);
 
     Road* road = new Road(roadModel, roadShader, physics, sun);
     Road* road2 = new Road(roadModel, roadShader, physics, sun);
@@ -583,13 +583,13 @@ void Render()
     auto startTime = std::chrono::high_resolution_clock::now();
 
     // Graphics cleaning.
-    //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Skybox rendering.
     glDepthFunc(GL_LEQUAL);
     skybox->render(camera, lamps, enableFog);
-    //glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);
 
     // Rendering collision boxes from Bullet Physics.
     if (renderDebug)

@@ -1,6 +1,6 @@
 #include "../headers/WorldCamera.hpp"
 
-WorldCamera::WorldCamera(glm::vec3 position, glm::vec3 up)
+WorldCamera::WorldCamera(Window* window, glm::vec3 position, glm::vec3 up) : Camera(window)
 {
     this->position = position;
     WorldUp = up;
@@ -10,11 +10,6 @@ WorldCamera::WorldCamera(glm::vec3 position, glm::vec3 up)
 glm::mat4 WorldCamera::getViewMatrix()
 {
     return glm::lookAt(this->position, this->position + Front, Up);
-}
-
-glm::mat4 WorldCamera::getProjectionMatrix(float fov, float near, float far)
-{
-    return glm::perspective(fov, this->ScreenRatio, near, far);
 }
 
 void WorldCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)

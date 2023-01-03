@@ -15,10 +15,9 @@ class Object;
 class WorldCamera : public Camera
 {
 public:
-    WorldCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+    WorldCamera(Window* window, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 
     glm::mat4 getViewMatrix();
-    glm::mat4 getProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 8000.0f);
 
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);

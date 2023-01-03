@@ -13,10 +13,8 @@ const float darkerFactor = 4.0f;
 void main() {
 	FragColor = texture(cubemapSampler,texCoord_v);
 
-	vec4 fog = fogColor;
 	if (isNight) {
 		FragColor = vec4(FragColor.xyz/darkerFactor, 1.0f);
-		fog = vec4(fog.xyz/darkerFactor, 1.0f);
 	}
 
 	// fog effect

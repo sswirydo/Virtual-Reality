@@ -21,7 +21,7 @@ private:
     unsigned int win_width;
     unsigned int win_height;
     GLFWwindow* window;
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 
 #endif

@@ -18,9 +18,8 @@ class Camera;
 class PlayerCamera : public Camera {
 
 public:
-	PlayerCamera(Object* player);
+	PlayerCamera(Window* window, Object* player);
 	glm::mat4 getViewMatrix();
-	glm::mat4 getProjectionMatrix(float fov = 45.0, float near = 0.1f, float far = 8000.0f);
 	void move();
 	void computeCameraPosition(float horizontalDistance, float verticalDistance);
 	void computeZoom();

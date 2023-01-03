@@ -1,6 +1,6 @@
 #include "../headers/PlayerCamera.hpp"
 
-PlayerCamera::PlayerCamera(Object* player) 
+PlayerCamera::PlayerCamera(Window* window, Object* player) : Camera(window)
 {
 	this->player = player;
 	this->pitch = 20;
@@ -16,11 +16,6 @@ glm::mat4 PlayerCamera::getViewMatrix()
 	glm::vec3 cameraPos = glm::vec3(-this->position.x, -this->position.y, -this->position.z);
 	viewMatrix = glm::translate(viewMatrix, cameraPos);
 	return viewMatrix;
-}
-
-glm::mat4 PlayerCamera::getProjectionMatrix(float fov, float near, float far)
-{
-	return glm::perspective(fov, this->ScreenRatio, near, far);
 }
 
 void PlayerCamera::move()
