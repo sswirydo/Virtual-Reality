@@ -2,6 +2,8 @@
 
 Road::Road(Model* model, Shader* shader, Physics* physics, LightSource* light) : Object(model, shader, physics, light) 
 {
+    srand(time(nullptr));
+
     //Creates the ground shape
     btCollisionShape* groundShape = new btBoxShape(btVector3(107, 0, 100)); // TODO: set Y to 0 or 1?
     btCollisionShape* borneShape_l = new btBoxShape(btVector3(0.5, 1, 100));
