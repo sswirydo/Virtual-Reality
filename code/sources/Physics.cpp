@@ -36,12 +36,13 @@ void Physics::addShape(btCollisionShape* collisionShape)
 }
 Physics::~Physics()
 {
-    //for (int j = 0; j < collisionShapes.size(); j++)
-    //{
-    //    btCollisionShape* shape = collisionShapes[j];
-    //    collisionShapes[j] = 0;
-    //    delete shape;
-    //}
+    for (int j = 0; j < collisionShapes.size(); j++)
+    {
+        btCollisionShape* shape = collisionShapes[j];
+        collisionShapes[j] = nullptr;
+        if (shape != nullptr)
+            delete shape;
+    }
 
     delete this->collisionConfiguration;
     delete this->dispatcher;

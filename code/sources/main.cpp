@@ -39,8 +39,14 @@
 
 enum Scene {
     MENU,
-    PLAY,
+    GAME,
     HELP,
+};
+
+enum Actions {
+    PLAY = 0,
+    EXIT = 1,
+    COUNT = 2
 };
 
     //////////////////
@@ -55,7 +61,7 @@ void initText(Scene scene);
 void freeText(Scene scene);
 void init(bool instantCars);
 void freeInit();
-void menu();
+void menu(bool disableMovement);
 int play();
 void Render();
 void RenderText(Scene scene);
@@ -115,23 +121,28 @@ Text* score_text = nullptr;
 Text* speed_text = nullptr;
 Text* time_text = nullptr;
 Text* highscores_title_text = nullptr;
-Text* press_enter_text = nullptr;
-std::vector<Text*> best_scores_textes;
+std::vector<Text*> best_scores_texts;
+std::vector<Text*> menuTexts;
 
 // Variables //
 int roadDisplacement = NULL;
 int score = NULL;
 std::string playerName = "PLAYER";
-
+unsigned int currentMenuChoice = 0;
 
 // Game settings //
+Scene currentScene = MENU;
 bool processMouseInput = true;
 bool pauseGame = false;
 glm::vec4 movementDirection = glm::vec4(false, false, false, false);
 bool enableFog = true;
 bool enableSpeed = true;
 bool enableText = true;
+bool confirmChoice = false;
 bool playGame = false;
+bool quitGame = false;
+bool alreadyPlayed = false;
+
 
 // Camera settings //
 float lastX = SCR_WIDTH / 2.0f;
@@ -190,19 +201,43 @@ int main()
 
     font = new Font("assets/fonts/BebasNeue-Regular.ttf");
     ReadHighScores();
+    highscores_title_text = new Text(font, glm::vec2(10, 400 - 50)); // TODO: modify text vec2 with screen resolution
+    highscores_title_text->Update("HIGHSCORES");
+    Text* highscores_top1_text = new Text(font, glm::vec2(10, 400)); // TODO: modify text vec2 with screen resolution
+    Text* highscores_top2_text = new Text(font, glm::vec2(10, 400 + 50));
+    Text* highscores_top3_text = new Text(font, glm::vec2(10, 400 + 50 * 2));
+    Text* highscores_top4_text = new Text(font, glm::vec2(10, 400 + 50 * 3));
+    Text* highscores_top5_text = new Text(font, glm::vec2(10, 400 + 50 * 4));
+    best_scores_texts = std::vector<Text*>();
+    best_scores_texts.push_back(highscores_top1_text);
+    best_scores_texts.push_back(highscores_top2_text);
+    best_scores_texts.push_back(highscores_top3_text);
+    best_scores_texts.push_back(highscores_top4_text);
+    best_scores_texts.push_back(highscores_top5_text);
 
     initShaders();
     initModels();
 
-    init(true); 
-    menu();
-    if (playGame) {
-        play(); 
+    // -- MAIN LOPP -- //
+
+    while (!quitGame && !glfwWindowShouldClose(window->getWindow()))
+    {
+        if (!alreadyPlayed)
+        {
+            init(true);
+            menu(true);
+        }
+        else { menu(false); }
+
+        if (playGame) 
+        {
+            if (alreadyPlayed){ init(true); }
+            play();
+            playGame = false;
+            alreadyPlayed = true;
+            std::cout << "SCORE: " << score << ", TOP: " << FindHighScorePosition(score) << std::endl;
+        }
     }
-    freeInit();
-    
-    std::cout << "SCORE: " << score << ", TOP: " << FindHighScorePosition(score) << std::endl;
-    
 
     std::cout << ">>> PROGRAM END <<<" << std::endl;
 #ifndef NDEBUG
@@ -247,28 +282,20 @@ void initText(Scene scene)
 {
     if (scene == MENU)
     {
-        press_enter_text = new Text(font, glm::vec2(50, SCR_HEIGHT - 50));
-        press_enter_text->Update("Press enter to play");
-
+        menuTexts = std::vector<Text*>();
+        Text* start_game_text = new Text(font, glm::vec2(50, SCR_HEIGHT - 50*2));
+        start_game_text->Update("start game");
+        Text* exit_game_text = new Text(font, glm::vec2(50, SCR_HEIGHT - 50));
+        exit_game_text->Update("exit game");
+        menuTexts.push_back(start_game_text);
+        menuTexts.push_back(exit_game_text);
     }
-    else if (scene == PLAY)
+    else if (scene == GAME)
     {
         score_text = new Text(font, glm::vec2(10, 50));
         speed_text = new Text(font, glm::vec2(10, 50 * 2));
         time_text = new Text(font, glm::vec2(10, 50 * 3));
-        highscores_title_text = new Text(font, glm::vec2(10, 400 - 50)); // TODO: modify text vec2 with screen resolution
-        highscores_title_text->Update("HIGHSCORES");
-        Text* highscores_top1_text = new Text(font, glm::vec2(10, 400)); // TODO: modify text vec2 with screen resolution
-        Text* highscores_top2_text = new Text(font, glm::vec2(10, 400 + 50));
-        Text* highscores_top3_text = new Text(font, glm::vec2(10, 400 + 50 * 2));
-        Text* highscores_top4_text = new Text(font, glm::vec2(10, 400 + 50 * 3));
-        Text* highscores_top5_text = new Text(font, glm::vec2(10, 400 + 50 * 4));
-        best_scores_textes = std::vector<Text*>();
-        best_scores_textes.push_back(highscores_top1_text);
-        best_scores_textes.push_back(highscores_top2_text);
-        best_scores_textes.push_back(highscores_top3_text);
-        best_scores_textes.push_back(highscores_top4_text);
-        best_scores_textes.push_back(highscores_top5_text);
+
     }
 }
 
@@ -277,16 +304,8 @@ void freeText(Scene scene)
 {
     if (scene == MENU)
     {
-        delete press_enter_text;
-    }
-    else if (scene == PLAY)
-    {
-        delete score_text;
-        delete speed_text;
-        delete time_text;
-        delete highscores_title_text;
-        for (size_t t = 0; t < best_scores_textes.size(); t++) {
-            delete best_scores_textes[t];
+        for (size_t t = 0; t < menuTexts.size(); t++) {
+            delete menuTexts[t];
         }
     }
 }
@@ -294,6 +313,8 @@ void freeText(Scene scene)
 
 void init(bool instantCars)
 {
+    freeInit();
+
     physics = new Physics();
     physics->getWorld()->setDebugDrawer(debugDrawer);
 
@@ -325,17 +346,30 @@ void init(bool instantCars)
 
 void freeInit()
 {
-    delete sun;
-    delete carRenderer;
-    delete worldCamera;
-    delete skybox;
-    delete playerCar;
-    delete playerCamera;
+    if (sun != nullptr){
+        delete sun; sun = nullptr;
+    }
+    if (carRenderer != nullptr) {
+        delete carRenderer; carRenderer = nullptr;
+    }
+    if (worldCamera != nullptr) {
+        delete worldCamera; worldCamera = nullptr;
+    }
+    if (skybox != nullptr) {
+        delete skybox; skybox = nullptr;
+    }
+    if (playerCar != nullptr) {
+        delete playerCar; playerCar = nullptr;
+    }
+    if (playerCamera != nullptr) {
+        delete playerCamera; playerCamera = nullptr;
+    }
     for (size_t t = 0; t < roads.size(); t++) {
         delete roads[t]; // deletes car rigidbodies, lamps, and other road stuff
     }
-    if (physics != nullptr)
-        delete physics;
+    if (physics != nullptr) {
+        delete physics; physics = nullptr;
+    }
 }
 
 
@@ -346,10 +380,12 @@ void freeInit()
 //////////
 
 
-void menu() 
+void menu(bool disableMovement) 
 {
+    currentScene = MENU;
     initText(MENU);
-    while (!playGame && !glfwWindowShouldClose(window->getWindow())) 
+    bool stopLoop = false;
+    while (!stopLoop && !glfwWindowShouldClose(window->getWindow()))
     {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -366,6 +402,18 @@ void menu()
 
         processInput(window->getWindow());
 
+        // Moving road segments as player advances in game.
+        float distance = playerCar->getWorldCoordinates().z;
+        if (distance < -200 * (roadDisplacement - 2)) // todo check if it is still -2 for more than 3 roads
+        {
+            for (size_t t = 0; t < roads.size(); t++) {
+                if (roadDisplacement % roads.size() == t) {
+                    roads[t]->move((int)roads.size(), -1, false);
+                }
+            }
+            roadDisplacement++;
+        }
+
         // Moving the sun.
         glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
         if (!pauseGame) { sun->rotate(newLightPosition); }
@@ -375,15 +423,35 @@ void menu()
             std::vector<Car*> linkedCars = roads[t]->getCars();
             for (size_t l = 0; l < linkedCars.size(); l++) {
                 if (!pauseGame) {
-                    //linkedCars[l]->move(deltaTime);
+                    if (!disableMovement) {
+                        linkedCars[l]->move(deltaTime);
+                    }
                 }
                 carModelMatrices.push_back(linkedCars[l]->getModelMatrix());
             }
         }
         carModelMatrices.push_back(playerCar->getModelMatrix());
 
+        // Advances physics simulation.
+        if (!disableMovement) { physics->getWorld()->stepSimulation(deltaTime); }
+
         Render();
         RenderText(MENU);
+        
+        if (confirmChoice) {
+            switch (currentMenuChoice) {
+            case PLAY:
+                playGame = true;
+                break;
+            case EXIT:
+                quitGame = true;
+                break;
+            default:
+                break;
+            }
+            confirmChoice = false;
+            stopLoop = true;
+        }
 
         glfwSwapBuffers(window->getWindow());
         glfwPollEvents();
@@ -402,7 +470,8 @@ void menu()
 
 int play()
 {
-    initText(PLAY);
+    currentScene = GAME;
+    initText(GAME);
     score_start_time = std::chrono::high_resolution_clock::now();
     while (!playerCar->wasHit() && !glfwWindowShouldClose(window->getWindow()))
     {
@@ -460,7 +529,7 @@ int play()
         carModelMatrices.push_back(playerCar->getModelMatrix());
 
         Render();
-        RenderText(PLAY);
+        RenderText(GAME);
 
         // Framerate capping.
         //auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count();
@@ -476,7 +545,6 @@ int play()
     }
     UpdateHighScores(playerName, score);
     WriteHighScores();
-    freeText(PLAY);
     return 0;
 }
 
@@ -524,7 +592,7 @@ void RenderText(Scene scene)
 {
     if (enableText)
     {
-        if (scene == PLAY) 
+        if (alreadyPlayed || scene == GAME) 
         {
             if (!playerCar->wasHit()) {
                 // Updating text of distance score
@@ -549,27 +617,33 @@ void RenderText(Scene scene)
             bool k_shifted = false;
             std::string top_t;
             int h = FindHighScorePosition(score);
-            if (h < best_scores_textes.size())
+            if (h < best_scores_texts.size())
             {
                 std::string top_t = playerName + "    " + std::to_string(score);
-                best_scores_textes[h]->Update(top_t);
-                best_scores_textes[h]->Draw(fontShader, true);
+                best_scores_texts[h]->Update(top_t);
+                best_scores_texts[h]->Draw(fontShader, true);
             }
             size_t k = 0;
-            for (size_t t = 0; t < best_scores_textes.size(); t++)
+            for (size_t t = 0; t < best_scores_texts.size(); t++)
             {
                 if (h != t) {
                     top_t = highScores[t].name + "    " + std::to_string(highScores[k++].score);
-                    best_scores_textes[t]->Update(top_t);
-                    best_scores_textes[t]->Draw(fontShader);
+                    best_scores_texts[t]->Update(top_t);
+                    best_scores_texts[t]->Draw(fontShader);
                 }
             }
         }
-        else if (scene == MENU)
+        if (scene == MENU)
         {
-            press_enter_text->Draw(fontShader);
+            for (size_t t = 0; t < menuTexts.size(); t++) {
+                if (currentMenuChoice == t) {
+                    menuTexts[t]->Draw(fontShader, true);
+                }
+                else {
+                    menuTexts[t]->Draw(fontShader);
+                }
+            }
         }
-
     }
 }
 
@@ -640,7 +714,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if (processMouseInput) { processMouseInput = false; glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); std::cout << "\nMOUSE DETACHED\n"; }
         else { processMouseInput = true; glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); std::cout << "\nMOUSE ATTACHED\n"; }
     }
-
     if (key == GLFW_KEY_P && action == GLFW_PRESS)
     {
         if (pauseGame) { pauseGame = false; std::cout << ">> Game resumed" << std::endl; }
@@ -656,7 +729,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if (renderModel) { renderModel = false; std::cout << ">> MODEL OFF" << std::endl; }
         else { renderModel = true; std::cout << ">> MODEL ON" << std::endl; }
     }
-
     if (key == GLFW_KEY_1 && action == GLFW_PRESS)
     {
         cameraNum = 1; cameraChanged = true;
@@ -665,7 +737,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         cameraNum = 2; cameraChanged = true;
     }
-
     if (key == GLFW_KEY_F && action == GLFW_PRESS)
     {
         if (enableFog) { enableFog = false; std::cout << ">> FOG OFF" << std::endl; }
@@ -676,19 +747,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if (enableText) { enableText = false; std::cout << ">> TEXT OFF" << std::endl; }
         else { enableText = true; std::cout << ">> TEXT ON" << std::endl; }
     }
-
     if (key == GLFW_KEY_V && action == GLFW_PRESS)
     {
         if (enableSpeed) { enableSpeed = false; std::cout << ">> INCREASING SPEED OFF" << std::endl; }
         else { enableSpeed = true; std::cout << ">> INCREASING SPEED ON" << std::endl; }
     }
-
-    if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ENTER && currentScene == Scene::MENU && action == GLFW_PRESS)
     {
-        if (playGame) { playGame = false; }
-        else { playGame = true;}
+        if (!confirmChoice) confirmChoice = true;
     }
 
+    if (key == GLFW_KEY_UP && currentScene == Scene::MENU && action == GLFW_PRESS)
+    {
+        currentMenuChoice = (currentMenuChoice + 1) % (unsigned int) Actions::COUNT;
+    }
+    if (key == GLFW_KEY_DOWN && currentScene == Scene::MENU && action == GLFW_PRESS)
+    {
+        currentMenuChoice = (currentMenuChoice - 1) % (unsigned int)Actions::COUNT;
+    }
 
 
 }

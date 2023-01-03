@@ -11,6 +11,14 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     printMaterial();
 }
 
+Mesh::~Mesh() 
+{
+    //glDeleteVertexArrays(1, &VAO);
+    //glDeleteBuffers(1, &VBO);
+    //glDeleteBuffers(1, &EBO);
+    //glDeleteBuffers(1, &instanceVBO);
+}
+
 void Mesh::createTriangles() 
 {
     for (int i = 0; i < indices.size(); i += 3) {

@@ -57,6 +57,7 @@ class Mesh {
         std::vector<glm::vec3>      positionTriangles;
 
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures,Material material);
+        ~Mesh();
 
         void Draw(Shader* shader);
         void InstancedDraw(Shader* shader, std::vector<glm::vec3> translations);
