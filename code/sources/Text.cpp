@@ -18,9 +18,9 @@ void Text::Update(std::string txt)
 {
 	charVertices = std::vector<CharVertex>();
 	glm::vec2 tempPos = startPosition;
-	for (auto& character : txt)
+	for (auto& character_ : txt)
 	{
-		auto glyph = this->font->getGlyph(character, tempPos);
+		auto glyph = this->font->getGlyph(character_, tempPos);
 
 		CharVertex character = CharVertex();
 		character.Position = glyph.bbmin;

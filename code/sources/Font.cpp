@@ -16,7 +16,7 @@ Font::Font(const char* fontPath)
 	unsigned char* bitmap = new unsigned char[width * height];
 
 	FILE* fontFile = nullptr;
-	fopen_s(&fontFile, fontPath, "rb");
+	fontFile  = fopen(fontPath, "rb");
 	if (!fontFile) {
 		std::cout << "ERROR OPENING FONT FILE" << std::endl;
 		exit(1);
