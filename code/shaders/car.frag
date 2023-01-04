@@ -74,21 +74,22 @@ vec4 computeSpotLight(SpotLight streetLight, vec3 lightDirection, Material mater
     float intensity = clamp((theta - streetLight.outerCutOff) / epsilon, 0.0, 1.0);
     // ambient light
     vec4 ambient = vec4(material.ambient,material.transparency) * vec4(streetLight.ambient,1.0)*(texture(texture_diffuse1, TexCoords));
-    if(theta > streetLight.cutOff) 
+    if(theta > streetLight.outerCutOff) 
     {       
         // ambient*= intensity;
         // diffuse light 
         float diff = max(dot(normal, lightDirection), 0.0);
-        vec4 diffuse = (diff * vec4(material.diffuse,material.transparency))* vec4(streetLight.diffuse,1.0)*(texture(texture_diffuse1, TexCoords));
+        vec4 diffuse = (diff * vec4(material.diffuse,material.transparency))* vec4(streetLight.diffuse,1.0)*(texture(texture_diffuse1, TexCoords))*intensity;
 
         // specular light 
         vec3 reflectDir = reflect(-lightDirection, normal);
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-        vec4 specular = (vec4(material.specular,material.transparency) * spec) * vec4(streetLight.specular,1.0)*(texture(texture_specular1, TexCoords));
+        vec4 specular = (vec4(material.specular,material.transparency) * spec) * vec4(streetLight.specular,1.0)*(texture(texture_specular1, TexCoords))*intensity;
         return (specular+ambient+diffuse);
     }
     else  // else, use ambient light so scene isn't completely dark outside the spotlight.
         return ambient/65.0;
+        
 }
 
 void main()
