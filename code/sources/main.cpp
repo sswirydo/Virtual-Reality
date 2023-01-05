@@ -461,7 +461,7 @@ void menu(bool disableMovement)
         carModelMatrices.push_back(playerCar->getModelMatrix());
 
         // Advances physics simulation.
-        if (!disableMovement) { physics->getWorld()->stepSimulation(deltaTime); }
+        if (!disableMovement && !pauseGame) { physics->getWorld()->stepSimulation(deltaTime); }
 
         Render();
         RenderText(MENU);
