@@ -27,14 +27,14 @@ CMakeCache.txt
 *.pch
 
 # Libraries
-*.lib
+#*.lib
 *.a
 *.la
 *.lo
 
 # Shared objects (inc. Windows DLLs)
-*.dll
-*.so
+#*.dll
+#*.so
 *.so.*
 *.dylib
 
