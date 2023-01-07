@@ -37,6 +37,7 @@ CMakeCache.txt
 #*.so
 *.so.*
 *.dylib
+libs/irrKlang/bin/
 
 # Executables
 *.exe
