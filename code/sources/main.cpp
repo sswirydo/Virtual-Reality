@@ -201,6 +201,7 @@ bool contactAddedCallbackBullet(
 
 int main()
 {
+    Sound s = Sound();
     std::cout << ">>> PROGRAM START <<<" << std::endl;
     window = new Window("Racing Game", SCR_WIDTH, SCR_HEIGHT);
     setCallbacks(window->getWindow());
@@ -228,9 +229,9 @@ int main()
     initModels();
 
     // -- MAIN LOPP -- //
-
     while (!quitGame && !glfwWindowShouldClose(window->getWindow()))
     {
+        s.playGameMainTheme();
         if (!alreadyPlayed)
         {
             init(true);

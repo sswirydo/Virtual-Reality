@@ -41,6 +41,12 @@ include_directories(libs/bullet3/src)
 LIST(APPEND BULLET_LIBS BulletDynamics BulletCollision LinearMath)
 # add_definitions(-DBT_USE_DOUBLE_PRECISION)
 
+# CONFIGURE IRRKLANG
+set(LINUX_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/bin/linux-gcc-64)
+include_directories(libs/irrKlang/include)
+link_directories(${LINUX_LIB_PATH})
+link_libraries(${LINUX_LIB_PATH}/libIrrKlang.so)
+
 # CONFIGURE OPEN AL
 # add_subdirectory(libs/openal-soft)
 # include_directories(libs/openal-soft/include)
