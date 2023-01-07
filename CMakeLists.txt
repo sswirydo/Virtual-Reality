@@ -42,10 +42,15 @@ LIST(APPEND BULLET_LIBS BulletDynamics BulletCollision LinearMath)
 # add_definitions(-DBT_USE_DOUBLE_PRECISION)
 
 # CONFIGURE IRRKLANG
-set(LINUX_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/bin/linux-gcc-64)
+configure_file(libs/irrKlang/bin/linux-gcc-64/libIrrKlang.so  ${CMAKE_CURRENT_SOURCE_DIR}/libIrrKlang.so COPYONLY)
+configure_file(libs/irrKlang/bin/linux-gcc-64/ikpMP3.so  ${CMAKE_CURRENT_SOURCE_DIR}/ikpMP3.so COPYONLY)
+configure_file(libs/irrKlang/bin/winx64-visualStudio/irrKlang.dll  ${CMAKE_CURRENT_SOURCE_DIR}/irrKlang.dll COPYONLY)
+configure_file(libs/irrKlang/bin/winx64-visualStudio/ikpMP3.dll  ${CMAKE_CURRENT_SOURCE_DIR}/ikpMP3.dll COPYONLY)
+
+# set(WINDOWS_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/bin/linux-gcc-64)
 include_directories(libs/irrKlang/include)
-link_directories(${LINUX_LIB_PATH})
-link_libraries(${LINUX_LIB_PATH}/libIrrKlang.so)
+link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libIrrKlang.so)
+link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/irrKlang.dll)
 
 # CONFIGURE OPEN AL
 # add_subdirectory(libs/openal-soft)
