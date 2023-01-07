@@ -171,6 +171,8 @@ float lastFrame = 0.0f;
 auto startTime = std::chrono::high_resolution_clock::now();
 auto score_start_time = std::chrono::high_resolution_clock::now();
 
+// Sound //
+Sound s = Sound();
 
 // Based on https://www.youtube.com/watch?v=YweNArzAHs4
 bool contactAddedCallbackBullet(
@@ -187,6 +189,7 @@ bool contactAddedCallbackBullet(
     // std::cout << "Collision of id " << bo0->id << " with id " << bo1->id << std::endl;
     if (bo1->id == CAR) {
         bo0->hit = true; // PLAYER WAS HIT :(
+        s.playCollision();
     }
     return false;
 };
@@ -201,7 +204,6 @@ bool contactAddedCallbackBullet(
 
 int main()
 {
-    Sound s = Sound();
     std::cout << ">>> PROGRAM START <<<" << std::endl;
     window = new Window("Racing Game", SCR_WIDTH, SCR_HEIGHT);
     setCallbacks(window->getWindow());

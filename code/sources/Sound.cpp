@@ -13,7 +13,7 @@ void Sound::playGameMainTheme(){
 }
 
 void Sound::playCollision(){
-    engine->play2D("libs/irrKlang/media/getout.ogg", false);
+    engine->play2D("assets/audio/collision.mp3", false);
 }
 
 Sound::~Sound(){
