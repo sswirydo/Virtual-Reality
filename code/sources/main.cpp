@@ -188,8 +188,10 @@ bool contactAddedCallbackBullet(
     BulletObject* bo1 = (BulletObject*)colObj1->getCollisionObject()->getUserPointer(); // OTHER
     // std::cout << "Collision of id " << bo0->id << " with id " << bo1->id << std::endl;
     if (bo1->id == CAR) {
+        if (!bo0->hit) {
+            s.playCollision();
+        }
         bo0->hit = true; // PLAYER WAS HIT :(
-        s.playCollision();
     }
     return false;
 };
@@ -233,9 +235,9 @@ int main()
     // -- MAIN LOPP -- //
     while (!quitGame && !glfwWindowShouldClose(window->getWindow()))
     {
-        s.playGameMainTheme();
         if (!alreadyPlayed)
         {
+            s.playGameMainTheme();
             init(true);
             menu(true);
         }
@@ -795,6 +797,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         if (enableSpeed) { enableSpeed = false; std::cout << ">> INCREASING SPEED OFF" << std::endl; }
         else { enableSpeed = true; std::cout << ">> INCREASING SPEED ON" << std::endl; }
+    }
+    if (key == GLFW_KEY_M && action == GLFW_PRESS)
+    {
+        if (s.enabled) { s.disable(); std::cout << ">> SOUND OFF" << std::endl; }
+        else { s.enable(); std::cout << ">> SOUND ON" << std::endl; }
     }
     if (key == GLFW_KEY_ENTER && currentScene == Scene::MENU && action == GLFW_PRESS)
     {

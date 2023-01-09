@@ -15,11 +15,15 @@ using namespace irrklang;
 class Sound
 {
 public:
+	void enable();
+	void disable();
 	void playGameMainTheme();
 	void playCollision();
 	ISoundEngine* engine = createIrrKlangDevice();
 	Sound();
 	~Sound();
+	bool enabled = true;
+protected:
 };
 
 #endif //! SOUND_HPP
