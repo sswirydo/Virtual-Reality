@@ -447,6 +447,9 @@ void menu(bool disableMovement)
             roadDisplacement++;
         }
 
+        // Advances physics simulation.
+        if (!disableMovement && !pauseGame) { physics->getWorld()->stepSimulation(deltaTime); }
+
         // Moving the sun.
         glm::vec3 newLightPosition = glm::vec3(playerCar->getModelMatrix()[3]);
         if (!pauseGame) { sun->rotate(newLightPosition); }
@@ -465,8 +468,6 @@ void menu(bool disableMovement)
         }
         carModelMatrices.push_back(playerCar->getModelMatrix());
 
-        // Advances physics simulation.
-        if (!disableMovement && !pauseGame) { physics->getWorld()->stepSimulation(deltaTime); }
 
         Render();
         RenderText(MENU);
