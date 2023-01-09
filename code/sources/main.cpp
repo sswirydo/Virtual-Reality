@@ -191,6 +191,7 @@ bool contactAddedCallbackBullet(
     if (bo1->id == CAR) {
         if (!bo0->hit) {
             sfx.playCollision();
+            sfx.playKlaxon();
         }
         bo0->hit = true; // PLAYER WAS HIT :(
     }

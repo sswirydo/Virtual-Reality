@@ -21,6 +21,9 @@ void Sound::playGameMainTheme(){
 void Sound::playCollision(){
     if (enabled) engine->play2D("assets/audio/collision.mp3", false);
 }
+void Sound::playKlaxon(){
+    if (enabled) engine->play2D("assets/audio/klaxon.mp3", false);
+}
 
 Sound::~Sound(){
     engine->drop(); // delete engine

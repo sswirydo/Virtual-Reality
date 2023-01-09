@@ -20,6 +20,7 @@ public:
 	void setVolume(float volume);
 	void playGameMainTheme();
 	void playCollision();
+	void playKlaxon();
 	ISoundEngine* engine = createIrrKlangDevice();
 	Sound();
 	~Sound();
