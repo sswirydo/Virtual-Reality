@@ -172,7 +172,8 @@ auto startTime = std::chrono::high_resolution_clock::now();
 auto score_start_time = std::chrono::high_resolution_clock::now();
 
 // Sound //
-Sound s = Sound();
+Sound music = Sound();
+Sound sfx = Sound();
 
 // Based on https://www.youtube.com/watch?v=YweNArzAHs4
 bool contactAddedCallbackBullet(
@@ -189,7 +190,7 @@ bool contactAddedCallbackBullet(
     // std::cout << "Collision of id " << bo0->id << " with id " << bo1->id << std::endl;
     if (bo1->id == CAR) {
         if (!bo0->hit) {
-            s.playCollision();
+            sfx.playCollision();
         }
         bo0->hit = true; // PLAYER WAS HIT :(
     }
@@ -237,7 +238,9 @@ int main()
     {
         if (!alreadyPlayed)
         {
-            s.playGameMainTheme();
+            sfx.setVolume(0.4f);
+            music.setVolume(0.2f);
+            music.playGameMainTheme();
             init(true);
             menu(true);
         }
@@ -801,8 +804,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
     if (key == GLFW_KEY_M && action == GLFW_PRESS)
     {
-        if (s.enabled) { s.disable(); std::cout << ">> SOUND OFF" << std::endl; }
-        else { s.enable(); std::cout << ">> SOUND ON" << std::endl; }
+        if (music.enabled) { music.disable(); sfx.disable(); std::cout << ">> SOUND OFF" << std::endl; }
+        else { music.enable(); sfx.enable(); std::cout << ">> SOUND ON" << std::endl; }
     }
     if (key == GLFW_KEY_ENTER && currentScene == Scene::MENU && action == GLFW_PRESS)
     {

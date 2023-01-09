@@ -17,6 +17,7 @@ class Sound
 public:
 	void enable();
 	void disable();
+	void setVolume(float volume);
 	void playGameMainTheme();
 	void playCollision();
 	ISoundEngine* engine = createIrrKlangDevice();

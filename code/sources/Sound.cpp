@@ -8,12 +8,14 @@ Sound::Sound(){
     }
 }
 
+void Sound::setVolume(float volume) { engine->setSoundVolume(volume); }
+
 void Sound::enable() { this->enabled = true; engine->setAllSoundsPaused(false); }
 void Sound::disable() { this->enabled = false; engine->setAllSoundsPaused(true); }
 
 
 void Sound::playGameMainTheme(){
-    engine->play2D("assets/audio/test.mp3",  true, false, true);
+    engine->play2D("assets/audio/BoxCat Games - Epic Song.mp3",  true, false, true);
 }
 
 void Sound::playCollision(){
