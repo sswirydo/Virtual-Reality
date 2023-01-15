@@ -1,5 +1,5 @@
 #project setup
-project(VR_Project)
+project(racing_game)
 
 #set the minimal version of cmake and the minimal version of the c++ language
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
@@ -44,7 +44,7 @@ LIST(APPEND BULLET_LIBS BulletDynamics BulletCollision LinearMath)
 # CONFIGURE IRRKLANG
 include_directories(libs/irrKlang/include)
 if (WIN32)
-    link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/lib/Winx64-visualStudio/irrKlang.lib)
+    link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/lib/irrKlang.lib)
 endif (WIN32)
 if (UNIX)
     link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libIrrKlang.so)
