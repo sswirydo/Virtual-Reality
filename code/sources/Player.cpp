@@ -11,10 +11,17 @@ Player::Player(Model* model, Shader* shader, Physics* physics, LightSource* ligh
     this->getRigidBody()->setWorldTransform(transform);
 }
 
+constexpr float roadXRange = 6.0f;
 bool Player::wasHit() 
 {
+    // If discrete collision check with barriers failed e.g. due to a player lagging
+    // we'll just check if its position is outside the road range (from -5.5f to 5.5f)
+    bool out = false;
+    float x = this->getWorldCoordinates().x;
+    if (abs(x) > roadXRange) out = true;
+    
     BulletObject* bo = (BulletObject*)this->getRigidBody()->getUserPointer();
-    return bo->hit;
+    return out || bo->hit;
 }
 
 void Player::move(float deltaTime, glm::vec4 direction, int speedIncrease, bool enableSpeed)
