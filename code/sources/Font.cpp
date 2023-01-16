@@ -40,7 +40,7 @@ Font::Font(const char* fontPath)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	stbi_write_png("TextFontBitmap.png", width, height, 1, bitmap, 0); // <-- for testing/visualizing the bitmap font
+	stbi_write_png("other/TextFontBitmap.png", width, height, 1, bitmap, 0); // <-- for testing/visualizing the bitmap font
 	delete[] bitmap;
 
 }

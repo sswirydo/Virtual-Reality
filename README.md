@@ -5,6 +5,8 @@
 Endless road racing game where the goal is to drive as far as you possibly can while dodging other cars on the highway.
 To spice things up, the speed will increase the further you go. Try beating some of our highscores!
 
+![game-demo](other/demo.gif)
+
 ## Controls (qwerty layout)
 Quit: `ESC`<br>
 Menu: `up/down arrows and enter key`<br>
@@ -26,36 +28,3 @@ Show hit boxes: `X`<br>
 Hide models: `C`<br>
 Disable fog: `F`<br>
 Disable difficulty (default speed): `V`<br>
-
-# Implementation
-<b>TODO :</b> add screenshots/GIFs
-
-### Models
-...
-### Instancing
-...
-### Diffuse/specular light
-...
-### Directional light + day/night cycle
-...
-### Spotlights
-...
-### Skybox
-...
-### Fog visual
-...
-### Bullet3 collision and physics
-...
-### Game logic
-...
-### Endless road system
-...
-### Text with font bitmaps (w/ stb_truetype)
-...
-### Simple (2D) sound (w/ irrKlang)
-...
-### (Some) blender models
-...
-
-# Repository link (for quick accesss)
-https://github.com/sswirydo/Virtual-Reality
