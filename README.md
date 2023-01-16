@@ -5,7 +5,7 @@
 Endless road racing game where the goal is to drive as far as you possibly can while dodging other cars on the highway.
 To spice things up, the speed will increase the further you go. Try beating some of our highscores!
 
-![game-demo](other/demo.gif)
+![game-demo](other/demo-compressed.gif)
 
 ## Controls (qwerty layout)
 Quit: `ESC`<br>
