@@ -24,6 +24,7 @@ Camera zoom/dezoom: `mouse wheel`<br>
 Player camera: `1`<br>
 World camera: `2` (debug)<br>
 World camera movement: `WSAD`<br>
+World camera fast speed: hold `LEFT SHIFT`<br>
 Show hit boxes: `X`<br>
 Hide models: `C`<br>
 Disable fog: `F`<br>
