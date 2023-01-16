@@ -11,7 +11,7 @@ Player::Player(Model* model, Shader* shader, Physics* physics, LightSource* ligh
     this->getRigidBody()->setWorldTransform(transform);
 }
 
-constexpr float roadXRange = 6.0f;
+const float roadXRange = 6.0f;
 bool Player::wasHit() 
 {
     // If discrete collision check with barriers failed e.g. due to a player lagging
