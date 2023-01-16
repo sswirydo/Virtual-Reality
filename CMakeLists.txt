@@ -47,7 +47,7 @@ if (WIN32)
     link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/lib/irrKlang.lib)
 endif (WIN32)
 if (UNIX)
-    link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libIrrKlang.so)
+    link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/libs/irrKlang/build/libIrrKlang.so)
 endif (UNIX)
 
 # CONFIGURE OPEN AL

@@ -118,7 +118,7 @@ void Object::render(Camera* camera, std::vector<StreetLamp*> lamps, bool enableF
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].position"), source.getPosition());
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].direction"), glm::vec3(0,-1,0));
         this->shader->setFloat(std::string("streetLight[")+std::to_string(i)+std::string("].outerCutOff"), glm::cos(glm::radians(35.f)));
-        this->shader->setFloat(std::string("streetLight[")+std::to_string(i)+std::string("].cutOff"), glm::cos(glm::radians(25.f)));
+        this->shader->setFloat(std::string("streetLight[")+std::to_string(i)+std::string("].cutOff"), glm::cos(glm::radians(15.f)));
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].ambient"), source.getAmbient());
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].diffuse"), source.getDiffuse());
         this->shader->setVec3(std::string("streetLight[")+std::to_string(i)+std::string("].specular"), source.getSpecular());
